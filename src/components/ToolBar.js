@@ -36,8 +36,8 @@ export default function DenseAppBar() {
   };
   return (
     <AppBar
-      style={{ padding: 0 }}
-      position="static"
+      position="fixed"
+      style={{ top: 0, padding: 0 }}
       sx={{ boxShadow: "0", padding: "0px", m: 0 }}
     >
       <Toolbar variant="dense" sx={{ p: 0 }} className={classes.appBar}>
@@ -73,7 +73,7 @@ export default function DenseAppBar() {
             display: "flex",
             "&:hover": {
               borderRadius: "1px",
-              backgroundColor: "rgba(0,0,0,0.2)", 
+              backgroundColor: "rgba(0,0,0,0.2)",
             },
           }}
         >
@@ -93,7 +93,7 @@ export default function DenseAppBar() {
             display: "flex",
             "&:hover": {
               borderRadius: "1px",
-              backgroundColor: "rgba(0,0,0,0.2)", 
+              backgroundColor: "rgba(0,0,0,0.2)",
             },
           }}
         >
@@ -112,7 +112,7 @@ export default function DenseAppBar() {
             display: "flex",
             "&:hover": {
               borderRadius: "1px",
-              backgroundColor: "rgba(0,0,0,0.2)", 
+              backgroundColor: "rgba(0,0,0,0.2)",
             },
           }}
         >
