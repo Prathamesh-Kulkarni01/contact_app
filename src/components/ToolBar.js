@@ -56,7 +56,7 @@ export default function DenseAppBar() {
             },
           }}
         >
-          <a href="/axelor-erp/add-contact">
+          <a href="/axelor-erp/create-contact">
             {" "}
             <AddIcon sx={{ mx: 2 }} color="gray" />{" "}
           </a>
@@ -77,7 +77,7 @@ export default function DenseAppBar() {
             },
           }}
         >
-          {window.location.pathname.split("/")[2] === "add-contact" && (
+          {(window.location.pathname.split("/")[2] === "create-contact"||window.location.pathname.split("/")[2] )=== "edit" && (
             <Save sx={{ mx: 2 }} color="gray" />
           )}
         </Box>

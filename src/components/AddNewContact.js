@@ -5,10 +5,11 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 
-import React, { useContext, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
   fetchAccountOwner,
   fetchAddress,
+  fetchContactById,
   fetchDepartments,
   fetchFunctions,
   fetchLanguage,
@@ -19,6 +20,7 @@ import {
 import {
   AssociatedCompanies,
   CustomCheckBox,
+  ImageInput,
   MyStatefulEditor,
   NormalInput,
   PhoneNumberWithCountrySelect,
@@ -27,9 +29,26 @@ import {
 } from "./InputComponents";
 
 import { Context } from "../context";
+import { useParams } from "react-router-dom";
 
 const AddNewContact = () => {
-  const { setNewContactData } = useContext(Context);
+  const { setNewContactData,newContactData } = useContext(Context);
+console.log("newContactData",newContactData);
+  const { id } = useParams();
+  const getProfileData = useCallback(() => {
+    fetchContactById(id).then((res) => {
+      setNewContactData(res[0]);
+    });
+  }, [id, setNewContactData]);
+  useEffect(() => {
+    getProfileData();
+  }, [getProfileData, id,]);
+useEffect(()=>{
+setNewContactData(data=>{
+  console.log("--",data.hasOwnProperty("name"));
+  return data
+})
+},[newContactData, setNewContactData])
 
   return (
     <Box>
@@ -50,7 +69,7 @@ const AddNewContact = () => {
               m: { xs: "0", sm: "0 30px 10% 10%" },
             }}
           >
-            <ProfileTopForm setNewContactData={setNewContactData} />
+            <ProfileTopForm setNewContactData={setNewContactData}  />
             <ContactBoxWithTabs setNewContactData={setNewContactData} />
           </Box>
         </Grid>
@@ -81,6 +100,7 @@ export const ProfileTopForm = ({ setNewContactData }) => {
               height: "100%",
               flexDirection: "column",
               display: "flex",
+              position: "relative",
               justifyContent: "center",
             }}
           >
@@ -95,6 +115,7 @@ export const ProfileTopForm = ({ setNewContactData }) => {
               }}
               image="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fA%3D%3D&w=1000&q=80"
             ></CardMedia>
+           <ImageInput></ImageInput>
             <Typography
               variant="body2"
               color="#333333"
@@ -160,7 +181,7 @@ export const ProfileTopForm = ({ setNewContactData }) => {
             <Grid item xs={12} md={6}>
               <SearchInput
                 label={"Main company"}
-                type="Address"
+                searchByFullName="Address"
                 fetchOptionFunction={async () => {
                   return await fetchMainCompany();
                 }}
@@ -198,7 +219,7 @@ export const CustomTabs = ({ options, setTabIndex }) => {
       {tabs.map((tab, key) => {
         return (
           <Box
-          key={tab}
+            key={tab}
             onClick={() => handleTabSwitch(key)}
             sx={{
               width: "120px",
@@ -305,7 +326,7 @@ export const ContactBoxWithTabs = ({ setNewContactData }) => {
                 }}
                 setDataFunction={setNewContactData}
                 fieldName={"reportsTo"}
-                type="Address"
+                searchByFullName="Address"
               />
               <PhoneNumberWithCountrySelect
                 label={"Mobile Number"}
@@ -346,7 +367,7 @@ export const ContactBoxWithTabs = ({ setNewContactData }) => {
           <Grid item lg={12} sm={12} sx={{ mx: 2 }}>
             <SearchInput
               label={"Address"}
-              type={"Address"}
+              searchByFullName={"Address"}
               fetchOptionFunction={async () => {
                 return await fetchAddress();
               }}
@@ -390,7 +411,6 @@ export const RightContent = ({ setNewContactData }) => {
       >
         {/* ---------------------Settings Layout-------------------- */}
         <Box
-          
           sx={{
             backgroundColor: "white",
             mb: 5,
@@ -448,6 +468,7 @@ export const RightContent = ({ setNewContactData }) => {
                 }}
                 setDataFunction={setNewContactData}
                 fieldName={"user"}
+                searchByFullName="Address"
               />
             </Grid>
             <Grid item lg={6} xs={6} md={6} sm={6}>

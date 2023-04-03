@@ -53,6 +53,7 @@ function App() {
           minWidth: "100vw",
         }}
       >
+        <img src="http://localhost:3000/axelor-erp/ws/rest/com.axelor.auth.db.User/1/image/download?image=true&v=6"></img>
         <ToolBar />
         <BrowserRouter>
           <Routes>
@@ -73,7 +74,8 @@ function App() {
               path="/axelor-erp/add-contact"
               element={<AddNewContact />}
             />
-            <Route exact path="/axelor-erp/profile/:id" element={<Profile />} />
+            <Route exact path="/axelor-erp/view/profile/:id" element={<Profile />} />
+            <Route exact path="/axelor-erp/edit/profile/:id" element={<AddNewContact/>} />
           </Routes>
         </BrowserRouter>
       </Box>

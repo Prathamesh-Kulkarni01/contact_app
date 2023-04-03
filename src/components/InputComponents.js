@@ -4,16 +4,70 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import NativeSelect from "@mui/material/NativeSelect";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import SearchIcon from "@mui/icons-material/Search";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
-import { Clear } from "@mui/icons-material";
+import { AddAPhoto, Clear } from "@mui/icons-material";
 import { Component } from "react";
 import RichTextEditor from "react-rte";
 import MuiPhoneNumber from "material-ui-phone-number";
+import { uploadChunk, uploadImage } from "../api/api";
+import Context from "../context";
 
+export const ImageInput = () => {
+  const [fileData, setFileData] = useState(null);
+
+  function getBinary(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const binaryStr = reader.result;
+        resolve(binaryStr);
+      };
+      reader.onerror = reject;
+      reader.readAsBinaryString(file);
+    });
+  }
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    uploadChunk(file);
+    // getBinary(file)
+    //   .then((binary) => {
+    //    console.log( uploadImage(binary,file.type,file.name,file.size))
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error while reading file:", error);
+    //   });
+  };
+
+  return (
+    <Box
+      sx={{ position: "absolute", left: "65px", top: "125px" }}
+      onClick={() => document.getElementById("image_input").click()}
+    >
+      <Box
+        style={{
+          background: "white",
+          padding: "10px",
+          borderRadius: "50%",
+          boxShadow: "3px 3px 4px 1px rgba(0,0,0,0.3)",
+        }}
+      >
+        <AddAPhoto />{" "}
+        <input
+          id="image_input"
+          style={{ display: "none" }}
+          onChange={(e) => {
+            handleFileChange(e);
+          }}
+          type="file"
+        ></input>
+      </Box>
+    </Box>
+  );
+};
 
 export const NormalInput = ({
   label,
@@ -22,7 +76,22 @@ export const NormalInput = ({
   fieldName,
   type,
 }) => {
+  const [value, setValue] = useState("");
+  const { newContactData } = useContext(Context);
+
+  useEffect(() => {
+    if (type === "mail" && newContactData.hasOwnProperty("emailAddress")) {
+      // console.log(fieldName, ":", newContactData.emailAddress["name"]);
+      setValue(newContactData?.emailAddress["name"]);
+      return;
+    }
+    if (!!newContactData[fieldName]) {
+      setValue(newContactData[fieldName]);
+    }
+  }, [newContactData, fieldName, type]);
+
   const handleChange = (event) => {
+    setValue(event.target.value);
     setDataFunction((data) => {
       if (!!type && type === "mail") {
         return {
@@ -56,6 +125,7 @@ export const NormalInput = ({
         }}
         id="standard-basic"
         size="small"
+        value={value}
         name={fieldName}
         onChange={(e) => handleChange(e)}
         placeholder={placeholder}
@@ -136,16 +206,32 @@ export function SearchInput({
   fetchOptionFunction,
   setDataFunction,
   fieldName,
-  type,
+  searchByFullName,
 }) {
   const [options, setOptions] = useState([]);
+
+  const [value, setValue] = useState({});
+  const { newContactData } = useContext(Context);
+
   const handleOpen = async () => {
     const data = await fetchOptionFunction();
-
     setOptions(data);
   };
+  // console.log(newContactData);
+  useEffect(() => {
+    if (!!searchByFullName && newContactData.hasOwnProperty("Address")) {
+      // console.log(fieldName, ":", newContactData.fieldName["fullName"]);
+      setValue(newContactData?.newContactData.fieldName["fullName"]);
+      return;
+    }
+    if (!!newContactData[fieldName]) {
+      setValue(newContactData[fieldName]);
+    }
+  }, [newContactData, fieldName, searchByFullName]);
 
   const handleChange = (event, value) => {
+    // console.log("////",value);
+    setValue(value);
     setDataFunction((data) => {
       return {
         ...data,
@@ -160,20 +246,22 @@ export function SearchInput({
         options={options}
         size="small"
         name="0000"
+        value={value}
         onOpen={() => handleOpen()}
         onChange={(e, v) => handleChange(e, v)}
         getOptionLabel={(option) => {
           let value;
-          if (!!type && type === "Address") {
+          if (!!searchByFullName) {
             value = option.fullName;
           } else {
             value = option.name;
           }
-          return value;
+          if (value) return value;
+          return "";
         }}
         renderOption={(props, option) => {
           let value;
-          if (!!type && type === "Address") {
+          if (!!searchByFullName) {
             value = option.fullName;
           } else {
             value = option.name;
@@ -244,6 +332,9 @@ export function PhoneNumberWithCountrySelect({
   setDataFunction,
   fieldName,
 }) {
+  const [phone, setPhone] = useState("");
+  const { newContactData } = useContext(Context);
+
   const handlePhoneNumberChange = (value) => {
     setDataFunction((data) => {
       return {
@@ -252,6 +343,10 @@ export function PhoneNumberWithCountrySelect({
       };
     });
   };
+  useEffect(() => {
+    setPhone(newContactData[fieldName])
+  }, [fieldName, newContactData])
+  
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", mb: 1 }}>
@@ -259,6 +354,7 @@ export function PhoneNumberWithCountrySelect({
       <MuiPhoneNumber
         onChange={(value) => handlePhoneNumberChange(value)}
         sx={{ width: "100%" }}
+        value={phone}
         defaultCountry={"us"}
       />
     </Box>
