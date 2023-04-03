@@ -88,7 +88,7 @@ export const fetchManager = async () => {
   return await makeApiCall("com.axelor.apps.base.db.Partner/search", params);
 };
 
-export const createNewContact = async (payload) => {
+export const createOrUpdateNewContact = async (payload) => {
   const params = {
     data: payload,
   };
@@ -105,15 +105,7 @@ export const fetchContactById = async (id) => {
   );
 };
 
-
-
-
-
-
 // ????????????????? Upload Image Function Tries ???????????????????????????//
-
-
-
 
 const makeApiCall2 = async (params) => {
   const url =

@@ -32,8 +32,7 @@ import { Context } from "../context";
 import { useParams } from "react-router-dom";
 
 const AddNewContact = () => {
-  const { setNewContactData,newContactData } = useContext(Context);
-console.log("newContactData",newContactData);
+  const { setNewContactData, newContactData } = useContext(Context);
   const { id } = useParams();
   const getProfileData = useCallback(() => {
     fetchContactById(id).then((res) => {
@@ -42,13 +41,12 @@ console.log("newContactData",newContactData);
   }, [id, setNewContactData]);
   useEffect(() => {
     getProfileData();
-  }, [getProfileData, id,]);
-useEffect(()=>{
-setNewContactData(data=>{
-  console.log("--",data.hasOwnProperty("name"));
-  return data
-})
-},[newContactData, setNewContactData])
+  }, [getProfileData, id]);
+  useEffect(() => {
+    setNewContactData((data) => {
+      return data;
+    });
+  }, [newContactData, setNewContactData]);
 
   return (
     <Box>
@@ -69,7 +67,7 @@ setNewContactData(data=>{
               m: { xs: "0", sm: "0 30px 10% 10%" },
             }}
           >
-            <ProfileTopForm setNewContactData={setNewContactData}  />
+            <ProfileTopForm setNewContactData={setNewContactData} />
             <ContactBoxWithTabs setNewContactData={setNewContactData} />
           </Box>
         </Grid>
@@ -115,7 +113,7 @@ export const ProfileTopForm = ({ setNewContactData }) => {
               }}
               image="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fA%3D%3D&w=1000&q=80"
             ></CardMedia>
-           <ImageInput></ImageInput>
+            <ImageInput></ImageInput>
             <Typography
               variant="body2"
               color="#333333"
@@ -468,7 +466,6 @@ export const RightContent = ({ setNewContactData }) => {
                 }}
                 setDataFunction={setNewContactData}
                 fieldName={"user"}
-                searchByFullName="Address"
               />
             </Grid>
             <Grid item lg={6} xs={6} md={6} sm={6}>

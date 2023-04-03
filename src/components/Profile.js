@@ -26,7 +26,9 @@ const Profile = () => {
   }, [id]);
   useEffect(() => {
     getProfileData();
+   
   }, [getProfileData, id]);
+
   return (
     <Box>
       <Grid
@@ -60,6 +62,7 @@ const Profile = () => {
 export default Profile;
 
 export const ProfileTopForm = ({ profileData }) => {
+  const { id } = useParams();
   return (
     <Paper
       elevation={0}
@@ -90,7 +93,7 @@ export const ProfileTopForm = ({ profileData }) => {
                 objectFit: "cover",
                 border: "1px solid grey",
               }}
-              image="/axelor-erp/ws/rest/com.axelor.auth.db.User/1/image/download?image=true&v=6"
+              image={!!profileData.picture?`http://localhost:8080/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${id}/content/download`:"/axelor-erp/ws/rest/com.axelor.auth.db.User/1/image/download?image=true&v=6"}
             ></CardMedia>
           </Box>
         </Box>

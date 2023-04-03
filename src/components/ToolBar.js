@@ -8,7 +8,8 @@ import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import { makeStyles } from "@mui/styles";
 import { Save } from "@mui/icons-material";
 import { Context } from "../context";
-import { createNewContact } from "../api/api";
+import { createOrUpdateNewContact } from "../api/api";
+import Edit from "@mui/icons-material/Edit";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -29,10 +30,22 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DenseAppBar() {
   const classes = useStyles();
-  const { newContactData } = React.useContext(Context);
-
+  const { newContactData, updatedData } = React.useContext(Context);
   const handleSave = () => {
-    createNewContact(newContactData);
+    if (window.location.pathname.split("/")[2] === "edit") {
+      const _id = newContactData.id;
+      const _version = newContactData.version;
+      const updatingData = {
+        id: _id,
+        version: _version,
+        ...updatedData,
+        _original: newContactData,
+      };
+
+      createOrUpdateNewContact(updatingData);
+      return;
+    }
+    createOrUpdateNewContact(newContactData);
   };
   return (
     <AppBar
@@ -56,7 +69,7 @@ export default function DenseAppBar() {
             },
           }}
         >
-          <a href="/axelor-erp/create-contact">
+          <a href="/axelor-erp/create">
             {" "}
             <AddIcon sx={{ mx: 2 }} color="gray" />{" "}
           </a>
@@ -77,8 +90,18 @@ export default function DenseAppBar() {
             },
           }}
         >
-          {(window.location.pathname.split("/")[2] === "create-contact"||window.location.pathname.split("/")[2] )=== "edit" && (
+          {(window.location.pathname.split("/")[2] === "create" ||
+            window.location.pathname.split("/")[2] === "edit") && (
             <Save sx={{ mx: 2 }} color="gray" />
+          )}
+          {window.location.pathname.split("/")[2] === "view" && (
+            <a
+              href={`/axelor-erp/edit/profile/${
+                window.location.pathname.split("/")[4]
+              }`}
+            >
+              <Edit />
+            </a>
           )}
         </Box>
         <div className={classes.spacer} />

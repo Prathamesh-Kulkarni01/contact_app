@@ -187,128 +187,122 @@
 //     </Box>
 //   );
 // };
-import React from 'react'
+import React from "react";
 import Cookies from "js-cookie";
- 
 const Token = Cookies.get("CSRF-TOKEN");
-const handle= async(e)=>{
-  const selectedFile=e.target.files[0]
-  const formData=new FormData()
-  formData.append("file", selectedFile);
-  formData.append("field", undefined);
-  formData.append("request", JSON.stringify({
-    data: {
-      // fileName: selectedFile.name,
-      fileType: selectedFile.type,
-      fileSize: selectedFile.size,
-      $upload: {
-        file: {}
-      }
-    }
-  }));
-console.log(formData);
-for (let pair of formData.entries()) {
-  console.log(pair[0], pair[1]);
-}
-const url = 'http://localhost:3000/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/upload'
-  const response = await fetch(url, {
-    method: "POST",
-    mode: "cors",
-    credentials: "include",
-    headers: {
-      "Content-Type": "multipart/form-data",
-      "Accept": "*/*",
-      "X-CSRF-Token": Token,
-    },
-    body: formData,
-  });
-  const data = await response.json();
-  return data.data;
-}
-const handleFileSelect = (event) => {
-  const selectedFile = event.target.files[0];
-  
-console.log(selectedFile);
-  const reader = new FileReader();
-reader.readAsDataURL(selectedFile);
-reader.onload = () => {
-  const base64 = reader.result.split(',')[1];
+// const handle = async (e) => {
+//   const selectedFile = e.target.files[0];
+//   const formData = new FormData();
+//   formData.append("file", selectedFile);
+//   formData.append("field", undefined);
+//   formData.append(
+//     "request",
+//     JSON.stringify({
+//       data: {
+//         // fileName: selectedFile.name,
+//         fileType: selectedFile.type,
+//         fileSize: selectedFile.size,
+//         $upload: {
+//           file: {},
+//         },
+//       },
+//     })
+//   );
 
-  // Create a Blob object from the base64-encoded string
-  const byteArray = new Uint8Array(atob(base64).split('').map(char => char.charCodeAt(0)));
-  const blob = new Blob([byteArray], { type: selectedFile.type });
-console.log(typeof blob);
-  // Add the Blob object to the FormData object
-  const formData = new FormData();
-  formData.append('file', blob);
-  // Add other form fields as needed
-  formData.append('field', 'undefined');
-  formData.append('request', JSON.stringify({
-    data: {
-      fileName: selectedFile.name,
-      fileType: selectedFile.type,
-      fileSize: selectedFile.size,
-      $upload: { file: {} }
-    }
-  }));
+//   const url =
+//     "http://localhost:3000/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/upload";
+//   const response = await fetch(url, {
+//     method: "POST",
+//     mode: "cors",
+//     credentials: "include",
+//     headers: {
+//       "Content-Type": "multipart/form-data",
+//       Accept: "*/*",
+//       "X-CSRF-Token": Token,
+//     },
+//     body: formData,
+//   });
+//   const data = await response.json();
+//   return data.data;
+// };
+// const handleFileSelect = (event) => {
+//   const selectedFile = event.target.files[0];
+//   const reader = new FileReader();
+//   reader.readAsDataURL(selectedFile);
+//   reader.onload = () => {
+//     const base64 = reader.result.split(",")[1];
 
-console.log(">>>",formData);
-    const requestHeaders = new Headers({
-      "Accept": "*/*",
-      "Content-Type": "multipart/form-data",
-      "X-CSRF-Token": "12383e44d9b74fa99fc00c0eed940107"
-      // add any other headers here as needed
-    });
+//     const byteArray = new Uint8Array(
+//       atob(base64)
+//         .split("")
+//         .map((char) => char.charCodeAt(0))
+//     );
+//     const blob = new Blob([byteArray], { type: selectedFile.type });
+//     const formData = new FormData();
+//     formData.append("file", blob);
+//     formData.append("field", "undefined");
+//     formData.append(
+//       "request",
+//       JSON.stringify({
+//         data: {
+//           fileName: selectedFile.name,
+//           fileType: selectedFile.type,
+//           fileSize: selectedFile.size,
+//           $upload: { file: {} },
+//         },
+//       })
+//     );
+//     const requestHeaders = new Headers({
+//       Accept: "*/*",
+//       "Content-Type": "multipart/form-data",
+//       "X-CSRF-Token": "12383e44d9b74fa99fc00c0eed940107",
+//     });
 
-    const request = new Request('http://localhost:3000/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/upload', {
-      method: 'POST',
-      headers: requestHeaders,
-      body: formData
-    });
+//     const request = new Request(
+//       "http://localhost:3000/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/upload",
+//       {
+//         method: "POST",
+//         headers: requestHeaders,
+//         body: formData,
+//       }
+//     );
 
-    fetch(request)
-      .then(response => response.json())
-      .then(data => console.log(data))
-      .catch(error => console.error(error));
-  };
-};
-
+//     fetch(request)
+//       .then((response) => response.json())
+//       .then((data) => console.log(data))
+//       .catch((error) => console.error(error));
+//   };
+// };
 
 const handleImageUpload = (event) => {
   const file = event.target.files[0];
-  if(file===undefined)return
-  console.log(file.name);
-  const url = '/ws/files/upload';
+  console.log(file);
+  if (file === undefined) return;
   const headers = {
-    // 'Content-Type': 'application/octet-stream',
-    'X-File-Name': file.name,
-    'X-File-Offset': 0,
-    'X-File-Size': file.size,
-    'X-File-Type': file.type,
-    "Accept": "*/*",
-      "Content-Type": "multipart/form-data",
-      "X-CSRF-Token": "12383e44d9b74fa99fc00c0eed940107"
+    "X-File-Name": file.name,
+    "X-File-Offset": 0,
+    "X-File-Size": file.size,
+    "X-File-Type": file.type,
+    Accept: "*/*",
+    "Content-Type": "multipart/form-data",
+    "X-CSRF-Token": Token,
   };
-
   const formData = new FormData();
-  formData.append('file', file);
-  
-
-  fetch("http://localhost:3000/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/upload", {
-    method: 'POST',
-    headers: headers,
-    body: file,
-  })
+  formData.append("file", file);
+  fetch(
+    "http://localhost:3000/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/upload",
+    {
+      method: "POST",
+      headers: headers,
+      body: file,
+    }
+  )
     .then((response) => response.json())
     .then((data) => console.log(data))
     .catch((error) => console.error(error));
 };
 const ContactCardHolder = () => {
-  return ( 
+  return <input type="file" onChange={(e)=>handleImageUpload(e)}></input>;
+};
 
-<input type="file" onClick={handleImageUpload}>
-</input>  )
-} 
-
-
-export default ContactCardHolder
+export default ContactCardHolder;

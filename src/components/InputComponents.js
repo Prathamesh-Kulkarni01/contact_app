@@ -17,7 +17,7 @@ import { uploadChunk, uploadImage } from "../api/api";
 import Context from "../context";
 
 export const ImageInput = () => {
-  const [fileData, setFileData] = useState(null);
+
 
   function getBinary(file) {
     return new Promise((resolve, reject) => {
@@ -33,13 +33,13 @@ export const ImageInput = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     uploadChunk(file);
-    // getBinary(file)
-    //   .then((binary) => {
-    //    console.log( uploadImage(binary,file.type,file.name,file.size))
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error while reading file:", error);
-    //   });
+    getBinary(file)
+      .then((binary) => {
+       console.log( uploadImage(binary,file.type,file.name,file.size))
+      })
+      .catch((error) => {
+        console.error("Error while reading file:", error);
+      });
   };
 
   return (
@@ -77,7 +77,7 @@ export const NormalInput = ({
   type,
 }) => {
   const [value, setValue] = useState("");
-  const { newContactData } = useContext(Context);
+  const { newContactData, setUpdatedData } = useContext(Context);
 
   useEffect(() => {
     if (type === "mail" && newContactData.hasOwnProperty("emailAddress")) {
@@ -92,6 +92,25 @@ export const NormalInput = ({
 
   const handleChange = (event) => {
     setValue(event.target.value);
+    if (window.location.pathname.split("/")[2] === "edit") {
+      setUpdatedData((data) => {
+        if (!!type && type === "mail") {
+          return {
+            ...data,
+            emailAddress: {
+              [fieldName]: event.target.value,
+            },
+          };
+        } else {
+          return {
+            ...data,
+            [fieldName]: event.target.value,
+          };
+        }
+      });
+      return;
+    }
+
     setDataFunction((data) => {
       if (!!type && type === "mail") {
         return {
@@ -142,15 +161,25 @@ export function StaticSelect({
   fieldName,
 }) {
   const [selectedValue, setSelectedValue] = useState("");
+  const { setUpdatedData } = useContext(Context);
   const handleClear = () => {
     setSelectedValue("");
   };
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
+    console.log(event.target.value);
+    if (window.location.pathname.split("/")[2] === "edit") {
+      setUpdatedData((data) => {
+        return {
+          ...data,
+          [event.target.name]: event.target.value,
+        };
+      });
+    }
     setDataFunction((data) => {
       return {
         ...data,
-        [event.target.name]: selectedValue,
+        [event.target.name]: event.target.value,
       };
     });
   };
@@ -159,7 +188,6 @@ export function StaticSelect({
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <CustomLabel>{label}</CustomLabel>
       <NativeSelect
-        value={selectedValue}
         name={fieldName}
         onChange={handleChange}
         placeholder={placeholder}
@@ -211,7 +239,7 @@ export function SearchInput({
   const [options, setOptions] = useState([]);
 
   const [value, setValue] = useState({});
-  const { newContactData } = useContext(Context);
+  const { newContactData, setUpdatedData } = useContext(Context);
 
   const handleOpen = async () => {
     const data = await fetchOptionFunction();
@@ -232,6 +260,14 @@ export function SearchInput({
   const handleChange = (event, value) => {
     // console.log("////",value);
     setValue(value);
+    if (window.location.pathname.split("/")[2] === "edit") {
+      setUpdatedData((data) => {
+        return {
+          ...data,
+          [fieldName]: value,
+        };
+      });
+    }
     setDataFunction((data) => {
       return {
         ...data,
@@ -333,9 +369,17 @@ export function PhoneNumberWithCountrySelect({
   fieldName,
 }) {
   const [phone, setPhone] = useState("");
-  const { newContactData } = useContext(Context);
+  const { newContactData, setUpdatedData } = useContext(Context);
 
   const handlePhoneNumberChange = (value) => {
+    if (window.location.pathname.split("/")[2] === "edit") {
+      setUpdatedData((data) => {
+        return {
+          ...data,
+          [fieldName]: value,
+        };
+      });
+    }
     setDataFunction((data) => {
       return {
         ...data,
@@ -344,9 +388,8 @@ export function PhoneNumberWithCountrySelect({
     });
   };
   useEffect(() => {
-    setPhone(newContactData[fieldName])
-  }, [fieldName, newContactData])
-  
+    setPhone(newContactData[fieldName]);
+  }, [fieldName, newContactData]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", mb: 1 }}>
@@ -362,7 +405,20 @@ export function PhoneNumberWithCountrySelect({
 }
 
 export const CustomCheckBox = ({ label, fieldName, setDataFunction }) => {
+  const [value, setValue] = useState(false);
+  const { newContactData, setUpdatedData } = useContext(Context);
+
   const handleCheckChange = (event) => {
+    setValue(event.target.checked);
+    if (window.location.pathname.split("/")[2] === "edit") {
+      setUpdatedData((data) => {
+        return {
+          ...data,
+          [fieldName]: event.target.checked,
+        };
+      });
+      return;
+    }
     setDataFunction((data) => {
       return {
         ...data,
@@ -370,6 +426,10 @@ export const CustomCheckBox = ({ label, fieldName, setDataFunction }) => {
       };
     });
   };
+  useEffect(() => {
+    setValue(!!newContactData[fieldName]);
+  }, [fieldName, newContactData]);
+
   return (
     <Box
       sx={{
@@ -385,6 +445,7 @@ export const CustomCheckBox = ({ label, fieldName, setDataFunction }) => {
         control={
           <Checkbox
             onClick={(e) => handleCheckChange(e)}
+            checked={value}
             sx={{
               borderRadius: "0",
               fontWeight: "100",

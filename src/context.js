@@ -4,8 +4,11 @@ export const Context = createContext();
 
 export const AppContext = ({ children }) => {
   const [newContactData, setNewContactData] = useState({});
+  const [updatedData, setUpdatedData] = useState({});
   return (
-    <Context.Provider value={{ setNewContactData, newContactData }}>
+    <Context.Provider
+      value={{ setNewContactData, newContactData, updatedData, setUpdatedData }}
+    >
       {children}
     </Context.Provider>
   );
