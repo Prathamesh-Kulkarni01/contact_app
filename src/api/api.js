@@ -203,16 +203,12 @@ export const uploadFile = (
     });
 
     xhr.withCredentials = true;
-    // xhr.overrideMimeType("application/octet-stream");
+    xhr.overrideMimeType("application/octet-stream");
     // xhr.setRequestHeader("Content-Type", "application/octet-stream");
-    // xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-
+    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
     xhr.setRequestHeader("X-CSRF-Token", Token);
 
-    xhr.send(data).catch((error) => {
-      console.log(error);
-      alert(error);
-    });
+    xhr.send(data)
 
     xhr.onload = () => {
       callback(100);
@@ -227,6 +223,8 @@ export const uploadFile = (
       if (xhr.readyState === 4) {
         switch (xhr.status) {
           case 401:
+            throw new Error("Unauthorized");
+          case 403:
             throw new Error("Unauthorized");
           case 200:
             try {

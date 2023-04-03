@@ -189,6 +189,7 @@
 // };
 import React from "react";
 import Cookies from "js-cookie";
+import { uploadChunk } from "../api/api";
 const Token = Cookies.get("CSRF-TOKEN");
 // const handle = async (e) => {
 //   const selectedFile = e.target.files[0];
@@ -274,34 +275,33 @@ const Token = Cookies.get("CSRF-TOKEN");
 //   };
 // };
 
-const handleImageUpload = (event) => {
-  const file = event.target.files[0];
-  console.log(file);
-  if (file === undefined) return;
-  const headers = {
-    "X-File-Name": file.name,
-    "X-File-Offset": 0,
-    "X-File-Size": file.size,
-    "X-File-Type": file.type,
-    Accept: "*/*",
-    "Content-Type": "multipart/form-data",
-    "X-CSRF-Token": Token,
-  };
-  const formData = new FormData();
-  formData.append("file", file);
-  fetch(
-    "http://localhost:3000/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/upload",
-    {
-      method: "POST",
-      headers: headers,
-      body: file,
-    }
-  )
-    .then((response) => response.json())
-    .then((data) => console.log(data))
-    .catch((error) => console.error(error));
-};
+
 const ContactCardHolder = () => {
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    console.log(file);
+    if (file === undefined) return;
+    uploadChunk(file,0)
+    // const headers = {
+    //   Accept: "*/*",
+    //   "Content-Type": "multipart/form-data",
+    //   "X-Requested-With": "XMLHttpRequest",
+    //   "X-CSRF-Token": Token,
+    // };
+    // const formData = new FormData();
+    // formData.append("file", file);
+    // fetch(
+    //   "http://localhost:3000/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/upload",
+    //   {
+    //     method: "POST",
+    //     headers: headers,
+    //     body: file,
+    //   }
+    // )
+    //   .then((response) => response.json())
+    //   .then((data) => console.log(data))
+    //   .catch((error) => console.error(error));
+  };
   return <input type="file" onChange={(e)=>handleImageUpload(e)}></input>;
 };
 
