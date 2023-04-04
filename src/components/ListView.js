@@ -12,7 +12,6 @@ import EmailIcon from "@mui/icons-material/Email";
 import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router-dom";
 
-
 const header = [
   "",
   "Reference",
@@ -58,7 +57,7 @@ const StyledTableHeaderInput = styled("input")(({ theme }) => ({
 }));
 
 export default function ListView({ contactsData }) {
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
@@ -79,21 +78,28 @@ export default function ListView({ contactsData }) {
         <TableBody>
           {contactsData &&
             contactsData.map((row) => (
-            
               <TableRow
-                key={row.id+row.updatedOn}
-                onClick={()=>navigate(`/axelor-erp/view/profile/${row.id}`)}
+                key={row.id + row.updatedOn}
+                onClick={() => navigate(`/axelor-erp/view/profile/${row.id}`)}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
+                {console.log(row)}
                 <StyledTableBodyCell
                   align="left"
                   sx={{ width: "10px", fontWeight: "800" }}
                 >
-                  <EditIcon sx={{ fontSize: "16px" }}   onClick={(e)=>{e.stopPropagation(); navigate(`/axelor-erp/edit/profile/${row.id}`)}}/>
+                  <EditIcon
+                    sx={{ fontSize: "16px" }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/axelor-erp/edit/profile/${row.id}`);
+                    }}
+                  />
                 </StyledTableBodyCell>
-                <StyledTableBodyCell component="th" scope="row">
-                  
-                </StyledTableBodyCell>
+                <StyledTableBodyCell
+                  component="th"
+                  scope="row"
+                ></StyledTableBodyCell>
                 <StyledTableBodyCell>{row.simpleFullName}</StyledTableBodyCell>
                 <StyledTableBodyCell>{row.fixedPhone}</StyledTableBodyCell>
                 <StyledTableBodyCell>{row.mobilePhone}</StyledTableBodyCell>
