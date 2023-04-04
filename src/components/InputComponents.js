@@ -4,42 +4,41 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import NativeSelect from "@mui/material/NativeSelect";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import React, { useContext, useEffect, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import SearchIcon from "@mui/icons-material/Search";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
-import { AddAPhoto, Clear } from "@mui/icons-material";
-import { Component } from "react";
 import RichTextEditor from "react-rte";
 import MuiPhoneNumber from "material-ui-phone-number";
-import { uploadChunk, uploadImage } from "../api/api";
+
+import React, { useContext, useEffect, useState } from "react";
+import { AddAPhoto, Clear } from "@mui/icons-material";
+import { Component } from "react";
+import { uploadImage } from "../api/api";
 import Context from "../context";
 
-export const ImageInput = () => {
-
-
-  function getBinary(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const binaryStr = reader.result;
-        resolve(binaryStr);
-      };
-      reader.onerror = reject;
-      reader.readAsBinaryString(file);
-    });
-  }
-  const handleFileChange = (e) => {
+export const ImageInput = ({ setDataFunction }) => {
+  const { setUpdatedData } = useContext(Context);
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
-    uploadChunk(file);
-    getBinary(file)
-      .then((binary) => {
-       console.log( uploadImage(binary,file.type,file.name,file.size))
-      })
-      .catch((error) => {
-        console.error("Error while reading file:", error);
+
+    const res = await uploadImage(file, file.type, file.name, file.size);
+    if (res !== 1) {
+      if (window.location.pathname.split("/")[2] === "edit") {
+        setUpdatedData((data) => {
+          return {
+            ...data,
+            picture: { ...res },
+          };
+        });
+      }
+      setDataFunction((data) => {
+        return {
+          ...data,
+          picture: { ...res },
+        };
       });
+    }
   };
 
   return (
@@ -51,6 +50,7 @@ export const ImageInput = () => {
         style={{
           background: "white",
           padding: "10px",
+
           borderRadius: "50%",
           boxShadow: "3px 3px 4px 1px rgba(0,0,0,0.3)",
         }}
@@ -81,8 +81,9 @@ export const NormalInput = ({
 
   useEffect(() => {
     if (type === "mail" && newContactData.hasOwnProperty("emailAddress")) {
-      // console.log(fieldName, ":", newContactData.emailAddress["name"]);
-      setValue(newContactData?.emailAddress["name"]);
+      setValue(newContactData?.emailAddress?.name?.substring(
+        newContactData?.emailAddress?.name?.indexOf("[") + 1,
+        newContactData?.emailAddress?.name?.indexOf("]")))
       return;
     }
     if (!!newContactData[fieldName]) {
@@ -109,23 +110,23 @@ export const NormalInput = ({
         }
       });
       return;
-    }
-
-    setDataFunction((data) => {
-      if (!!type && type === "mail") {
-        return {
-          ...data,
-          emailAddress: {
+    } else {
+      setDataFunction((data) => {
+        if (!!type && type === "mail") {
+          return {
+            ...data,
+            emailAddress: {
+              [fieldName]: event.target.value,
+            },
+          };
+        } else {
+          return {
+            ...data,
             [fieldName]: event.target.value,
-          },
-        };
-      } else {
-        return {
-          ...data,
-          [fieldName]: event.target.value,
-        };
-      }
-    });
+          };
+        }
+      });
+    }
   };
 
   return (
@@ -167,7 +168,6 @@ export function StaticSelect({
   };
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
-    console.log(event.target.value);
     if (window.location.pathname.split("/")[2] === "edit") {
       setUpdatedData((data) => {
         return {
@@ -245,35 +245,30 @@ export function SearchInput({
     const data = await fetchOptionFunction();
     setOptions(data);
   };
-  // console.log(newContactData);
   useEffect(() => {
-    if (!!searchByFullName && newContactData.hasOwnProperty("Address")) {
-      // console.log(fieldName, ":", newContactData.fieldName["fullName"]);
-      setValue(newContactData?.newContactData.fieldName["fullName"]);
-      return;
-    }
+   
     if (!!newContactData[fieldName]) {
       setValue(newContactData[fieldName]);
     }
   }, [newContactData, fieldName, searchByFullName]);
 
   const handleChange = (event, value) => {
-    // console.log("////",value);
     setValue(value);
     if (window.location.pathname.split("/")[2] === "edit") {
       setUpdatedData((data) => {
         return {
-          ...data,
           [fieldName]: value,
+          ...data,
         };
       });
-    }
+    }else{
     setDataFunction((data) => {
       return {
         ...data,
         [fieldName]: value,
       };
     });
+  }
   };
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>

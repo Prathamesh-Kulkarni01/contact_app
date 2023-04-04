@@ -67,7 +67,7 @@ const AddNewContact = () => {
               m: { xs: "0", sm: "0 30px 10% 10%" },
             }}
           >
-            <ProfileTopForm setNewContactData={setNewContactData} />
+            <ProfileTopForm setNewContactData={setNewContactData} newContactData={newContactData}/>
             <ContactBoxWithTabs setNewContactData={setNewContactData} />
           </Box>
         </Grid>
@@ -79,7 +79,7 @@ const AddNewContact = () => {
 
 export default AddNewContact;
 
-export const ProfileTopForm = ({ setNewContactData }) => {
+export const ProfileTopForm = ({ setNewContactData,newContactData }) => {
   return (
     <Paper
       elevation={0}
@@ -98,10 +98,11 @@ export const ProfileTopForm = ({ setNewContactData }) => {
               height: "100%",
               flexDirection: "column",
               display: "flex",
-              position: "relative",
+              
               justifyContent: "center",
             }}
           >
+            <Box sx={{position:'relative',width:"160px",margin:'auto',ml:'20px'}}>
             <CardMedia
               component="img"
               height={160}
@@ -111,9 +112,11 @@ export const ProfileTopForm = ({ setNewContactData }) => {
                 objectFit: "cover",
                 border: "1px solid grey",
               }}
-              image="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fA%3D%3D&w=1000&q=80"
+              alt="Upload  Image"
+              image={`http://localhost:8080/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${newContactData?.picture?.id}/content/download?v=3`}
             ></CardMedia>
-            <ImageInput></ImageInput>
+            <ImageInput    setDataFunction={setNewContactData}></ImageInput>
+            </Box>
             <Typography
               variant="body2"
               color="#333333"
@@ -179,7 +182,7 @@ export const ProfileTopForm = ({ setNewContactData }) => {
             <Grid item xs={12} md={6}>
               <SearchInput
                 label={"Main company"}
-                searchByFullName="Address"
+                searchByFullName="Main Company"
                 fetchOptionFunction={async () => {
                   return await fetchMainCompany();
                 }}
@@ -324,7 +327,7 @@ export const ContactBoxWithTabs = ({ setNewContactData }) => {
                 }}
                 setDataFunction={setNewContactData}
                 fieldName={"reportsTo"}
-                searchByFullName="Address"
+                searchByFullName="Manager"
               />
               <PhoneNumberWithCountrySelect
                 label={"Mobile Number"}
@@ -362,10 +365,10 @@ export const ContactBoxWithTabs = ({ setNewContactData }) => {
             </Box>
           </Grid>
           {/* -----------bottom-------------- */}
-          <Grid item lg={12} sm={12} sx={{ mx: 2 }}>
+          <Grid item lg={12} sm={12} xs={12} sx={{ mx: 2 }}>
             <SearchInput
               label={"Address"}
-              searchByFullName={"Address"}
+              searchByFullName={"mainAddress"}
               fetchOptionFunction={async () => {
                 return await fetchAddress();
               }}
@@ -466,6 +469,7 @@ export const RightContent = ({ setNewContactData }) => {
                 }}
                 setDataFunction={setNewContactData}
                 fieldName={"user"}
+                searchByFullName={"user"}
               />
             </Grid>
             <Grid item lg={6} xs={6} md={6} sm={6}>

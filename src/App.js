@@ -11,26 +11,27 @@ import Profile from "./components/Profile";
 
 import "./App.css";
 
+
 function App() {
   const [contacts, setContacts] = useState(undefined);
 
   const filterIncompleteData = useCallback((data) => {
-    const filteredData = data.filter((item) => {
-      if (
-        item.name &&
-        item.simpleFullName &&
-        item.fixedPhone &&
-        item.mobilePhone &&
-        item.emailAddress &&
-        item.mainPartner &&
-        item.mainAddress
-      ) {
-        return true;
-      }
-      return false;
-    });
+    // const filteredData = data.filter((item) => {
+    //   if (
+    //     item.name &&
+    //     item.simpleFullName &&
+    //     item.fixedPhone &&
+    //     item.mobilePhone &&
+    //     item.emailAddress &&
+    //     item.mainPartner &&
+    //     item.mainAddress
+    //   ) {
+    //     return true;
+    //   }
+    //   return false;
+    // });
 
-    setContacts(filteredData);
+    setContacts(data);
   }, []);
 
   const getContactsData = useCallback(() => {
@@ -55,37 +56,37 @@ function App() {
       >
         <ToolBar />
         <Box mt={8}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              exact
-              path="/axelor-erp"
-              element={
-                contacts && <ContactCardHolder contactsData={contacts} />
-              }
-            />
-            <Route
-              exact
-              path="/axelor-erp/list"
-              element={contacts && <ListView contactsData={contacts} />}
-            />
-            <Route
-              exact
-              path="/axelor-erp/create"
-              element={<AddNewContact />}
-            />
-            <Route
-              exact
-              path="/axelor-erp/view/profile/:id"
-              element={<Profile />}
-            />
-            <Route
-              exact
-              path="/axelor-erp/edit/profile/:id"
-              element={<AddNewContact />}
-            />
-          </Routes>
-        </BrowserRouter>
+          <BrowserRouter>
+            <Routes>
+              <Route
+                exact
+                path="/axelor-erp"
+                element={
+                  contacts && <ContactCardHolder contactsData={contacts} />
+                }
+              />
+              <Route
+                exact
+                path="/axelor-erp/list"
+                element={contacts && <ListView contactsData={contacts} />}
+              />
+              <Route
+                exact
+                path="/axelor-erp/create"
+                element={<AddNewContact />}
+              />
+              <Route
+                exact
+                path="/axelor-erp/view/profile/:id"
+                element={<Profile />}
+              />
+              <Route
+                exact
+                path="/axelor-erp/edit/profile/:id"
+                element={<AddNewContact />}
+              />
+            </Routes>
+          </BrowserRouter>
         </Box>
       </Box>
     </AppContext>

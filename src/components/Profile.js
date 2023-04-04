@@ -21,6 +21,7 @@ const Profile = () => {
   const { id } = useParams();
   const getProfileData = useCallback(() => {
     fetchContactById(id).then((res) => {
+      console.log(res[0]);
       setProfileData(res[0]);
     });
   }, [id]);
