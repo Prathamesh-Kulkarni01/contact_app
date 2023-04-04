@@ -284,7 +284,9 @@ export const ContactBoxWithTabs = ({ profileData }) => {
               <CustomLabel>Email</CustomLabel>
               <CustomBlueText>
                 {" "}
-                {profileData?.emailAddress?.name}
+                {profileData?.emailAddress?.name.substring(
+       profileData?.emailAddress?.name?.indexOf("[") + 1,
+       profileData?.emailAddress?.name?.indexOf("]"))}
               </CustomBlueText>
             </Box>
           </Grid>
