@@ -30,8 +30,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DenseAppBar() {
   const classes = useStyles();
-  const { newContactData, updatedData } =
-    React.useContext(Context);
+  const { newContactData, updatedData } = React.useContext(Context);
   const handleSave = async () => {
     if (window.location.pathname.split("/")[2] === "edit") {
       const _id = newContactData.id;
@@ -40,10 +39,9 @@ export default function DenseAppBar() {
         id: _id,
         version: _version,
         ...updatedData,
-        _original: {...newContactData},
+        _original: { ...newContactData },
       };
-      console.log("updating",updatingData);
-    console.log(  await createOrUpdateNewContact(updatingData));
+      await createOrUpdateNewContact(updatingData);
       alert("Updated Successfully");
       return;
     } else {
@@ -79,7 +77,6 @@ export default function DenseAppBar() {
           </a>
         </Box>
         <Box
-       
           edge="start"
           color="rgba(0,0,0,0.7)"
           aria-label="menu"
@@ -96,7 +93,7 @@ export default function DenseAppBar() {
         >
           {(window.location.pathname.split("/")[2] === "create" ||
             window.location.pathname.split("/")[2] === "edit") && (
-            <Save sx={{ mx: 2 }} color="gray"   onClick={() => handleSave()} />
+            <Save sx={{ mx: 2 }} color="gray" onClick={() => handleSave()} />
           )}
           {window.location.pathname.split("/")[2] === "view" && (
             <a

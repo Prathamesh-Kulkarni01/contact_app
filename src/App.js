@@ -11,27 +11,25 @@ import Profile from "./components/Profile";
 
 import "./App.css";
 
-
 function App() {
   const [contacts, setContacts] = useState(undefined);
 
   const filterIncompleteData = useCallback((data) => {
-    // const filteredData = data.filter((item) => {
-    //   if (
-    //     item.name &&
-    //     item.simpleFullName &&
-    //     item.fixedPhone &&
-    //     item.mobilePhone &&
-    //     item.emailAddress &&
-    //     item.mainPartner &&
-    //     item.mainAddress
-    //   ) {
-    //     return true;
-    //   }
-    //   return false;
-    // });
+    const filteredData = data.filter((item) => {
+      if (
+        item.name &&
+        item.simpleFullName &&
+        item.fixedPhone &&
+        item.mobilePhone &&
+        item.emailAddress &&
+        item.mainPartner
+      ) {
+        return true;
+      }
+      return false;
+    });
 
-    setContacts(data);
+    setContacts(filteredData);
   }, []);
 
   const getContactsData = useCallback(() => {
