@@ -21,7 +21,6 @@ const Profile = () => {
   const { id } = useParams();
   const getProfileData = useCallback(() => {
     fetchContactById(id).then((res) => {
-      console.log(res[0]);
       setProfileData(res[0]);
     });
   }, [id]);
@@ -93,8 +92,8 @@ export const ProfileTopForm = ({ profileData }) => {
                 margin: "10% auto",
                 objectFit: "cover",
                 border: "1px solid grey",
-              }}
-              image={!!profileData.picture?`http://localhost:8080/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${id}/content/download`:"/axelor-erp/ws/rest/com.axelor.auth.db.User/1/image/download?image=true&v=6"}
+              }}  
+              image={!!profileData.picture?`http://localhost:8080/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${id}/content/download?v=3`:"/axelor-erp/ws/rest/com.axelor.auth.db.User/1/image/download?image=true&v=6"}
             ></CardMedia>
           </Box>
         </Box>
