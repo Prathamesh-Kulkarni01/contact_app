@@ -5,8 +5,8 @@ import Toolbar from "@mui/material/Toolbar";
 import AddIcon from "@mui/icons-material/Add";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
+import Save from "@mui/icons-material/Save";
 import { makeStyles } from "@mui/styles";
-import { Save } from "@mui/icons-material";
 import { Context } from "../context";
 import { createOrUpdateNewContact } from "../api/api";
 import Edit from "@mui/icons-material/Edit";
@@ -14,7 +14,6 @@ import Edit from "@mui/icons-material/Edit";
 const useStyles = makeStyles(() => ({
   appBar: {
     padding: "0px",
-
     backgroundColor: "#ffffff",
   },
   iconButton: {
@@ -31,11 +30,8 @@ const useStyles = makeStyles(() => ({
 export default function DenseAppBar() {
   const classes = useStyles();
   const { newContactData, updatedData } = React.useContext(Context);
+  const redirectToHome = () => (window.location.href = "/axelor-erp");
 
-  const redirectToHome=()=>{
-
-    window.location.href="/axelor-erp"
-  }
   const handleSave = async () => {
     if (window.location.pathname.split("/")[2] === "edit") {
       const _id = newContactData.id;
@@ -46,16 +42,13 @@ export default function DenseAppBar() {
         ...updatedData,
         _original: { ...newContactData },
       };
-      console.log("updating",updatedData);
-      console.log(await createOrUpdateNewContact(updatingData));
+      await createOrUpdateNewContact(updatingData);
       alert("Updated Successfully");
-      return;
     } else {
       await createOrUpdateNewContact(newContactData);
       alert("Added Successfully");
-      
     }
-    redirectToHome()
+    redirectToHome();
   };
   return (
     <AppBar
@@ -103,6 +96,7 @@ export default function DenseAppBar() {
             window.location.pathname.split("/")[2] === "edit") && (
             <Save sx={{ mx: 2 }} color="gray" onClick={() => handleSave()} />
           )}
+
           {window.location.pathname.split("/")[2] === "view" && (
             <a
               href={`/axelor-erp/edit/profile/${

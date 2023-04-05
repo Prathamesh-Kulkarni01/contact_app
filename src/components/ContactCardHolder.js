@@ -18,12 +18,11 @@ export default function ContactCardHolder({ contactsData }) {
         spacing={{ xs: 2, md: 3 }}
         columns={{ xs: 4, sm: 8, md: 12 }}
       >
-        {!!contactsData &&
-          contactsData.map((item, index) => (
-            <Grid item xs={4} sm={4} md={4} key={item.id}>
-              <ContactCard row={item} />
-            </Grid>
-          ))}
+        {contactsData.map((item, index) => (
+          <Grid item xs={4} sm={4} md={4} key={item.id}>
+            <ContactCard row={item} />
+          </Grid>
+        ))}
       </Grid>
     </Box>
   );
@@ -31,7 +30,7 @@ export default function ContactCardHolder({ contactsData }) {
 
 const ContactCard = ({ row }) => {
   const navigate = useNavigate();
-    return (
+  return (
     <Box
       onClick={() => navigate(`/axelor-erp/view/profile/${row.id}`)}
       sx={{
@@ -52,9 +51,17 @@ const ContactCard = ({ row }) => {
         <CardMedia
           component="img"
           height="40%"
-          sx={{ maxWidth: "50%", margin: "15% 10% 0 15%",objectFit:'contain' }}
-          image={!!row?.picture?.id?`/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${row?.picture?.id}/content/download`:"http://localhost:8080/axelor-erp/img/partner-m-default.png"}
-        ></CardMedia>
+          sx={{
+            maxWidth: "50%",
+            margin: "15% 10% 0 15%",
+            objectFit: "contain",
+          }}
+          image={
+            !!row?.picture?.id
+              ? `/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${row?.picture?.id}/content/download`
+              : "http://localhost:8080/axelor-erp/img/partner-m-default.png"
+          }
+        />
         <Typography
           variant="body2"
           color="#333333"

@@ -19,18 +19,14 @@ import {
 const Profile = () => {
   const [profileData, setProfileData] = useState({});
   const { id } = useParams();
-  const getProfileData = useCallback(() => {
-    return fetchContactById(id).then((res) => {
-      return res[0] || [];
-    });
+  const getProfileData = useCallback(async () => {
+    const res = await fetchContactById(id);
+    return res[0] || [];
   }, [id]);
   useEffect(() => {
-    (async () => {
-      setProfileData(await getProfileData());
-    })();
+    (async () => setProfileData(await getProfileData()))();
   }, [getProfileData]);
 
-  
   return (
     <Box>
       <Grid
@@ -42,7 +38,7 @@ const Profile = () => {
           margin: "0 20px",
         }}
       >
-        <Grid item xs={12} sm={8} md={8} lg={8} xl={8} >
+        <Grid item xs={12} sm={8} md={8} lg={8} xl={8}>
           <Box
             sx={{
               width: "91%",
@@ -60,7 +56,6 @@ const Profile = () => {
     </Box>
   );
 };
-
 export default Profile;
 
 export const ProfileTopForm = ({ profileData }) => {
@@ -99,7 +94,7 @@ export const ProfileTopForm = ({ profileData }) => {
                   ? `/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${profileData?.picture?.id}/content/download`
                   : "http://localhost:8080/axelor-erp/img/partner-m-default.png"
               }
-            ></CardMedia>
+            />
           </Box>
         </Box>
         <Box sx={{ width: { xs: "100%", sm: "80%" } }}>
@@ -178,7 +173,7 @@ export const CustomTabs = ({ options, setTabIndex }) => {
       {tabs.map((tab, key) => {
         return (
           <Box
-          key={tab}
+            key={tab}
             onClick={() => handleTabSwitch(key)}
             sx={{
               width: "120px",
@@ -333,7 +328,6 @@ export const RightContent = ({ profileData }) => {
       >
         {/* ---------------------Settings Layout-------------------- */}
         <Box
-          
           sx={{
             backgroundColor: "white",
             mb: 5,
@@ -384,7 +378,6 @@ export const RightContent = ({ profileData }) => {
           </Grid>
           <AssociatedCompanies />
         </Box>
-
         {/* -------------------Editor Layout---------------- */}
         <Grid
           container

@@ -10,9 +10,11 @@ import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import RichTextEditor from "react-rte";
 import MuiPhoneNumber from "material-ui-phone-number";
+import Delete from "@mui/icons-material/Delete";
+import Clear from "@mui/icons-material/Clear";
+import AddAPhoto from "@mui/icons-material/AddAPhoto";
 
 import React, { useContext, useEffect, useState } from "react";
-import { AddAPhoto, Clear, Delete } from "@mui/icons-material";
 import { Component } from "react";
 import { uploadImage } from "../api/api";
 import Context from "../context";
@@ -25,19 +27,15 @@ export const ImageInput = ({ setDataFunction }) => {
     const res = await uploadImage(file, file.type, file.name, file.size);
     if (res !== 1) {
       if (window.location.pathname.split("/")[2] === "edit") {
-        setUpdatedData((data) => {
-          return {
-            ...data,
-            picture: { ...res },
-          };
-        });
-      }
-      setDataFunction((data) => {
-        return {
+        setUpdatedData((data) => ({
           ...data,
           picture: { ...res },
-        };
-      });
+        }));
+      }
+      setDataFunction((data) => ({
+        ...data,
+        picture: { ...res },
+      }));
     }
   };
 
@@ -59,9 +57,7 @@ export const ImageInput = ({ setDataFunction }) => {
         <input
           id="image_input"
           style={{ display: "none" }}
-          onChange={(e) => {
-            handleFileChange(e);
-          }}
+          onChange={(e) => handleFileChange(e)}
           type="file"
         ></input>
       </Box>
@@ -72,18 +68,14 @@ export const ImageDelete = ({ setDataFunction }) => {
   const { setUpdatedData } = useContext(Context);
   const handleDelete = async (e) => {
     if (window.location.pathname.split("/")[2] === "edit") {
-      setUpdatedData((data) => {
-        return {
-          ...data,
-          picture: null,
-        };
-      });
-      setDataFunction((data)=>{
-        return {
-          ...data,
-          picture: null,
-        };
-      })
+      setUpdatedData((data) => ({
+        ...data,
+        picture: null,
+      }));
+      setDataFunction((data) => ({
+        ...data,
+        picture: null,
+      }));
     }
   };
 
@@ -203,9 +195,8 @@ export function StaticSelect({
 }) {
   const [selectedValue, setSelectedValue] = useState("");
   const { setUpdatedData } = useContext(Context);
-  const handleClear = () => {
-    setSelectedValue("");
-  };
+  const handleClear = () => setSelectedValue("");
+
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
     if (window.location.pathname.split("/")[2] === "edit") {
@@ -216,12 +207,10 @@ export function StaticSelect({
         };
       });
     }
-    setDataFunction((data) => {
-      return {
-        ...data,
-        [event.target.name]: event.target.value,
-      };
-    });
+    setDataFunction((data) => ({
+      ...data,
+      [event.target.name]: event.target.value,
+    }));
   };
 
   return (
@@ -277,14 +266,10 @@ export function SearchInput({
   searchByFullName,
 }) {
   const [options, setOptions] = useState([]);
-
   const [value, setValue] = useState({});
   const { newContactData, setUpdatedData } = useContext(Context);
+  const handleOpen = async () => setOptions(await fetchOptionFunction());
 
-  const handleOpen = async () => {
-    const data = await fetchOptionFunction();
-    setOptions(data);
-  };
   useEffect(() => {
     if (!!newContactData[fieldName]) {
       setValue(newContactData[fieldName]);

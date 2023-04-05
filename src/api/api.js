@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 const Token = Cookies.get("CSRF-TOKEN");
-const BASE_URL = "/axelor-erp/ws/rest";
+const BASE_URL = "/axelor-erp/ws/rest/";
 
 const login=async()=>{
  const url= "/axelor-erp/callback"
@@ -40,7 +40,7 @@ if(!Token){await login(); return}
     body: JSON.stringify(params),
   });
   const data = await response.json();
-  return data.data;
+  return data.data||[];
 };
 
 export const fetchContacts = async () => {
@@ -165,3 +165,13 @@ export const uploadImage = async(binary, type, name, size) => {
   
     return res.data.data[0]
 };
+
+export const deleteRecord=async (records)=>{
+const params={
+  records:records
+}
+return await makeApiCall(
+  `com.axelor.apps.base.db.Partner/removeAll`,
+  params
+);
+}
