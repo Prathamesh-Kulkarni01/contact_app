@@ -52,8 +52,8 @@ const ContactCard = ({ row }) => {
         <CardMedia
           component="img"
           height="40%"
-          sx={{ maxWidth: "50%", margin: "15% 10% 0 15%" }}
-          image={true?`http://localhost:8080/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${row?.picture?.id}/content/download`:"/axelor-erp/ws/rest/com.axelor.auth.db.User/1/image/download?image=true&v=61"}
+          sx={{ maxWidth: "50%", margin: "15% 10% 0 15%",objectFit:'contain' }}
+          image={!!row?.picture?.id?`http://localhost:3000/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${row?.picture?.id}/content/download`:"http://localhost:8080/axelor-erp/img/partner-m-default.png"}
         ></CardMedia>
         <Typography
           variant="body2"

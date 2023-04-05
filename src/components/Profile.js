@@ -93,7 +93,7 @@ export const ProfileTopForm = ({ profileData }) => {
                 objectFit: "cover",
                 border: "1px solid grey",
               }}  
-              image={!!profileData.picture?`http://localhost:8080/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${id}/content/download?v=3`:"/axelor-erp/ws/rest/com.axelor.auth.db.User/1/image/download?image=true&v=6"}
+              image={!!profileData?.picture?.id?`http://localhost:3000/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${profileData?.picture?.id}/content/download`:"http://localhost:8080/axelor-erp/img/partner-m-default.png"}
             ></CardMedia>
           </Box>
         </Box>
