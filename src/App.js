@@ -57,8 +57,7 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route
-                exact
-                path="/axelor-erp"
+                path={"/axelor-erp"}
                 element={
                   contacts && <ContactCardHolder contactsData={contacts} />
                 }

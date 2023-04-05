@@ -2,9 +2,31 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 const Token = Cookies.get("CSRF-TOKEN");
-const BASE_URL = "http://localhost:3000/axelor-erp/ws/rest";
+const BASE_URL = "/axelor-erp/ws/rest";
+
+const login=async()=>{
+ const url= "/axelor-erp/callback"
+
+  const response = await fetch(url, {
+    method: "POST",
+    mode: "cors",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      username:"admin",
+      password:"admin"
+
+    }),
+  });
+  return await response.json();
+}
 
 const makeApiCall = async (path, params) => {
+
+if(!Token){await login(); return}
+
   const url = `${BASE_URL}/${path}`;
   const response = await fetch(url, {
     method: "POST",
@@ -127,7 +149,7 @@ export const uploadImage = async(binary, type, name, size) => {
     })
   );
   const url =
-    "http://localhost:3000/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/upload";
+    "/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/upload";
   const res= await axios
     .post(url, formData, {
       headers: {

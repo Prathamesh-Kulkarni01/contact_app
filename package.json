@@ -2,7 +2,8 @@
   "name": "contact_app",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:8080/",
+  "proxy": "http://localhost:3000/axelor-erp/",
+  "homepage": "/axelor-erp",
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
