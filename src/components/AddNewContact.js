@@ -20,6 +20,7 @@ import {
 import {
   AssociatedCompanies,
   CustomCheckBox,
+  ImageDelete,
   ImageInput,
   MyStatefulEditor,
   NormalInput,
@@ -35,19 +36,15 @@ const AddNewContact = () => {
   const { setNewContactData, newContactData } = useContext(Context);
   const { id } = useParams();
   const getProfileData = useCallback(() => {
-    fetchContactById(id).then((res) => {
-      setNewContactData(res[0]);
+    return fetchContactById(id).then( (res) => {
+      return  res[0]
     });
-  }, [id, setNewContactData]);
-  useEffect(() => {
-    getProfileData();
-  }, [getProfileData, id]);
-  useEffect(() => {
-    setNewContactData((data) => {
-      return data;
-    });
-  }, [newContactData, setNewContactData]);
-
+  }, [id]);
+  useEffect( () => {
+    (async () => {
+    setNewContactData(await getProfileData());
+    })(); 
+  }, [getProfileData, setNewContactData]);
   return (
     <Box>
       <Grid
@@ -116,6 +113,8 @@ export const ProfileTopForm = ({ setNewContactData,newContactData }) => {
               image={`http://localhost:8080/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${newContactData?.picture?.id}/content/download?v=3`}
             ></CardMedia>
             <ImageInput    setDataFunction={setNewContactData}></ImageInput>
+
+            <ImageDelete    setDataFunction={setNewContactData}></ImageDelete>
             </Box>
             <Typography
               variant="body2"

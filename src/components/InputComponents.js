@@ -12,7 +12,7 @@ import RichTextEditor from "react-rte";
 import MuiPhoneNumber from "material-ui-phone-number";
 
 import React, { useContext, useEffect, useState } from "react";
-import { AddAPhoto, Clear } from "@mui/icons-material";
+import { AddAPhoto, Clear, Delete } from "@mui/icons-material";
 import { Component } from "react";
 import { uploadImage } from "../api/api";
 import Context from "../context";
@@ -43,7 +43,7 @@ export const ImageInput = ({ setDataFunction }) => {
 
   return (
     <Box
-      sx={{ position: "absolute", left: "65px", top: "125px" }}
+      sx={{ position: "absolute", left: "30px", top: "125px" }}
       onClick={() => document.getElementById("image_input").click()}
     >
       <Box
@@ -68,7 +68,44 @@ export const ImageInput = ({ setDataFunction }) => {
     </Box>
   );
 };
+export const ImageDelete = ({ setDataFunction }) => {
+  const { setUpdatedData } = useContext(Context);
+  const handleDelete = async (e) => {
+    if (window.location.pathname.split("/")[2] === "edit") {
+      setUpdatedData((data) => {
+        return {
+          ...data,
+          picture: null,
+        };
+      });
+      setDataFunction((data)=>{
+        return {
+          ...data,
+          picture: null,
+        };
+      })
+    }
+  };
 
+  return (
+    <Box
+      sx={{ position: "absolute", left: "85px", top: "125px" }}
+      onClick={() => handleDelete()}
+    >
+      <Box
+        style={{
+          background: "white",
+          padding: "10px",
+
+          borderRadius: "50%",
+          boxShadow: "3px 3px 4px 1px rgba(0,0,0,0.3)",
+        }}
+      >
+        <Delete />{" "}
+      </Box>
+    </Box>
+  );
+};
 export const NormalInput = ({
   label,
   placeholder,
@@ -81,9 +118,12 @@ export const NormalInput = ({
 
   useEffect(() => {
     if (type === "mail" && newContactData.hasOwnProperty("emailAddress")) {
-      setValue(newContactData?.emailAddress?.name?.substring(
-        newContactData?.emailAddress?.name?.indexOf("[") + 1,
-        newContactData?.emailAddress?.name?.indexOf("]")))
+      setValue(
+        newContactData?.emailAddress?.name?.substring(
+          newContactData?.emailAddress?.name?.indexOf("[") + 1,
+          newContactData?.emailAddress?.name?.indexOf("]")
+        )
+      );
       return;
     }
     if (!!newContactData[fieldName]) {
@@ -246,7 +286,6 @@ export function SearchInput({
     setOptions(data);
   };
   useEffect(() => {
-   
     if (!!newContactData[fieldName]) {
       setValue(newContactData[fieldName]);
     }
@@ -261,14 +300,14 @@ export function SearchInput({
           ...data,
         };
       });
-    }else{
-    setDataFunction((data) => {
-      return {
-        ...data,
-        [fieldName]: value,
-      };
-    });
-  }
+    } else {
+      setDataFunction((data) => {
+        return {
+          ...data,
+          [fieldName]: value,
+        };
+      });
+    }
   };
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>

@@ -20,15 +20,17 @@ const Profile = () => {
   const [profileData, setProfileData] = useState({});
   const { id } = useParams();
   const getProfileData = useCallback(() => {
-    fetchContactById(id).then((res) => {
-      setProfileData(res[0]);
+    return fetchContactById(id).then((res) => {
+      return res[0] || [];
     });
   }, [id]);
   useEffect(() => {
-    getProfileData();
-   
-  }, [getProfileData, id]);
+    (async () => {
+      setProfileData(await getProfileData());
+    })();
+  }, [getProfileData]);
 
+  
   return (
     <Box>
       <Grid
@@ -40,7 +42,7 @@ const Profile = () => {
           margin: "0 20px",
         }}
       >
-        <Grid item xs={12} sm={8} md={8} lg={8} xl={8} spacing={2}>
+        <Grid item xs={12} sm={8} md={8} lg={8} xl={8} >
           <Box
             sx={{
               width: "91%",
@@ -91,8 +93,12 @@ export const ProfileTopForm = ({ profileData }) => {
                 margin: "10% auto",
                 objectFit: "cover",
                 border: "1px solid grey",
-              }}  
-              image={!!profileData?.picture?.id?`http://localhost:3000/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${profileData?.picture?.id}/content/download`:"http://localhost:8080/axelor-erp/img/partner-m-default.png"}
+              }}
+              image={
+                !!profileData?.picture?.id
+                  ? `/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${profileData?.picture?.id}/content/download`
+                  : "http://localhost:8080/axelor-erp/img/partner-m-default.png"
+              }
             ></CardMedia>
           </Box>
         </Box>
@@ -172,6 +178,7 @@ export const CustomTabs = ({ options, setTabIndex }) => {
       {tabs.map((tab, key) => {
         return (
           <Box
+          key={tab}
             onClick={() => handleTabSwitch(key)}
             sx={{
               width: "120px",
@@ -284,8 +291,9 @@ export const ContactBoxWithTabs = ({ profileData }) => {
               <CustomBlueText>
                 {" "}
                 {profileData?.emailAddress?.name.substring(
-       profileData?.emailAddress?.name?.indexOf("[") + 1,
-       profileData?.emailAddress?.name?.indexOf("]"))}
+                  profileData?.emailAddress?.name?.indexOf("[") + 1,
+                  profileData?.emailAddress?.name?.indexOf("]")
+                )}
               </CustomBlueText>
             </Box>
           </Grid>
@@ -325,7 +333,7 @@ export const RightContent = ({ profileData }) => {
       >
         {/* ---------------------Settings Layout-------------------- */}
         <Box
-          container
+          
           sx={{
             backgroundColor: "white",
             mb: 5,

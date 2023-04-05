@@ -33,14 +33,18 @@ function App() {
   }, []);
 
   const getContactsData = useCallback(() => {
-    fetchContacts().then((res) => {
-      filterIncompleteData(res.reverse());
+   return fetchContacts().then((res) => {
+      return (res.reverse()||[]);
     });
-  }, [filterIncompleteData]);
+  }, []);
+
 
   useEffect(() => {
-    getContactsData();
-  }, [getContactsData]);
+    (async () => {
+      filterIncompleteData(await getContactsData());
+    })();
+  }, [filterIncompleteData, getContactsData]);
+
 
   return (
     <AppContext>

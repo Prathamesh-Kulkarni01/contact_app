@@ -78,11 +78,13 @@ export default function ListView({ contactsData }) {
         <TableBody>
           {contactsData &&
             contactsData.map((row) => (
+           
               <TableRow
                 key={row.id + row.updatedOn}
                 onClick={() => navigate(`/axelor-erp/view/profile/${row.id}`)}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
+                {   console.log(row)}
                 <StyledTableBodyCell
                   align="left"
                   sx={{ width: "10px", fontWeight: "800" }}

@@ -11,7 +11,7 @@ import { Context } from "../context";
 import { createOrUpdateNewContact } from "../api/api";
 import Edit from "@mui/icons-material/Edit";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   appBar: {
     padding: "0px",
 
@@ -31,6 +31,11 @@ const useStyles = makeStyles((theme) => ({
 export default function DenseAppBar() {
   const classes = useStyles();
   const { newContactData, updatedData } = React.useContext(Context);
+
+  const redirectToHome=()=>{
+
+    window.location.href="/axelor-erp"
+  }
   const handleSave = async () => {
     if (window.location.pathname.split("/")[2] === "edit") {
       const _id = newContactData.id;
@@ -41,13 +46,16 @@ export default function DenseAppBar() {
         ...updatedData,
         _original: { ...newContactData },
       };
-      await createOrUpdateNewContact(updatingData);
+      console.log("updating",updatedData);
+      console.log(await createOrUpdateNewContact(updatingData));
       alert("Updated Successfully");
       return;
     } else {
       await createOrUpdateNewContact(newContactData);
       alert("Added Successfully");
+      
     }
+    redirectToHome()
   };
   return (
     <AppBar
