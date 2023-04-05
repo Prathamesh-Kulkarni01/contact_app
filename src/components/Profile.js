@@ -62,7 +62,6 @@ const Profile = () => {
 export default Profile;
 
 export const ProfileTopForm = ({ profileData }) => {
-  const { id } = useParams();
   return (
     <Paper
       elevation={0}
