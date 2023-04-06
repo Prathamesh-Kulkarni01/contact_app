@@ -106,16 +106,18 @@ export const ProfileTopForm = ({ setNewContactData,newContactData }) => {
               sx={{
                 width: "160px",
                 margin: "15% auto",
+                position:'relative',
                 objectFit: "cover",
                 border: "1px solid grey",
               }}
               alt="Upload  Image"
-              id="img"
+              id="profileImg"
               image={`http://localhost:8080/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${newContactData?.picture?.id}/content/download?v=3`}
             ></CardMedia>
+            <Box sx={{position: "absolute", left: "30px", top: "125px",display:'flex',justifyContent:'center',width:"100px"}}> 
             <ImageInput    setDataFunction={setNewContactData}></ImageInput>
-
             <ImageDelete    setDataFunction={setNewContactData}></ImageDelete>
+            </Box>
             </Box>
             <Typography
               variant="body2"

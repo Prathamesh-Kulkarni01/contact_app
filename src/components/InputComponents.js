@@ -40,15 +40,12 @@ export const ImageInput = ({ setDataFunction }) => {
   };
 
   return (
-    <Box
-      sx={{ position: "absolute", left: "30px", top: "125px" }}
-      onClick={() => document.getElementById("image_input").click()}
-    >
+    <Box onClick={() => document.getElementById("image_input").click()}>
       <Box
-        style={{
+        sx={{
           background: "white",
           padding: "10px",
-
+          m: 0.5,
           borderRadius: "50%",
           boxShadow: "3px 3px 4px 1px rgba(0,0,0,0.3)",
         }}
@@ -81,16 +78,13 @@ export const ImageDelete = ({ setDataFunction }) => {
   };
 
   return (
-    <Box
-      sx={{ position: "absolute", left: "85px", top: "125px" }}
-      onClick={() => handleDelete()}
-    >
+    <Box onClick={() => handleDelete()}>
       {checkVisibility() && (
         <Box
-          style={{
+          sx={{
             background: "white",
             padding: "10px",
-
+            m: 0.5,
             borderRadius: "50%",
             boxShadow: "3px 3px 4px 1px rgba(0,0,0,0.3)",
           }}
