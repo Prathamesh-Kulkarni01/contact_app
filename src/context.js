@@ -31,13 +31,15 @@ export const AppContext = ({ children }) => {
   }, []);
 
   const handleDeleteRecords = async () => {
-    const noOfRecords= deleteRecords.length;
-    setLoading(true)
-    await deleteRecord(deleteRecords);
-    setDeleteRecords([]);
+    const noOfRecords = deleteRecords.length;
+    setLoading(true);
+    const res = await deleteRecord(deleteRecords);
     filterIncompleteData(await getContactsData());
-    setLoading(false)
-    alert(noOfRecords+" Contacts Deleted...")
+    setDeleteRecords([]);
+    setLoading(false);
+    res.message
+      ? alert("You can not delete AOS predefined contacts...")
+      : alert(noOfRecords + " Contacts Deleted...");
   };
 
   useEffect(() => {

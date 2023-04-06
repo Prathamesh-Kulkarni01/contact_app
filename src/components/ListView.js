@@ -63,8 +63,8 @@ export default function ListView({ contactsData }) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-        <TableHead>
-          <TableRow sx={{ fontWeight: "600", height: "20px" }}>
+        <TableHead >
+          <TableRow sx={{ fontWeight: "600", height: "20px" ,}}>
             {header.map((val, key) => (
               <StyledTableHeaderCell key={key}>{val}</StyledTableHeaderCell>
             ))}
@@ -102,7 +102,7 @@ export default function ListView({ contactsData }) {
 }
 
 export const ListRow = ({ row }) => {
-  const { setDeleteRecords } = React.useContext(Context);
+  const { setDeleteRecords, deleteRecords } = React.useContext(Context);
   const [checked, setChecked] = React.useState(false);
   const navigate = useNavigate();
   const {
@@ -132,11 +132,11 @@ export const ListRow = ({ row }) => {
       setDeleteRecords((data) => data.filter((obj) => obj.id !== id));
       setChecked(false);
     }
-    setDeleteRecords((data) => {
-      if (data.length === 0) setChecked(false);
-      return data;
-    });
   };
+  React.useEffect(() => {
+    if (deleteRecords.length === 0) setChecked(false);
+  }, [deleteRecords.length]);
+
   return (
     <TableRow
       onClick={() => navigate(`/axelor-erp/view/profile/${id}`)}
