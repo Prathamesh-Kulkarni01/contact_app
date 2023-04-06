@@ -10,6 +10,7 @@ import { makeStyles } from "@mui/styles";
 import { Context } from "../context";
 import { createOrUpdateNewContact } from "../api/api";
 import Edit from "@mui/icons-material/Edit";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
   appBar: {
@@ -29,9 +30,10 @@ const useStyles = makeStyles(() => ({
 
 export default function DenseAppBar() {
   const classes = useStyles();
-  const { newContactData, updatedData } = React.useContext(Context);
-  const redirectToHome = () => (window.location.href = "/axelor-erp");
-
+  const location = useLocation();
+ const navigate= useNavigate()
+  const { newContactData, updatedData,setNewContactData,setUpdatedData } = React.useContext(Context);
+  const redirectToHome = () => navigate("/axelor-erp")
   const handleSave = async () => {
     if (window.location.pathname.split("/")[2] === "edit") {
       const _id = newContactData.id;
@@ -43,13 +45,16 @@ export default function DenseAppBar() {
         _original: { ...newContactData },
       };
       await createOrUpdateNewContact(updatingData);
+      setUpdatedData([])
       alert("Updated Successfully");
     } else {
       await createOrUpdateNewContact(newContactData);
+      setNewContactData([])
       alert("Added Successfully");
     }
     redirectToHome();
   };
+
   return (
     <AppBar
       position="fixed"
@@ -92,19 +97,17 @@ export default function DenseAppBar() {
             },
           }}
         >
-          {(window.location.pathname.split("/")[2] === "create" ||
-            window.location.pathname.split("/")[2] === "edit") && (
+          {(location.pathname.split("/")[2] === "create" ||
+            location.pathname.split("/")[2] === "edit") && (
             <Save sx={{ mx: 2 }} color="gray" onClick={() => handleSave()} />
           )}
 
-          {window.location.pathname.split("/")[2] === "view" && (
-            <a
-              href={`/axelor-erp/edit/profile/${
-                window.location.pathname.split("/")[4]
-              }`}
+          {location.pathname.split("/")[2] === "view" && (
+            <Link
+              to={`/axelor-erp/edit/profile/${location.pathname.split("/")[4]}`}
             >
               <Edit />
-            </a>
+            </Link>
           )}
         </Box>
         <div className={classes.spacer} />

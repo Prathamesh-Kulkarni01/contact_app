@@ -6,12 +6,12 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { styled } from "@mui/material";
+import { Box, styled } from "@mui/material";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
 import EmailIcon from "@mui/icons-material/Email";
 import EditIcon from "@mui/icons-material/Edit";
 import Delete from "@mui/icons-material/Delete";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Context from "../context";
 
 const header = [
@@ -59,36 +59,10 @@ const StyledTableHeaderInput = styled("input")(() => ({
 }));
 
 export default function ListView({ contactsData }) {
-  const { deleteRecords, handleDeleteRecords } = React.useContext(Context);
   return (
-    <TableContainer component={Paper}  sx={{overflow:"hidden",maxHeight:"calc(95vh)"}}>
-      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-        <TableHead >
-          <TableRow sx={{ fontWeight: "600", height: "20px" ,}}>
-            {header.map((val, key) => (
-              <StyledTableHeaderCell key={key}>{val}</StyledTableHeaderCell>
-            ))}
-          </TableRow>
-          <TableRow sx={{ fontWeight: "600", height: "20px" }}>
-            {header.map((val, key) => {
-              if (key !== 0) {
-                return (
-                  <StyledTableInputCell key={key}>
-                    <StyledTableHeaderInput placeholder="Search..." />
-                  </StyledTableInputCell>
-                );
-              } else {
-                return (
-                  <StyledTableInputCell key={key}>
-                    {!!deleteRecords.length && (
-                      <Delete onClick={handleDeleteRecords} />
-                    )}
-                  </StyledTableInputCell>
-                );
-              }
-            })}
-          </TableRow>
-        </TableHead>
+    <TableContainer component={Paper}>
+      <HeaderRow />
+      <Table>
         <TableBody>
           {contactsData.map((row) => (
             <React.Fragment>
@@ -102,6 +76,7 @@ export default function ListView({ contactsData }) {
 }
 
 export const ListRow = ({ row }) => {
+  console.log(row);
   const { setDeleteRecords, deleteRecords } = React.useContext(Context);
   const [checked, setChecked] = React.useState(false);
   const navigate = useNavigate();
@@ -140,20 +115,19 @@ export const ListRow = ({ row }) => {
   return (
     <TableRow
       onClick={() => navigate(`/axelor-erp/view/profile/${id}`)}
-      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+      sx={{ width: "100vw", "&:last-child td, &:last-child th": { border: 0 } }}
     >
       <StyledTableBodyCell
         align="left"
         onClick={(e) => e.stopPropagation()}
         sx={{ minWidth: "25px", fontWeight: "800" }}
       >
-        <a href={`/axelor-erp/edit/profile/${id}`}>
+        <Link to={`/axelor-erp/edit/profile/${id}`}>
           <EditIcon sx={{ fontSize: "16px" }} />
-        </a>
+        </Link>
         <input type="checkbox" checked={checked} onChange={handleDelete} />
       </StyledTableBodyCell>
-
-      <StyledTableBodyCell component="th" scope="row"></StyledTableBodyCell>
+      <StyledTableBodyCell></StyledTableBodyCell>
       <StyledTableBodyCell>{simpleFullName}</StyledTableBodyCell>
       <StyledTableBodyCell>{fixedPhone}</StyledTableBodyCell>
       <StyledTableBodyCell>{mobilePhone}</StyledTableBodyCell>
@@ -169,5 +143,41 @@ export const ListRow = ({ row }) => {
         <Diversity3Icon sx={{ fontSize: "16px" }} />
       </StyledTableBodyCell>
     </TableRow>
+  );
+};
+
+const HeaderRow = () => {
+  const { deleteRecords, handleDeleteRecords } = React.useContext(Context);
+  return (
+    <Box className="header_tb">
+      <Table size="small" aria-label="a dense table">
+        <TableHead sx={{ maxWidth: 650 }}>
+          <TableRow sx={{ fontWeight: "600", height: "20px" }}>
+            {header.map((val, key) => (
+              <StyledTableHeaderCell key={key}>{val}</StyledTableHeaderCell>
+            ))}
+          </TableRow>
+          <TableRow sx={{ fontWeight: "600", height: "20px" }}>
+            {header.map((val, key) => {
+              if (key !== 0) {
+                return (
+                  <StyledTableInputCell key={key}>
+                    <StyledTableHeaderInput placeholder="Search..." />
+                  </StyledTableInputCell>
+                );
+              } else {
+                return (
+                  <StyledTableInputCell key={key}>
+                    {!!deleteRecords.length && (
+                      <Delete onClick={handleDeleteRecords} />
+                    )}
+                  </StyledTableInputCell>
+                );
+              }
+            })}
+          </TableRow>
+        </TableHead>
+      </Table>
+    </Box>
   );
 };

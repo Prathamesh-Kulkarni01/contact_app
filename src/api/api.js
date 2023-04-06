@@ -4,8 +4,8 @@ import Cookies from "js-cookie";
 const Token = Cookies.get("CSRF-TOKEN");
 const BASE_URL = "/axelor-erp/ws/rest/";
 
-const login=async()=>{
- const url= "/axelor-erp/callback"
+const login = async () => {
+  const url = "/axelor-erp/callback";
 
   const response = await fetch(url, {
     method: "POST",
@@ -15,17 +15,18 @@ const login=async()=>{
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      username:"admin",
-      password:"admin"
-
+      username: "admin",
+      password: "admin",
     }),
   });
   return await response.json();
-}
+};
 
 const makeApiCall = async (path, params) => {
-
-if(!Token){await login(); return}
+  if (!Token) {
+    await login();
+    return;
+  }
 
   const url = `${BASE_URL}/${path}`;
   const response = await fetch(url, {
@@ -41,7 +42,7 @@ if(!Token){await login(); return}
   });
   const data = await response.json();
   console.log(data);
-  return data.data||[];
+  return data.data || [];
 };
 
 export const fetchContacts = async () => {
@@ -57,7 +58,34 @@ export const fetchFunctions = async () => {
 };
 
 export const fetchMainCompany = async () => {
-  const params = {};
+  const params = {
+    data: {
+      _domain:
+        "self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)",
+      _domainContext: {
+        companySet: [{ id: 1, selected: false }],
+        contactAttrs: "{}",
+        isContact: true,
+        isDoNotCall: false,
+        isDoNotEmail: false,
+        language: { code: "en", name: "English", id: 1 },
+        partnerRoleSet: [],
+        partnerTypeSelect: 2,
+        team: { code: "GRL", name: "General", id: 4 },
+        titleSelect: 0,
+        user: { code: "admin", fullName: "Admin", id: 1 },
+        _domain:
+          "self.isContact = true AND (self.mainPartner.isCustomer = true OR self.mainPartner.isProspect = true)",
+        _id: null,
+        _model: "com.axelor.apps.base.db.Partner",
+      },
+    },
+    fields: ["id", "fullName"],
+    limit: 10,
+    offset: 0,
+    sortBy: null,
+    translate: true,
+  };
   return await makeApiCall("com.axelor.apps.base.db.Partner/search", params);
 };
 
@@ -82,7 +110,7 @@ export const fetchAccountOwner = async () => {
   const params = {
     offset: 0,
     limit: 10,
-    fields:["fullName","fullName"],
+    fields: ["fullName", "fullName"],
     sortBy: ["name", "-createdOn"],
   };
   return await makeApiCall("com.axelor.auth.db.User/search", params);
@@ -90,7 +118,7 @@ export const fetchAccountOwner = async () => {
 
 export const fetchTeams = async () => {
   const params = {
-    fields: ["id", "id","name", "name"],
+    fields: ["id", "id", "name", "name"],
   };
   return await makeApiCall("com.axelor.team.db.Team/search", params);
 };
@@ -99,7 +127,7 @@ export const fetchAddress = async () => {
   const params = {
     offset: 0,
     limit: 30,
-    fields: ["id", "id", "name","name", "fullName","fullName"],
+    fields: ["id", "id", "name", "name", "fullName", "fullName"],
   };
 
   return await makeApiCall("com.axelor.apps.base.db.Address/search", params);
@@ -116,7 +144,7 @@ export const createOrUpdateNewContact = async (payload) => {
   const params = {
     data: payload,
   };
-  
+
   return await makeApiCall("com.axelor.apps.base.db.Partner", params);
 };
 
@@ -132,7 +160,7 @@ export const fetchContactById = async (id) => {
 
 // ????????????????? Upload Image Function Tries ???????????????????????????//
 
-export const uploadImage = async(binary, type, name, size) => {
+export const uploadImage = async (binary, type, name, size) => {
   const formData = new FormData();
   formData.append("file", binary);
   formData.append("field", undefined);
@@ -149,30 +177,27 @@ export const uploadImage = async(binary, type, name, size) => {
       },
     })
   );
-  const url =
-    "/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/upload";
-  const res= await axios
+  const url = "/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/upload";
+  const res = await axios
     .post(url, formData, {
       headers: {
         "Content-Type": `multipart/form-data;  boundary="another cool boundary";`,
         Accept: "*/*",
         "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
-        "X-CSRF-Token": Token, 
+        "X-CSRF-Token": Token,
       },
-    }).catch(err=>{
-      console.log(err);
-      return 1
     })
-  
-    return res.data.data[0]
+    .catch((err) => {
+      console.log(err);
+      return 1;
+    });
+
+  return res.data.data[0];
 };
 
-export const deleteRecord=async (records)=>{
-const params={
-  records:records
-}
-return await makeApiCall(
-  `com.axelor.apps.base.db.Partner/removeAll`,
-  params
-);
-}
+export const deleteRecord = async (records) => {
+  const params = {
+    records: records,
+  };
+  return await makeApiCall(`com.axelor.apps.base.db.Partner/removeAll`, params);
+};

@@ -90,7 +90,7 @@ export const ProfileTopForm = ({ profileData }) => {
                 border: "1px solid grey",
               }}
               image={
-                !!profileData?.picture?.id
+                profileData?.picture?.id
                   ? `/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${profileData?.picture?.id}/content/download`
                   : "http://localhost:8080/axelor-erp/img/partner-m-default.png"
               }

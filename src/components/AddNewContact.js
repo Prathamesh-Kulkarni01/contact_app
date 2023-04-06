@@ -33,18 +33,20 @@ import { Context } from "../context";
 import { useParams } from "react-router-dom";
 
 const AddNewContact = () => {
-  const { setNewContactData, newContactData } = useContext(Context);
+  const { setNewContactData, newContactData, setCurrentPage } =
+    useContext(Context);
   const { id } = useParams();
   const getProfileData = useCallback(() => {
-    return fetchContactById(id).then( (res) => {
-      return  res[0]
+    return fetchContactById(id).then((res) => {
+      return res[0];
     });
   }, [id]);
-  useEffect( () => {
+  useEffect(() => {
     (async () => {
-    setNewContactData(await getProfileData());
-    })(); 
-  }, [getProfileData, setNewContactData]);
+      setNewContactData(await getProfileData());
+    })();
+    setCurrentPage("Edit");
+  }, [getProfileData, setCurrentPage, setNewContactData]);
   return (
     <Box>
       <Grid
@@ -64,7 +66,10 @@ const AddNewContact = () => {
               m: { xs: "0", sm: "0 30px 10% 10%" },
             }}
           >
-            <ProfileTopForm setNewContactData={setNewContactData} newContactData={newContactData}/>
+            <ProfileTopForm
+              setNewContactData={setNewContactData}
+              newContactData={newContactData}
+            />
             <ContactBoxWithTabs setNewContactData={setNewContactData} />
           </Box>
         </Grid>
@@ -76,7 +81,7 @@ const AddNewContact = () => {
 
 export default AddNewContact;
 
-export const ProfileTopForm = ({ setNewContactData,newContactData }) => {
+export const ProfileTopForm = ({ setNewContactData, newContactData }) => {
   return (
     <Paper
       elevation={0}
@@ -95,29 +100,45 @@ export const ProfileTopForm = ({ setNewContactData,newContactData }) => {
               height: "100%",
               flexDirection: "column",
               display: "flex",
-              
+
               justifyContent: "center",
             }}
           >
-            <Box sx={{position:'relative',width:"160px",margin:'auto',ml:'20px'}}>
-            <CardMedia
-              component="img"
-              height={160}
+            <Box
               sx={{
+                position: "relative",
                 width: "160px",
-                margin: "15% auto",
-                position:'relative',
-                objectFit: "cover",
-                border: "1px solid grey",
+                margin: "auto",
+                ml: "20px",
               }}
-              alt="Upload  Image"
-              id="profileImg"
-              image={`http://localhost:8080/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${newContactData?.picture?.id}/content/download?v=3`}
-            ></CardMedia>
-            <Box sx={{position: "absolute", left: "30px", top: "125px",display:'flex',justifyContent:'center',width:"100px"}}> 
-            <ImageInput    setDataFunction={setNewContactData}></ImageInput>
-            <ImageDelete    setDataFunction={setNewContactData}></ImageDelete>
-            </Box>
+            >
+              <CardMedia
+                component="img"
+                height={160}
+                sx={{
+                  width: "160px",
+                  margin: "15% auto",
+                  position: "relative",
+                  objectFit: "cover",
+                  border: "1px solid grey",
+                }}
+                alt="Upload  Image"
+                id="profileImg"
+                image={`http://localhost:8080/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${newContactData?.picture?.id}/content/download?v=3`}
+              ></CardMedia>
+              <Box
+                sx={{
+                  position: "absolute",
+                  left: "30px",
+                  top: "125px",
+                  display: "flex",
+                  justifyContent: "center",
+                  width: "100px",
+                }}
+              >
+                <ImageInput setDataFunction={setNewContactData}></ImageInput>
+                <ImageDelete setDataFunction={setNewContactData}></ImageDelete>
+              </Box>
             </Box>
           </Box>
         </Box>

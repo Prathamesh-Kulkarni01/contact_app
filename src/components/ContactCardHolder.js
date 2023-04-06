@@ -12,38 +12,35 @@ import { useNavigate } from "react-router-dom";
 
 export default function ContactCardHolder({ contactsData }) {
   return (
-    <Box sx={{ flexGrow: 1, p: 2, ml: 2 }}>
-      <Grid
-        container
-        spacing={{ xs: 2, md: 3 }}
-        columns={{ xs: 4, sm: 8, md: 12 }}
-      >
-        {contactsData.map((item, index) => (
-          <Grid item xs={4} sm={4} md={4} key={item.id}>
-            <ContactCard row={item} />
-          </Grid>
-        ))}
-      </Grid>
+    <Box>
+      <Box sx={{ flexGrow: 1, p: 2, ml: 2 }}>
+        <Grid
+          container
+          spacing={{ xs: 2, md: 3 }}
+          columns={{ xs: 4, sm: 8, md: 12 }}
+        >
+          {contactsData.map((item, index) => (
+            <Grid item xs={4} sm={4} md={4} key={item.id}>
+              <ContactCard row={item} />
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
     </Box>
   );
 }
 
 const ContactCard = ({ row }) => {
   const navigate = useNavigate();
-  const {
-    id,
-    fullName,
-    fixedPhone,
-    mobilePhone,
-    emailAddress,
-    mainAddress,
-  } = row;
+  const { id, fullName, fixedPhone, mobilePhone, emailAddress,mainPartner, mainAddress,picture } =
+    row;
+    const imgId=picture?.id||1
   const pattern = /\[(.*?)\]/;
   const match = emailAddress?.name?.match(pattern);
   const emailLabel = match ? match[1] : "";
   return (
     <Box
-      onClick={() => navigate(`/axelor-erp/view/profile/${row.id}`)}
+      onClick={() => navigate(`/axelor-erp/view/profile/${id}`)}
       sx={{
         width: "100%",
         height: "182px",
@@ -68,8 +65,8 @@ const ContactCard = ({ row }) => {
             objectFit: "contain",
           }}
           image={
-            id
-              ? `/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${id}/content/download`
+            imgId
+              ? `/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${imgId}/content/download`
               : "http://localhost:8080/axelor-erp/img/partner-m-default.png"
           }
         />
@@ -185,7 +182,7 @@ const ContactCard = ({ row }) => {
               fontSize: "12px",
             }}
           >
-            {fullName?.split(" - ")[1]}
+            {mainPartner?.fullName?.split(" - ")[1]}
           </Typography>
           <Typography
             sx={{
