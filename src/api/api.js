@@ -40,6 +40,7 @@ if(!Token){await login(); return}
     body: JSON.stringify(params),
   });
   const data = await response.json();
+  console.log(data);
   return data.data||[];
 };
 

@@ -119,24 +119,6 @@ export const ProfileTopForm = ({ setNewContactData,newContactData }) => {
             <ImageDelete    setDataFunction={setNewContactData}></ImageDelete>
             </Box>
             </Box>
-            <Typography
-              variant="body2"
-              color="#333333"
-              sx={{ fontWeight: "550", pb: 0, ml: "30%" }}
-            ></Typography>
-
-            <Typography
-              variant="body2"
-              color="#333333"
-              sx={{
-                fontWeight: "550",
-                fontSize: "12px",
-                pt: 0,
-                textAlign: "center",
-                width: "70%",
-                ml: "8%",
-              }}
-            ></Typography>
           </Box>
         </Box>
         <Box sx={{ width: { xs: "100%", sm: "80%" }, minHeight: "170px" }}>

@@ -61,7 +61,7 @@ const StyledTableHeaderInput = styled("input")(() => ({
 export default function ListView({ contactsData }) {
   const { deleteRecords, handleDeleteRecords } = React.useContext(Context);
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper}  sx={{overflow:"hidden",maxHeight:"calc(100vh-100px)"}}>
       <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
         <TableHead >
           <TableRow sx={{ fontWeight: "600", height: "20px" ,}}>
