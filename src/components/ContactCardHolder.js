@@ -30,6 +30,17 @@ export default function ContactCardHolder({ contactsData }) {
 
 const ContactCard = ({ row }) => {
   const navigate = useNavigate();
+  const {
+    id,
+    fullName,
+    fixedPhone,
+    mobilePhone,
+    emailAddress,
+    mainAddress,
+  } = row;
+  const pattern = /\[(.*?)\]/;
+  const match = emailAddress?.name?.match(pattern);
+  const emailLabel = match ? match[1] : "";
   return (
     <Box
       onClick={() => navigate(`/axelor-erp/view/profile/${row.id}`)}
@@ -57,8 +68,8 @@ const ContactCard = ({ row }) => {
             objectFit: "contain",
           }}
           image={
-            !!row?.picture?.id
-              ? `/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${row?.picture?.id}/content/download`
+            id
+              ? `/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${id}/content/download`
               : "http://localhost:8080/axelor-erp/img/partner-m-default.png"
           }
         />
@@ -67,7 +78,7 @@ const ContactCard = ({ row }) => {
           color="#333333"
           sx={{ fontWeight: "550", pb: 0, ml: "30%" }}
         >
-          {row.fullName?.split(" - ")[0]}
+          {fullName?.split(" - ")[0]}
         </Typography>
 
         <Typography
@@ -82,7 +93,7 @@ const ContactCard = ({ row }) => {
             ml: "8%",
           }}
         >
-          {row.fullName?.split(" - ")[1]}
+          {fullName?.split(" - ")[1]}
         </Typography>
       </Box>
 
@@ -147,7 +158,7 @@ const ContactCard = ({ row }) => {
               fontSize: "14px",
             }}
           >
-            {row.fixedPhone}
+            {fixedPhone}
           </Typography>
           <Typography
             sx={{
@@ -156,7 +167,7 @@ const ContactCard = ({ row }) => {
               fontSize: "14px",
             }}
           >
-            {row.mobilePhone}
+            {mobilePhone}
           </Typography>
           <Typography
             sx={{
@@ -165,10 +176,7 @@ const ContactCard = ({ row }) => {
               fontSize: "13px",
             }}
           >
-            {row.emailAddress?.name?.substring(
-              row.emailAddress?.name?.indexOf("[") + 1,
-              row?.emailAddress?.name.indexOf("]")
-            )}
+            {emailLabel}
           </Typography>
           <Typography
             sx={{
@@ -177,7 +185,7 @@ const ContactCard = ({ row }) => {
               fontSize: "12px",
             }}
           >
-            {row.mainPartner?.fullName?.split(" - ")[1]}
+            {fullName?.split(" - ")[1]}
           </Typography>
           <Typography
             sx={{
@@ -187,7 +195,7 @@ const ContactCard = ({ row }) => {
               width: "310px",
             }}
           >
-            {row.mainAddress?.fullName}
+            {mainAddress?.fullName}
           </Typography>
         </Box>
       </Box>

@@ -31,9 +31,13 @@ export const AppContext = ({ children }) => {
   }, []);
 
   const handleDeleteRecords = async () => {
+    const noOfRecords= deleteRecords.length;
+    setLoading(true)
     await deleteRecord(deleteRecords);
     setDeleteRecords([]);
     filterIncompleteData(await getContactsData());
+    setLoading(false)
+    alert(noOfRecords+" Contacts Deleted...")
   };
 
   useEffect(() => {
