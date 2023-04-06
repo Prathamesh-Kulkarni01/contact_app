@@ -65,14 +65,15 @@ export const ImageInput = ({ setDataFunction }) => {
   );
 };
 export const ImageDelete = ({ setDataFunction }) => {
-  const { setUpdatedData } = useContext(Context);
+  const { setUpdatedData, newContactData } = useContext(Context);
+  const checkVisibility = () => newContactData.picture;
   const handleDelete = async (e) => {
     if (window.location.pathname.split("/")[2] === "edit") {
-      setUpdatedData((data) => ({
+      setDataFunction((data) => ({
         ...data,
         picture: null,
       }));
-      setDataFunction((data) => ({
+      setUpdatedData((data) => ({
         ...data,
         picture: null,
       }));
@@ -84,17 +85,19 @@ export const ImageDelete = ({ setDataFunction }) => {
       sx={{ position: "absolute", left: "85px", top: "125px" }}
       onClick={() => handleDelete()}
     >
-      <Box
-        style={{
-          background: "white",
-          padding: "10px",
+      {checkVisibility() && (
+        <Box
+          style={{
+            background: "white",
+            padding: "10px",
 
-          borderRadius: "50%",
-          boxShadow: "3px 3px 4px 1px rgba(0,0,0,0.3)",
-        }}
-      >
-        <Delete />{" "}
-      </Box>
+            borderRadius: "50%",
+            boxShadow: "3px 3px 4px 1px rgba(0,0,0,0.3)",
+          }}
+        >
+          <Delete />
+        </Box>
+      )}
     </Box>
   );
 };
@@ -279,19 +282,15 @@ export function SearchInput({
   const handleChange = (event, value) => {
     setValue(value);
     if (window.location.pathname.split("/")[2] === "edit") {
-      setUpdatedData((data) => {
-        return {
-          [fieldName]: value,
-          ...data,
-        };
-      });
+      setUpdatedData((data) => ({
+        [fieldName]: value,
+        ...data,
+      }));
     } else {
-      setDataFunction((data) => {
-        return {
-          ...data,
-          [fieldName]: value,
-        };
-      });
+      setDataFunction((data) => ({
+        ...data,
+        [fieldName]: value,
+      }));
     }
   };
   return (
@@ -305,22 +304,12 @@ export function SearchInput({
         onOpen={() => handleOpen()}
         onChange={(e, v) => handleChange(e, v)}
         getOptionLabel={(option) => {
-          let value;
-          if (!!searchByFullName) {
-            value = option.fullName;
-          } else {
-            value = option.name;
-          }
+          let value = !!searchByFullName ? option.fullName : option.name;
           if (value) return value;
           return "";
         }}
         renderOption={(props, option) => {
-          let value;
-          if (!!searchByFullName) {
-            value = option.fullName;
-          } else {
-            value = option.name;
-          }
+          let value = !!searchByFullName ? option.fullName : option.name;
           return (
             <li
               {...props}
@@ -337,7 +326,6 @@ export function SearchInput({
         }}
         sx={{
           width: "100%",
-
           margin: "0 0px",
           mb: 1,
           fontSize: "small",
@@ -383,28 +371,22 @@ export function SearchInput({
 
 export function PhoneNumberWithCountrySelect({
   label,
-
   setDataFunction,
   fieldName,
 }) {
   const [phone, setPhone] = useState("");
   const { newContactData, setUpdatedData } = useContext(Context);
-
   const handlePhoneNumberChange = (value) => {
     if (window.location.pathname.split("/")[2] === "edit") {
-      setUpdatedData((data) => {
-        return {
-          ...data,
-          [fieldName]: value,
-        };
-      });
-    }
-    setDataFunction((data) => {
-      return {
+      setUpdatedData((data) => ({
         ...data,
         [fieldName]: value,
-      };
-    });
+      }));
+    }
+    setDataFunction((data) => ({
+      ...data,
+      [fieldName]: value,
+    }));
   };
   useEffect(() => {
     setPhone(newContactData[fieldName]);
@@ -417,7 +399,7 @@ export function PhoneNumberWithCountrySelect({
         onChange={(value) => handlePhoneNumberChange(value)}
         sx={{ width: "100%" }}
         value={phone}
-        defaultCountry={"us"}
+        defaultCountry="us"
       />
     </Box>
   );
@@ -426,24 +408,19 @@ export function PhoneNumberWithCountrySelect({
 export const CustomCheckBox = ({ label, fieldName, setDataFunction }) => {
   const [value, setValue] = useState(false);
   const { newContactData, setUpdatedData } = useContext(Context);
-
   const handleCheckChange = (event) => {
     setValue(event.target.checked);
     if (window.location.pathname.split("/")[2] === "edit") {
-      setUpdatedData((data) => {
-        return {
-          ...data,
-          [fieldName]: event.target.checked,
-        };
-      });
-      return;
-    }
-    setDataFunction((data) => {
-      return {
+      setUpdatedData((data) => ({
         ...data,
         [fieldName]: event.target.checked,
-      };
-    });
+      }));
+      return;
+    }
+    setDataFunction((data) => ({
+      ...data,
+      [fieldName]: event.target.checked,
+    }));
   };
   useEffect(() => {
     setValue(!!newContactData[fieldName]);
@@ -473,7 +450,6 @@ export const CustomCheckBox = ({ label, fieldName, setDataFunction }) => {
               ml: "8px",
               "& .MuiSvgIcon-root": {
                 fontSize: 28,
-
                 borderRadius: "0px",
               },
               "& .Mui-checked": {
@@ -509,7 +485,6 @@ export class MyStatefulEditor extends Component {
   state = {
     value: RichTextEditor.createEmptyValue(),
   };
-
   onChange = (value) => {
     this.setState({ value });
     if (this.props.onChange) {

@@ -6,11 +6,11 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { styled }from "@mui/material";
+import { styled } from "@mui/material";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
 import EmailIcon from "@mui/icons-material/Email";
 import EditIcon from "@mui/icons-material/Edit";
-import  Delete  from "@mui/icons-material/Delete";
+import Delete from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import Context from "../context";
 
@@ -26,23 +26,23 @@ const header = [
   " ",
   " ",
 ];
-const StyledTableHeaderCell = styled(TableCell)(({ theme }) => ({
+const StyledTableHeaderCell = styled(TableCell)(() => ({
   border: "0.2px solid #efeeef",
   fontSize: "12px",
   textAlign: "center",
   padding: "0",
   fontWeight: "inherit",
 }));
-const StyledTableInputCell = styled(TableCell)(({ theme }) => ({
+const StyledTableInputCell = styled(TableCell)(() => ({
   border: "0.2px solid #efeeef",
   padding: "2px",
   textAlign: "center",
 }));
-const StyledTableBodyCell = styled(TableCell)(({ theme }) => ({
+const StyledTableBodyCell = styled(TableCell)(() => ({
   fontSize: "12px",
   fontWeight: "inherit",
 }));
-const StyledTableHeaderInput = styled("input")(({ theme }) => ({
+const StyledTableHeaderInput = styled("input")(() => ({
   border: "none",
   fontSize: "12px",
   width: "100%",
@@ -59,14 +59,13 @@ const StyledTableHeaderInput = styled("input")(({ theme }) => ({
 }));
 
 export default function ListView({ contactsData }) {
-  const { deleteRecords ,handleDeleteRecords} = React.useContext(Context);
-  
+  const { deleteRecords, handleDeleteRecords } = React.useContext(Context);
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
         <TableHead>
           <TableRow sx={{ fontWeight: "600", height: "20px" }}>
-            {header.map((val,key) => (
+            {header.map((val, key) => (
               <StyledTableHeaderCell key={key}>{val}</StyledTableHeaderCell>
             ))}
           </TableRow>
@@ -81,7 +80,9 @@ export default function ListView({ contactsData }) {
               } else {
                 return (
                   <StyledTableInputCell key={key}>
-                    {!!deleteRecords.length && <Delete onClick={handleDeleteRecords} />}
+                    {!!deleteRecords.length && (
+                      <Delete onClick={handleDeleteRecords} />
+                    )}
                   </StyledTableInputCell>
                 );
               }
@@ -117,44 +118,33 @@ export const ListRow = ({ row }) => {
   const pattern = /\[(.*?)\]/;
   const match = emailAddress?.name?.match(pattern);
   const emailLabel = match ? match[1] : "";
-
   const handleDelete = (e) => {
     setChecked(true);
     if (e.target.checked) {
-      setDeleteRecords((data) => {
-        return [
-          ...data,
-          {
-            id: id,
-            version: version,
-          },
-        ];
-      });
+      setDeleteRecords((data) => [
+        ...data,
+        {
+          id: id,
+          version: version,
+        },
+      ]);
     } else {
-      setDeleteRecords((data) => {
-        return data.filter((obj) => obj.id !== id);
-      });
+      setDeleteRecords((data) => data.filter((obj) => obj.id !== id));
       setChecked(false);
     }
-    setDeleteRecords(data=>{
-      if(data.length===0){
-        setChecked(false)
-      }
+    setDeleteRecords((data) => {
+      if (data.length === 0) setChecked(false);
       return data;
-    })
+    });
   };
   return (
     <TableRow
-      onClick={() => {
-        navigate(`/axelor-erp/view/profile/${id}`);
-      }}
+      onClick={() => navigate(`/axelor-erp/view/profile/${id}`)}
       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
     >
       <StyledTableBodyCell
         align="left"
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
+        onClick={(e) => e.stopPropagation()}
         sx={{ minWidth: "25px", fontWeight: "800" }}
       >
         <a href={`/axelor-erp/edit/profile/${id}`}>

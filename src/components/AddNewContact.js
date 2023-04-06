@@ -110,6 +110,7 @@ export const ProfileTopForm = ({ setNewContactData,newContactData }) => {
                 border: "1px solid grey",
               }}
               alt="Upload  Image"
+              id="img"
               image={`http://localhost:8080/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${newContactData?.picture?.id}/content/download?v=3`}
             ></CardMedia>
             <ImageInput    setDataFunction={setNewContactData}></ImageInput>
