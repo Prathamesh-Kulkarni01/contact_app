@@ -60,7 +60,7 @@ export default function DenseAppBar() {
       alert("Updated Successfully");
     } else {
       if (!newContactData.mainPartner) {
-        alert("The following fields are invalid: Name/Company Name");
+        alert("The following fields are invalid: Name");
         return;
       }
       await createOrUpdateNewContact(newContactData);
