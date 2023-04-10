@@ -6,7 +6,6 @@ const BASE_URL = "/axelor-erp/ws/rest/";
 
 const login = async () => {
   const url = "/axelor-erp/callback";
-
   const response = await fetch(url, {
     method: "POST",
     mode: "cors",
@@ -41,7 +40,6 @@ const makeApiCall = async (path, params) => {
     body: JSON.stringify(params),
   });
   const data = await response.json();
-  console.log(data);
   return data.data || [];
 };
 
