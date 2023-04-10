@@ -131,9 +131,9 @@ export default function DenseAppBar() {
             },
           }}
         >
-          <a href="/axelor-erp/list">
+          <Link to="/axelor-erp/list">
             <FormatListBulletedIcon color="gray" />
-          </a>
+          </Link>
         </Box>
         <Box
           edge="start"
@@ -150,10 +150,10 @@ export default function DenseAppBar() {
             },
           }}
         >
-          <a href="/axelor-erp/">
+          <Link to="/axelor-erp/">
             {" "}
             <ViewModuleIcon color="gray" />
-          </a>
+          </Link>
         </Box>
       </Toolbar>
     </AppBar>
