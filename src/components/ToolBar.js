@@ -31,9 +31,10 @@ const useStyles = makeStyles(() => ({
 export default function DenseAppBar() {
   const classes = useStyles();
   const location = useLocation();
- const navigate= useNavigate()
-  const { newContactData, updatedData,setNewContactData,setUpdatedData } = React.useContext(Context);
-  const redirectToHome = () => navigate("/axelor-erp")
+  const navigate = useNavigate();
+  const { newContactData, updatedData, setNewContactData, setUpdatedData } =
+    React.useContext(Context);
+  const redirectToHome = () => navigate("/axelor-erp");
   const handleSave = async () => {
     if (window.location.pathname.split("/")[2] === "edit") {
       const _id = newContactData.id;
@@ -45,11 +46,15 @@ export default function DenseAppBar() {
         _original: { ...newContactData },
       };
       await createOrUpdateNewContact(updatingData);
-      setUpdatedData([])
+      setUpdatedData([]);
       alert("Updated Successfully");
     } else {
+      if (!newContactData.mainPartner) {
+        alert("The following fields are invalid: Name/Company Name");
+        return;
+      }
       await createOrUpdateNewContact(newContactData);
-      setNewContactData([])
+      setNewContactData([]);
       alert("Added Successfully");
     }
     redirectToHome();
