@@ -45,7 +45,7 @@ const AddNewContact = () => {
     (async () => {
       setNewContactData(await getProfileData());
     })();
-  }, [getProfileData, setCurrentPage, setNewContactData]);
+  }, [getProfileData, setNewContactData]);
   return (
     <Box>
       <Grid
