@@ -115,7 +115,7 @@ export const NormalInput = ({
       );
       return;
     }
-    if (!!newContactData[fieldName]) {
+    if (newContactData[fieldName]) {
       setValue(newContactData[fieldName]);
     }
   }, [newContactData, fieldName, type]);
@@ -124,7 +124,7 @@ export const NormalInput = ({
     setValue(event.target.value);
     if (window.location.pathname.split("/")[2] === "edit") {
       setUpdatedData((data) => {
-        if (!!type && type === "mail") {
+        if (type && type === "mail") {
           return {
             ...data,
             emailAddress: {
@@ -141,7 +141,7 @@ export const NormalInput = ({
       return;
     } else {
       setDataFunction((data) => {
-        if (!!type && type === "mail") {
+        if (type && type === "mail") {
           return {
             ...data,
             emailAddress: {
@@ -268,7 +268,7 @@ export function SearchInput({
   const handleOpen = async () => setOptions(await fetchOptionFunction());
 
   useEffect(() => {
-    if (!!newContactData[fieldName]) {
+    if (newContactData[fieldName]) {
       setValue(newContactData[fieldName]);
     }
   }, [newContactData, fieldName, searchByFullName]);
@@ -298,12 +298,12 @@ export function SearchInput({
         onOpen={() => handleOpen()}
         onChange={(e, v) => handleChange(e, v)}
         getOptionLabel={(option) => {
-          let value = !!searchByFullName ? option.fullName : option.name;
+          let value = searchByFullName ? option.fullName : option.name;
           if (value) return value;
           return "";
         }}
         renderOption={(props, option) => {
-          let value = !!searchByFullName ? option.fullName : option.name;
+          let value = searchByFullName ? option.fullName : option.name;
           return (
             <li
               {...props}
@@ -417,7 +417,7 @@ export const CustomCheckBox = ({ label, fieldName, setDataFunction }) => {
     }));
   };
   useEffect(() => {
-    setValue(!!newContactData[fieldName]);
+    setValue(newContactData[fieldName]);
   }, [fieldName, newContactData]);
 
   return (

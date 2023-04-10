@@ -58,7 +58,7 @@ const StyledTableHeaderInput = styled("input")(() => ({
   },
 }));
 
-export default function ListView({ contactsData }) {
+export default function ListView({ contactsData=[] }) {
   return (
     <TableContainer component={Paper}>
       <HeaderRow />

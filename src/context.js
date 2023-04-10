@@ -15,29 +15,26 @@ export const AppContext = ({ children }) => {
     const res = await fetchContacts();
     return res.reverse() || [];
   }, []);
-  const filterIncompleteData = useCallback(
-    async () => {
-      const data=await getContactsData();
-      const filteredData = data.filter((item) =>
-        item.name &&
-        item.simpleFullName &&
-        item.fixedPhone &&
-        item.mobilePhone &&
-        item.emailAddress &&
-        item.mainPartner
-          ? true
-          : false
-      );
-      return filteredData||[];
-    },
-    [getContactsData]
-  );
+  const getDataFromServer = useCallback(async () => {
+    const data = await getContactsData();
+    const filteredData = data.filter((item) =>
+      item.name &&
+      item.simpleFullName &&
+      item.fixedPhone &&
+      item.mobilePhone &&
+      item.emailAddress &&
+      item.mainPartner
+        ? true
+        : false
+    );
+    return filteredData || [];
+  }, [getContactsData]);
 
   const handleDeleteRecords = async () => {
     const noOfRecords = deleteRecords.length;
     setLoading(true);
     const res = await deleteRecord(deleteRecords);
-    filterIncompleteData();
+    getDataFromServer();
     setDeleteRecords([]);
     setLoading(false);
     res.message
@@ -46,9 +43,9 @@ export const AppContext = ({ children }) => {
   };
 
   useEffect(() => {
-    (async () => setContacts(await filterIncompleteData()))();
+    (async () => setContacts(await getDataFromServer()))();
     setLoading(false);
-  }, [filterIncompleteData, getContactsData]);
+  }, [getDataFromServer, getContactsData]);
 
   return (
     <Context.Provider

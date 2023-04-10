@@ -33,7 +33,7 @@ import { Context } from "../context";
 import { useParams } from "react-router-dom";
 
 const AddNewContact = () => {
-  const { setNewContactData, newContactData, setCurrentPage } =
+  const { setNewContactData, newContactData } =
     useContext(Context);
   const { id } = useParams();
   const getProfileData = useCallback(() => {
@@ -45,7 +45,6 @@ const AddNewContact = () => {
     (async () => {
       setNewContactData(await getProfileData());
     })();
-    setCurrentPage("Edit");
   }, [getProfileData, setCurrentPage, setNewContactData]);
   return (
     <Box>

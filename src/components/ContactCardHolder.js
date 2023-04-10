@@ -10,7 +10,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
 import { useNavigate } from "react-router-dom";
 
-export default function ContactCardHolder({ contactsData }) {
+export default function ContactCardHolder({ contactsData =[]}) {
   return (
     <Box>
       <Box sx={{ flexGrow: 1, p: 2, ml: 2 }}>
