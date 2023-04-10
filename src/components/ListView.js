@@ -76,7 +76,6 @@ export default function ListView({ contactsData=[] }) {
 }
 
 export const ListRow = ({ row }) => {
-  console.log(row);
   const { setDeleteRecords, deleteRecords } = React.useContext(Context);
   const [checked, setChecked] = React.useState(false);
   const navigate = useNavigate();
