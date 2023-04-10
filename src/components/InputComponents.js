@@ -101,7 +101,6 @@ export const NormalInput = ({
   setDataFunction,
   fieldName,
   type,
-  required,
 }) => {
   const [value, setValue] = useState("");
   const { newContactData, setUpdatedData } = useContext(Context);
@@ -191,7 +190,7 @@ export function StaticSelect({
   setDataFunction,
   fieldName,
 }) {
-  const [selectedValue, setSelectedValue] = useState();
+  const [selectedValue, setSelectedValue] = useState(0);
   const { setUpdatedData } = useContext(Context);
   const handleClear = () => setSelectedValue("");
 
@@ -413,6 +412,7 @@ export const CustomCheckBox = ({ label, fieldName, setDataFunction }) => {
     }));
   };
   useEffect(() => {
+    if(newContactData[fieldName])
     setValue(newContactData[fieldName]);
   }, [fieldName, newContactData]);
 

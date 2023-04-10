@@ -41,7 +41,10 @@ export default function DenseAppBar() {
     clearDeleteRecords,
   } = useContext(Context);
   const currentPage = location.pathname.split("/");
-  const redirectToHome = () =>{    clearDeleteRecords(); navigate("/axelor-erp")}
+  const redirectToHome = () => {
+    clearDeleteRecords();
+    navigate("/axelor-erp");
+  };
   const handleSave = async () => {
     if (currentPage[2] === "edit") {
       const _id = newContactData.id;
@@ -92,7 +95,7 @@ export default function DenseAppBar() {
           {(currentPage[2] === "create" ||
             currentPage[2] === "edit" ||
             currentPage[2] === "view") && (
-            <ArrowBack onClick={redirectToHome()} />
+            <ArrowBack onClick={() => redirectToHome()} />
           )}
         </Box>
         <Box
