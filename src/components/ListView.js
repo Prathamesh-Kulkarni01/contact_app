@@ -1,4 +1,3 @@
-import * as React from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -13,6 +12,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import Delete from "@mui/icons-material/Delete";
 import { Link, useNavigate } from "react-router-dom";
 import Context from "../context";
+import { Fragment, useContext, useEffect, useState } from "react";
 
 const header = [
   "",
@@ -58,16 +58,16 @@ const StyledTableHeaderInput = styled("input")(() => ({
   },
 }));
 
-export default function ListView({ contactsData=[] }) {
+export default function ListView({ contactsData = [] }) {
   return (
     <TableContainer component={Paper}>
       <HeaderRow />
       <Table>
         <TableBody>
           {contactsData.map((row) => (
-            <React.Fragment>
+            <Fragment>
               <ListRow key={row.updatedOn} row={row} />
-            </React.Fragment>
+            </Fragment>
           ))}
         </TableBody>
       </Table>
@@ -76,8 +76,8 @@ export default function ListView({ contactsData=[] }) {
 }
 
 export const ListRow = ({ row }) => {
-  const { setDeleteRecords, deleteRecords } = React.useContext(Context);
-  const [checked, setChecked] = React.useState(false);
+  const { setDeleteRecords, deleteRecords } = useContext(Context);
+  const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
   const {
     id,
@@ -107,7 +107,7 @@ export const ListRow = ({ row }) => {
       setChecked(false);
     }
   };
-  React.useEffect(() => {
+  useEffect(() => {
     if (deleteRecords.length === 0) setChecked(false);
   }, [deleteRecords.length]);
 
@@ -146,7 +146,7 @@ export const ListRow = ({ row }) => {
 };
 
 const HeaderRow = () => {
-  const { deleteRecords, handleDeleteRecords } = React.useContext(Context);
+  const { deleteRecords, handleDeleteRecords } = useContext(Context);
   return (
     <Box className="header_tb">
       <Table size="small" aria-label="a dense table">
@@ -167,7 +167,7 @@ const HeaderRow = () => {
               } else {
                 return (
                   <StyledTableInputCell key={key}>
-                    {!!deleteRecords.length && (
+                    {deleteRecords.length > 0 && (
                       <Delete onClick={handleDeleteRecords} />
                     )}
                   </StyledTableInputCell>

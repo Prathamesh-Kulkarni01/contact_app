@@ -101,6 +101,7 @@ export const NormalInput = ({
   setDataFunction,
   fieldName,
   type,
+  required,
 }) => {
   const [value, setValue] = useState("");
   const { newContactData, setUpdatedData } = useContext(Context);
@@ -179,6 +180,7 @@ export const NormalInput = ({
         onChange={(e) => handleChange(e)}
         placeholder={placeholder}
         variant="standard"
+        required
       />
     </Box>
   );
@@ -186,11 +188,10 @@ export const NormalInput = ({
 
 export function StaticSelect({
   label,
-  placeholder,
   setDataFunction,
   fieldName,
 }) {
-  const [selectedValue, setSelectedValue] = useState("");
+  const [selectedValue, setSelectedValue] = useState();
   const { setUpdatedData } = useContext(Context);
   const handleClear = () => setSelectedValue("");
 
@@ -216,7 +217,7 @@ export function StaticSelect({
       <NativeSelect
         name={fieldName}
         onChange={handleChange}
-        placeholder={placeholder}
+        defaultValue={0}
         endAdornment={
           selectedValue && (
             <InputAdornment position="end">
@@ -240,14 +241,9 @@ export function StaticSelect({
           "& option[selected]": {
             color: "black",
           },
-          "& option[disabled]": {
-            color: "grey",
-          },
         }}
       >
-        <option value="" disabled>
-          {placeholder}
-        </option>
+        <option>Civility</option>
         <option value={1}>M.</option>
         <option value={2}>Ms.</option>
       </NativeSelect>

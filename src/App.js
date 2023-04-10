@@ -27,14 +27,14 @@ function App() {
           <Routes>
             <Route element={<Layout />}>
               <Route
-                path={"/axelor-erp"}
+                path={"/axelor-erp/list"}
                 element={
                   contacts && <ContactCardHolder contactsData={contacts} />
                 }
               />
               <Route
                 exact
-                path="/axelor-erp/list"
+                path="/axelor-erp/"
                 element={contacts && <ListView contactsData={contacts} />}
               />
               <Route

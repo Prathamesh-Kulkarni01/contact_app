@@ -80,7 +80,7 @@ const AddNewContact = () => {
 
 export default AddNewContact;
 
-export const ProfileTopForm = ({ setNewContactData, newContactData }) => {
+export const ProfileTopForm = ({ setNewContactData, newContactData,required }) => {
   return (
     <Paper
       elevation={0}
@@ -164,12 +164,15 @@ export const ProfileTopForm = ({ setNewContactData, newContactData }) => {
                 <NormalInput
                   setDataFunction={setNewContactData}
                   fieldName="firstName"
+                  placeholder="First name"
                 />
               </Box>
               <Box sx={{ flex: "1 1 auto", mt: { xs: 4, md: 0 } }}>
                 <NormalInput
                   setDataFunction={setNewContactData}
                   fieldName="name"
+                  placeholder="name"
+                  req={required}
                 />
               </Box>
             </Grid>

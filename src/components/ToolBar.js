@@ -1,4 +1,3 @@
-import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,6 +10,8 @@ import { Context } from "../context";
 import { createOrUpdateNewContact } from "../api/api";
 import Edit from "@mui/icons-material/Edit";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ArrowBack } from "@mui/icons-material";
+import { useContext } from "react";
 
 const useStyles = makeStyles(() => ({
   appBar: {
@@ -32,11 +33,17 @@ export default function DenseAppBar() {
   const classes = useStyles();
   const location = useLocation();
   const navigate = useNavigate();
-  const { newContactData, updatedData, setNewContactData, setUpdatedData } =
-    React.useContext(Context);
-  const redirectToHome = () => navigate("/axelor-erp");
+  const {
+    newContactData,
+    updatedData,
+    setNewContactData,
+    setUpdatedData,
+    clearDeleteRecords,
+  } = useContext(Context);
+  const currentPage = location.pathname.split("/");
+  const redirectToHome = () =>{    clearDeleteRecords(); navigate("/axelor-erp")}
   const handleSave = async () => {
-    if (window.location.pathname.split("/")[2] === "edit") {
+    if (currentPage[2] === "edit") {
       const _id = newContactData.id;
       const _version = newContactData.version;
       const updatingData = {
@@ -82,10 +89,11 @@ export default function DenseAppBar() {
             },
           }}
         >
-          <a href="/axelor-erp/create">
-            {" "}
-            <AddIcon sx={{ mx: 2 }} color="gray" />{" "}
-          </a>
+          {(currentPage[2] === "create" ||
+            currentPage[2] === "edit" ||
+            currentPage[2] === "view") && (
+            <ArrowBack onClick={redirectToHome()} />
+          )}
         </Box>
         <Box
           edge="start"
@@ -102,15 +110,34 @@ export default function DenseAppBar() {
             },
           }}
         >
-          {(location.pathname.split("/")[2] === "create" ||
-            location.pathname.split("/")[2] === "edit") && (
+          {currentPage[2] !== "create" && (
+            <Link to="/axelor-erp/create">
+              {" "}
+              <AddIcon sx={{ mx: 2 }} color="gray" />{" "}
+            </Link>
+          )}
+        </Box>
+        <Box
+          edge="start"
+          color="rgba(0,0,0,0.7)"
+          aria-label="menu"
+          sx={{
+            ml: 2,
+            width: "30px",
+            justifyContent: "center",
+            display: "flex",
+            "&:hover": {
+              borderRadius: "1px",
+              backgroundColor: "rgba(0,0,0,0.2)",
+            },
+          }}
+        >
+          {(currentPage[2] === "create" || currentPage[2] === "edit") && (
             <Save sx={{ mx: 2 }} color="gray" onClick={() => handleSave()} />
           )}
 
-          {location.pathname.split("/")[2] === "view" && (
-            <Link
-              to={`/axelor-erp/edit/profile/${location.pathname.split("/")[4]}`}
-            >
+          {currentPage[2] === "view" && (
+            <Link to={`/axelor-erp/edit/profile/${currentPage[4]}`}>
               <Edit />
             </Link>
           )}

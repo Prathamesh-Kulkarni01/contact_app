@@ -41,6 +41,9 @@ export const AppContext = ({ children }) => {
       ? alert("You can't delete referenced record")
       : alert(noOfRecords + " Contacts Deleted...");
   };
+  const clearDeleteRecords=()=>{
+    setDeleteRecords([]);
+  }
 
   useEffect(() => {
     (async () => setContacts(await getDataFromServer()))();
@@ -60,6 +63,7 @@ export const AppContext = ({ children }) => {
         setDeleteRecords,
         handleDeleteRecords,
         setLoading,
+        clearDeleteRecords
       }}
     >
       {children}
