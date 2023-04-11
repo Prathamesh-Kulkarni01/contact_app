@@ -12,8 +12,8 @@ export const AppContext = ({ children }) => {
 
   const getContactsData = useCallback(async () => {
     setLoading(true);
-    const res = await fetchContacts();
-    return res.reverse() || [];
+    const res = await fetchContacts()||[];
+    return res.reverse();
   }, []);
   const getDataFromServer = useCallback(async () => {
     const data = await getContactsData();

@@ -1,7 +1,13 @@
 import Box from "@mui/material/Box";
 import ListView from "./components/ListView";
 import { useContext } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Redirect,
+  Navigate,
+} from "react-router-dom";
 import AddNewContact from "./components/AddNewContact";
 import Context from "./context";
 import ContactCardHolder from "./components/ContactCardHolder";
@@ -26,15 +32,16 @@ function App() {
           <Loader />
           <Routes>
             <Route element={<Layout />}>
+            
               <Route
-                path={"/axelor-erp/list"}
+                path={"/axelor-erp/"}
                 element={
                   contacts && <ContactCardHolder contactsData={contacts} />
                 }
               />
               <Route
                 exact
-                path="/axelor-erp/"
+                path="/axelor-erp/list"
                 element={contacts && <ListView contactsData={contacts} />}
               />
               <Route
