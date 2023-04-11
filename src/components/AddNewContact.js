@@ -33,8 +33,7 @@ import { Context } from "../context";
 import { useParams } from "react-router-dom";
 
 const AddNewContact = () => {
-  const { setNewContactData, newContactData } =
-    useContext(Context);
+  const { setNewContactData, newContactData } = useContext(Context);
   const { id } = useParams();
   const getProfileData = useCallback(() => {
     return fetchContactById(id).then((res) => {
@@ -80,7 +79,11 @@ const AddNewContact = () => {
 
 export default AddNewContact;
 
-export const ProfileTopForm = ({ setNewContactData, newContactData,required }) => {
+export const ProfileTopForm = ({
+  setNewContactData,
+  newContactData,
+  required,
+}) => {
   return (
     <Paper
       elevation={0}
@@ -172,7 +175,6 @@ export const ProfileTopForm = ({ setNewContactData, newContactData,required }) =
                   setDataFunction={setNewContactData}
                   fieldName="name"
                   placeholder="name"
-                  req={required}
                 />
               </Box>
             </Grid>
