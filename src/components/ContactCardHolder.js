@@ -10,7 +10,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
 import { useNavigate } from "react-router-dom";
 
-export default function ContactCardHolder({ contactsData =[]}) {
+export default function ContactCardHolder({ contactsData = [] }) {
   return (
     <Box>
       <Box sx={{ flexGrow: 1, p: 2, ml: 2 }}>
@@ -32,9 +32,17 @@ export default function ContactCardHolder({ contactsData =[]}) {
 
 const ContactCard = ({ row }) => {
   const navigate = useNavigate();
-  const { id, fullName, fixedPhone, mobilePhone, emailAddress,mainPartner, mainAddress,picture } =
-    row;
-    const imgId=picture?.id||1
+  const {
+    id,
+    fullName,
+    fixedPhone,
+    mobilePhone,
+    emailAddress,
+    mainPartner,
+    mainAddress,
+    picture,
+  } = row;
+  const imgId = picture?.id || 1;
   const pattern = /\[(.*?)\]/;
   const match = emailAddress?.name?.match(pattern);
   const emailLabel = match ? match[1] : "";

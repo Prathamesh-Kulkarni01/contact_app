@@ -5,10 +5,10 @@ import NativeSelect from "@mui/material/NativeSelect";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Autocomplete from "@mui/material/Autocomplete";
+import RichTextEditor from "react-rte";
 import SearchIcon from "@mui/icons-material/Search";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
-import RichTextEditor from "react-rte";
 import MuiPhoneNumber from "material-ui-phone-number";
 import Delete from "@mui/icons-material/Delete";
 import Clear from "@mui/icons-material/Clear";
@@ -18,12 +18,12 @@ import React, { useContext, useEffect, useState } from "react";
 import { Component } from "react";
 import { uploadImage } from "../api/api";
 import Context from "../context";
+import { useLocation } from "react-router-dom";
 
 export const ImageInput = ({ setDataFunction }) => {
   const { setUpdatedData } = useContext(Context);
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
-
     const res = await uploadImage(file, file.type, file.name, file.size);
     if (res !== 1) {
       if (window.location.pathname.split("/")[2] === "edit") {
@@ -76,7 +76,6 @@ export const ImageDelete = ({ setDataFunction }) => {
       }));
     }
   };
-
   return (
     <Box onClick={() => handleDelete()}>
       {checkVisibility() && (
@@ -101,24 +100,10 @@ export const NormalInput = ({
   setDataFunction,
   fieldName,
   type,
+  required,
 }) => {
   const [value, setValue] = useState("");
   const { newContactData, setUpdatedData } = useContext(Context);
-
-  useEffect(() => {
-    if (type === "mail" && newContactData.hasOwnProperty("emailAddress")) {
-      setValue(
-        newContactData?.emailAddress?.name?.substring(
-          newContactData?.emailAddress?.name?.indexOf("[") + 1,
-          newContactData?.emailAddress?.name?.indexOf("]")
-        )
-      );
-      return;
-    }
-    if (newContactData[fieldName]) {
-      setValue(newContactData[fieldName]);
-    }
-  }, [newContactData, fieldName, type]);
 
   const handleChange = (event) => {
     setValue(event.target.value);
@@ -134,7 +119,7 @@ export const NormalInput = ({
         } else {
           return {
             ...data,
-            [fieldName]: event.target.value,
+            [fieldName]:event.target.value,
           };
         }
       });
@@ -158,6 +143,21 @@ export const NormalInput = ({
     }
   };
 
+  useEffect(() => {
+    if (type === "mail" && newContactData.hasOwnProperty("emailAddress")) {
+      setValue(
+        newContactData?.emailAddress?.name?.substring(
+          newContactData?.emailAddress?.name?.indexOf("[") + 1,
+          newContactData?.emailAddress?.name?.indexOf("]")
+        )
+      );
+      return;
+    }
+    if (newContactData[fieldName]) {
+      setValue(newContactData[fieldName]);
+    }
+  }, [newContactData, fieldName, type]);
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <CustomLabel>{label}</CustomLabel>
@@ -167,6 +167,7 @@ export const NormalInput = ({
           fontSize: "12px",
           "& .MuiInputBase-input": {
             fontSize: "14px",
+            borderBottom: !value&&required ? "1.5px solid red" : "",
           },
           "& .MuiFormLabel-root": {
             fontSize: "14px",
@@ -185,18 +186,15 @@ export const NormalInput = ({
   );
 };
 
-export function StaticSelect({
-  label,
-  setDataFunction,
-  fieldName,
-}) {
-  const [selectedValue, setSelectedValue] = useState(0);
-  const { setUpdatedData } = useContext(Context);
+export function StaticSelect({ label, setDataFunction, fieldName }) {
+  const [selectedValue, setSelectedValue] = useState("");
+  const { setUpdatedData, newContactData } = useContext(Context);
+  const location = useLocation();
   const handleClear = () => setSelectedValue("");
-
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
-    if (window.location.pathname.split("/")[2] === "edit") {
+    console.log(event.target.value);
+    if (location.pathname.split("/")[2] === "edit") {
       setUpdatedData((data) => {
         return {
           ...data,
@@ -209,6 +207,10 @@ export function StaticSelect({
       [event.target.name]: event.target.value,
     }));
   };
+  useEffect(() => {
+    if (location.pathname.split("/")[2] === "edit")
+      setSelectedValue(newContactData[fieldName]);
+  }, [fieldName, location.pathname, newContactData]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -216,7 +218,7 @@ export function StaticSelect({
       <NativeSelect
         name={fieldName}
         onChange={handleChange}
-        defaultValue={0}
+        value={selectedValue}
         endAdornment={
           selectedValue && (
             <InputAdornment position="end">
@@ -242,7 +244,7 @@ export function StaticSelect({
           },
         }}
       >
-        <option>Civility</option>
+        <option value="">Civility</option>
         <option value={1}>M.</option>
         <option value={2}>Ms.</option>
       </NativeSelect>
@@ -412,8 +414,7 @@ export const CustomCheckBox = ({ label, fieldName, setDataFunction }) => {
     }));
   };
   useEffect(() => {
-    if(newContactData[fieldName])
-    setValue(newContactData[fieldName]);
+    if (newContactData[fieldName]) setValue(newContactData[fieldName]);
   }, [fieldName, newContactData]);
 
   return (

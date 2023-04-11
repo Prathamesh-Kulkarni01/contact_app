@@ -5,14 +5,16 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Box, styled } from "@mui/material";
+import Box from "@mui/material/Box";
+import { styled } from "@mui/material";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
 import EmailIcon from "@mui/icons-material/Email";
 import EditIcon from "@mui/icons-material/Edit";
 import Delete from "@mui/icons-material/Delete";
+
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Context from "../context";
-import { Fragment, useContext, useEffect, useState } from "react";
 
 const header = [
   "",
@@ -36,6 +38,7 @@ const StyledTableHeaderCell = styled(TableCell)(() => ({
 const StyledTableInputCell = styled(TableCell)(() => ({
   border: "0.2px solid #efeeef",
   padding: "2px",
+  minWidth:"30px",
   textAlign: "center",
 }));
 const StyledTableBodyCell = styled(TableCell)(() => ({
@@ -46,6 +49,7 @@ const StyledTableHeaderInput = styled("input")(() => ({
   border: "none",
   fontSize: "12px",
   width: "100%",
+  padding:"10px",
   background: "transparent",
   "&::placeholder": {
     color: "transparent",
@@ -65,9 +69,7 @@ export default function ListView({ contactsData = [] }) {
       <Table>
         <TableBody>
           {contactsData.map((row) => (
-            <Fragment>
-              <ListRow key={row.updatedOn} row={row} />
-            </Fragment>
+            <ListRow key={row.updatedOn} row={row} />
           ))}
         </TableBody>
       </Table>
@@ -108,7 +110,7 @@ export const ListRow = ({ row }) => {
     }
   };
   useEffect(() => {
-    if (deleteRecords.length === 0) setChecked(false);
+    if (!deleteRecords.length) setChecked(false);
   }, [deleteRecords.length]);
 
   return (
@@ -157,23 +159,16 @@ const HeaderRow = () => {
             ))}
           </TableRow>
           <TableRow sx={{ fontWeight: "600", height: "20px" }}>
-            {header.map((val, key) => {
-              if (key !== 0) {
-                return (
-                  <StyledTableInputCell key={key}>
-                    <StyledTableHeaderInput placeholder="Search..." />
-                  </StyledTableInputCell>
-                );
-              } else {
-                return (
-                  <StyledTableInputCell key={key}>
-                    {deleteRecords.length > 0 && (
-                      <Delete onClick={handleDeleteRecords} />
-                    )}
-                  </StyledTableInputCell>
-                );
-              }
-            })}
+            {header.map((val, key) => (
+              <StyledTableInputCell key={key}>
+                {key === 0 && deleteRecords.length > 0 && (
+                  <Delete  onClick={handleDeleteRecords} />
+                )}
+                {key !== 0 && (
+                  <StyledTableHeaderInput placeholder="Search..." />
+                )}
+              </StyledTableInputCell>
+            ))}
           </TableRow>
         </TableHead>
       </Table>

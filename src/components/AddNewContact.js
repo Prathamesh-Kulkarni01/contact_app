@@ -35,15 +35,12 @@ import { useParams } from "react-router-dom";
 const AddNewContact = () => {
   const { setNewContactData, newContactData } = useContext(Context);
   const { id } = useParams();
-  const getProfileData = useCallback(() => {
-    return fetchContactById(id).then((res) => {
-      return res[0];
-    });
+  const getProfileData = useCallback(async () => {
+    const res = await fetchContactById(id);
+    return res[0] || [];
   }, [id]);
   useEffect(() => {
-    (async () => {
-      setNewContactData(await getProfileData());
-    })();
+    (async () => setNewContactData(await getProfileData()))();
   }, [getProfileData, setNewContactData]);
   return (
     <Box>
@@ -102,7 +99,6 @@ export const ProfileTopForm = ({
               height: "100%",
               flexDirection: "column",
               display: "flex",
-
               justifyContent: "center",
             }}
           >
@@ -175,6 +171,7 @@ export const ProfileTopForm = ({
                   setDataFunction={setNewContactData}
                   fieldName="name"
                   placeholder="name"
+                  required={true}
                 />
               </Box>
             </Grid>

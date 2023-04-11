@@ -5,13 +5,14 @@ import AddIcon from "@mui/icons-material/Add";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import Save from "@mui/icons-material/Save";
-import { makeStyles } from "@mui/styles";
-import { Context } from "../context";
-import { createOrUpdateNewContact } from "../api/api";
 import Edit from "@mui/icons-material/Edit";
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ArrowBack } from "@mui/icons-material";
+import { makeStyles } from "@mui/styles";
+
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { createOrUpdateNewContact } from "../api/api";
 import { useContext } from "react";
+import { Context } from "../context";
 
 const useStyles = makeStyles(() => ({
   appBar: {
@@ -43,10 +44,14 @@ export default function DenseAppBar() {
   const currentPage = location.pathname.split("/");
   const redirectToHome = () => {
     clearDeleteRecords();
+    setNewContactData([]);
     navigate("/axelor-erp");
   };
   const handleSave = async () => {
     if (currentPage[2] === "edit") {
+      if (updatedData.name === "") return alert("The following fields are invalid: Name");
+      
+      console.log(updatedData);
       const _id = newContactData.id;
       const _version = newContactData.version;
       const updatingData = {
@@ -59,10 +64,8 @@ export default function DenseAppBar() {
       setUpdatedData([]);
       alert("Updated Successfully");
     } else {
-      if (!newContactData.mainPartner) {
-        alert("The following fields are invalid: Name");
-        return;
-      }
+      if (!newContactData.name)return alert("The following fields are invalid: Name");
+
       await createOrUpdateNewContact(newContactData);
       setNewContactData([]);
       alert("Added Successfully");
@@ -113,7 +116,7 @@ export default function DenseAppBar() {
             },
           }}
         >
-          {currentPage[2] !== "create" && (
+          {currentPage[2] !== "create" && currentPage[2] !== "edit" && (
             <Link to="/axelor-erp/create">
               {" "}
               <AddIcon sx={{ mx: 2 }} color="gray" />{" "}
