@@ -1,9 +1,9 @@
-import { Outlet } from 'react-router-dom';
-import DenseAppBar from './ToolBar';
+import { Outlet } from "react-router-dom";
+import DenseAppBar from "./ToolBar";
 
 export const Layout = () => (
   <>
-    <DenseAppBar/>
+    <DenseAppBar />
     <Outlet />
   </>
 );

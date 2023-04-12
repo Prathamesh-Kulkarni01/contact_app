@@ -40,8 +40,8 @@ const AddNewContact = () => {
     return res[0] || [];
   }, [id]);
   useEffect(() => {
-    (async () => setNewContactData(await getProfileData()))();
-  }, [getProfileData, setNewContactData]);
+    if (id) (async () => setNewContactData(await getProfileData()))();
+  }, [getProfileData, id, setNewContactData]);
   return (
     <Box>
       <Grid
