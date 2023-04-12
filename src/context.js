@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useState } from "react";
+import { createContext, useCallback, useState } from "react";
 import { deleteRecord, fetchContacts } from "./api/api";
 
 export const Context = createContext();
@@ -27,7 +27,8 @@ export const AppContext = ({ children }) => {
         ? true
         : false
     );
-    return filteredData || [];
+    setLoading(false)
+    setContacts(filteredData || [])
   }, [getContactsData]);
 
   const handleDeleteRecords = async () => {
@@ -44,12 +45,6 @@ export const AppContext = ({ children }) => {
   const clearDeleteRecords=()=>{
     setDeleteRecords([]);
   }
-
-  useEffect(() => {
-    (async () => setContacts(await getDataFromServer()))();
-    setLoading(false);
-  }, [getDataFromServer, getContactsData]);
-
   return (
     <Context.Provider
       value={{
@@ -63,7 +58,8 @@ export const AppContext = ({ children }) => {
         setDeleteRecords,
         handleDeleteRecords,
         setLoading,
-        clearDeleteRecords
+        clearDeleteRecords,
+        getDataFromServer
       }}
     >
       {children}

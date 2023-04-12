@@ -39,12 +39,14 @@ export default function DenseAppBar() {
     updatedData,
     setNewContactData,
     setUpdatedData,
+    getDataFromServer,
     clearDeleteRecords,
   } = useContext(Context);
   const currentPage = location.pathname.split("/");
   const redirectToHome = () => {
     clearDeleteRecords();
     setNewContactData([]);
+    getDataFromServer();
     navigate("/axelor-erp");
   };
   const handleSave = async () => {
@@ -65,9 +67,9 @@ export default function DenseAppBar() {
       alert("Updated Successfully");
     } else {
       if (!newContactData.name)return alert("The following fields are invalid: Name");
-
       await createOrUpdateNewContact(newContactData);
       setNewContactData([]);
+      
       alert("Added Successfully");
     }
     redirectToHome();

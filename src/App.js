@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import ListView from "./components/ListView";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -15,7 +15,8 @@ import { Layout } from "./components/Layout";
 import "./App.css";
 
 function App() {
-  const { contacts } = useContext(Context);
+  const {getDataFromServer,contacts}=useContext(Context)
+  useEffect(() => {getDataFromServer()},[getDataFromServer]);
   return (
     <Box
       sx={{
