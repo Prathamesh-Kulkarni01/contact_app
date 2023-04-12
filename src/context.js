@@ -12,23 +12,16 @@ export const AppContext = ({ children }) => {
 
   const getContactsData = useCallback(async () => {
     setLoading(true);
-    const res = await fetchContacts()||[];
+    const res = (await fetchContacts()) || [];
     return res.reverse();
   }, []);
   const getDataFromServer = useCallback(async () => {
     const data = await getContactsData();
-    const filteredData = data.filter((item) =>
-      item.name &&
-      item.simpleFullName &&
-      item.fixedPhone &&
-      item.mobilePhone &&
-      item.emailAddress &&
-      item.mainPartner
-        ? true
-        : false
-    );
-    setLoading(false)
-    setContacts(filteredData || [])
+    const filteredData = data.filter(({name, simpleFullName, fixedPhone, mobilePhone, emailAddress, mainPartner}) =>
+    [name, simpleFullName, fixedPhone, mobilePhone, emailAddress, mainPartner].every(Boolean)
+  );
+    setLoading(false);
+    setContacts(filteredData || []);
   }, [getContactsData]);
 
   const handleDeleteRecords = async () => {
@@ -42,9 +35,9 @@ export const AppContext = ({ children }) => {
       ? alert("You can't delete referenced record")
       : alert(noOfRecords + " Contacts Deleted...");
   };
-  const clearDeleteRecords=()=>{
+  const clearDeleteRecords = () => {
     setDeleteRecords([]);
-  }
+  };
   return (
     <Context.Provider
       value={{
@@ -59,7 +52,7 @@ export const AppContext = ({ children }) => {
         handleDeleteRecords,
         setLoading,
         clearDeleteRecords,
-        getDataFromServer
+        getDataFromServer,
       }}
     >
       {children}
