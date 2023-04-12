@@ -5,16 +5,14 @@ import {
   BrowserRouter as Router,
   Route,
   Routes,
-  Redirect,
-  Navigate,
 } from "react-router-dom";
 import AddNewContact from "./components/AddNewContact";
 import Context from "./context";
 import ContactCardHolder from "./components/ContactCardHolder";
 import Profile from "./components/Profile";
 import Loader from "./components/Loader";
-import "./App.css";
 import { Layout } from "./components/Layout";
+import "./App.css";
 
 function App() {
   const { contacts } = useContext(Context);
