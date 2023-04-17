@@ -9,20 +9,21 @@ export const AppContext = ({ children }) => {
   const [deleteRecords, setDeleteRecords] = useState([]);
   const [contacts, setContacts] = useState(undefined);
   const [loading, setLoading] = useState(true);
+  const [totalRecords, setTotalRecords] = useState(0)
 
-  const getContactsData = useCallback(async () => {
+  // const getContactsData = useCallback(async () => {
+  //   setLoading(true);
+  //   const res = (await fetchContacts()) || [];
+  //   return res.reverse();
+  // }, []);
+  const getDataFromServer = useCallback(async (limit,offset) => {
     setLoading(true);
-    const res = (await fetchContacts()) || [];
-    return res.reverse();
-  }, []);
-  const getDataFromServer = useCallback(async () => {
-    const data = await getContactsData();
-    const filteredData = data.filter(({name, simpleFullName, fixedPhone, mobilePhone, emailAddress, mainPartner}) =>
-    [name, simpleFullName, fixedPhone, mobilePhone, emailAddress, mainPartner].every(Boolean)
-  );
+    const res = (await fetchContacts(limit,offset)) || [];
+    setTotalRecords(res.total)
+    // res.data.reverse();
     setLoading(false);
-    setContacts(filteredData || []);
-  }, [getContactsData]);
+    setContacts(res.data || []);
+  }, []);
 
   const handleDeleteRecords = async () => {
     const noOfRecords = deleteRecords.length;
@@ -53,6 +54,7 @@ export const AppContext = ({ children }) => {
         setLoading,
         clearDeleteRecords,
         getDataFromServer,
+        totalRecords,
       }}
     >
       {children}

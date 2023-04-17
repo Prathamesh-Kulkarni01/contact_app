@@ -64,7 +64,7 @@ const StyledTableHeaderInput = styled("input")(() => ({
 
 export default function ListView({ contactsData = [] }) {
   return (
-    <TableContainer component={Paper}>
+    <TableContainer sx={{height:'95vh'}} component={Paper}>
       <HeaderRow />
       <Table>
         <TableBody>
@@ -87,6 +87,7 @@ export const ListRow = ({ row }) => {
     fixedPhone,
     mobilePhone,
     emailAddress,
+    partnerSeq,
     jobTitleFunction,
     mainPartner,
     version,
@@ -128,13 +129,13 @@ export const ListRow = ({ row }) => {
         </Link>
         <input type="checkbox" checked={checked} onChange={handleDelete} />
       </StyledTableBodyCell>
-      <StyledTableBodyCell></StyledTableBodyCell>
+      <StyledTableBodyCell>{partnerSeq}</StyledTableBodyCell>
       <StyledTableBodyCell>{simpleFullName}</StyledTableBodyCell>
       <StyledTableBodyCell>{fixedPhone}</StyledTableBodyCell>
       <StyledTableBodyCell>{mobilePhone}</StyledTableBodyCell>
-      <StyledTableBodyCell>{emailLabel}</StyledTableBodyCell>
+      <StyledTableBodyCell> {row["emailAddress.address"]}</StyledTableBodyCell>
       <StyledTableBodyCell>
-        {mainPartner?.fullName?.split(" - ")[1]}
+      {row['mainPartner.simpleFullName']}
       </StyledTableBodyCell>
       <StyledTableBodyCell>{jobTitleFunction?.name}</StyledTableBodyCell>
       <StyledTableBodyCell sx={{ width: "8px", color: "#0275d8" }}>

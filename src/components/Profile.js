@@ -26,7 +26,6 @@ const Profile = () => {
   useEffect(() => {
     (async () => setProfileData(await getProfileData()))();
   }, [getProfileData]);
-
   return (
     <Box>
       <Grid
@@ -321,8 +320,6 @@ export const RightContent = ({ profileData }) => {
       <Box
         sx={{
           width: { xs: "91vw", sm: "400px" },
-          height: "100vh",
-
           m: { md: "0 0 10% 60px", sm: "0px" },
         }}
       >

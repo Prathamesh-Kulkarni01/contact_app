@@ -271,6 +271,7 @@ export function SearchInput({
   }, [newContactData, fieldName, searchByFullName]);
 
   const handleChange = (event, value) => {
+    console.log(value);
     setValue(value);
     if (window.location.pathname.split("/")[2] === "edit") {
       setUpdatedData((data) => ({

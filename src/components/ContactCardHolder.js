@@ -1,4 +1,3 @@
-import * as React from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import CardMedia from "@mui/material/CardMedia";
@@ -13,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 export default function ContactCardHolder({ contactsData = [] }) {
   return (
     <Box>
-      <Box sx={{ flexGrow: 1, p: 2, ml: 2 }}>
+      <Box sx={{ flexGrow: 1, p: 2, ml: 2,height:'95vh' ,overflowY:'auto'}}>
         <Grid
           container
           spacing={{ xs: 2, md: 3 }}
@@ -32,20 +31,17 @@ export default function ContactCardHolder({ contactsData = [] }) {
 
 const ContactCard = ({ row }) => {
   const navigate = useNavigate();
+  console.log(row);
   const {
     id,
-    fullName,
+    simpleFullName,
     fixedPhone,
     mobilePhone,
-    emailAddress,
-    mainPartner,
     mainAddress,
+    partnerSeq,
     picture,
   } = row;
   const imgId = picture?.id || 1;
-  const pattern = /\[(.*?)\]/;
-  const match = emailAddress?.name?.match(pattern);
-  const emailLabel = match ? match[1] : "";
   return (
     <Box
       onClick={() => navigate(`/axelor-erp/view/profile/${id}`)}
@@ -60,6 +56,7 @@ const ContactCard = ({ row }) => {
         sx={{
           width: "40%",
           height: "100%",
+          position:'relative',
           flexDirection: "column",
           display: "flex",
         }}
@@ -78,30 +75,21 @@ const ContactCard = ({ row }) => {
               : "http://localhost:8080/axelor-erp/img/partner-m-default.png"
           }
         />
-        <Typography
+         <Typography
           variant="body2"
           color="#333333"
-          sx={{ fontWeight: "550", pb: 0, ml: "30%" }}
+          sx={{ fontWeight: "550", pb: 0, width:'70%',textAlign:'center'}}
         >
-          {fullName?.split(" - ")[0]}
+          {partnerSeq}
         </Typography>
-
         <Typography
           variant="body2"
           color="#333333"
-          sx={{
-            fontWeight: "550",
-            fontSize: "12px",
-            pt: 0,
-            textAlign: "center",
-            width: "70%",
-            ml: "8%",
-          }}
+          sx={{ fontWeight: "550", pb: 0,width:'70%',textAlign:'center' }}
         >
-          {fullName?.split(" - ")[1]}
+          {simpleFullName}
         </Typography>
       </Box>
-
       <Box
         sx={{
           width: "55%",
@@ -179,9 +167,12 @@ const ContactCard = ({ row }) => {
               transform: "skew(20deg, 0deg)",
               m: "0px 10px",
               fontSize: "13px",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+              whiteSpace: "nowrap",
             }}
           >
-            {emailLabel}
+            {row["emailAddress.address"]}
           </Typography>
           <Typography
             sx={{
@@ -190,14 +181,16 @@ const ContactCard = ({ row }) => {
               fontSize: "12px",
             }}
           >
-            {mainPartner?.fullName?.split(" - ")[1]}
+            {row["mainPartner.simpleFullName"]}
           </Typography>
           <Typography
             sx={{
               transform: "skew(20deg, 0deg)",
               m: "0px 12px 0px 10px",
               fontSize: "12px",
-              width: "310px",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+              whiteSpace: "nowrap",
             }}
           >
             {mainAddress?.fullName}

@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  overflow: hidden;
 }
 
 .App-logo {
@@ -14,16 +15,19 @@ input[type="checkbox"] {
 }
 .header_tb {
   position: fixed !important;
-  top: 48px;
+  top: 50px;
   z-index: 1;
   background-color: #f3f3f4 !important;
 }
 thead {
   background-color: white !important;
+  position: relative !important;
+  top: 10px;
 }
+
 tbody {
   position: relative;
-  top: 60px !important;
+  top: 80px !important;
   overflow: auto !important;
 }
 thead th:first-child {
@@ -58,4 +62,13 @@ thead th:nth-child(10) {
 }
 .table {
   position: absolute;
+}
+tbody tr:last-child {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+.css-16c50h-MuiInputBase-root-MuiTablePagination-select {
+  display: none !important;
+}
+.MuiTablePagination-selectLabel {
+  display: none;
 }

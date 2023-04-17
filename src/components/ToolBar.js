@@ -13,6 +13,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createOrUpdateNewContact } from "../api/api";
 import { useContext } from "react";
 import { Context } from "../context";
+import Pagination from "./Pagination";
 
 const useStyles = makeStyles(() => ({
   appBar: {
@@ -50,10 +51,10 @@ export default function DenseAppBar() {
     navigate("/axelor-erp");
   };
   const handleSave = async () => {
+    if (!updatedData.name&&updatedData.name === "")
+    return alert("The following fields are invalid: Name");
+    const fullName = newContactData.firstName +' '+ newContactData.name;
     if (currentPage[2] === "edit") {
-      if (updatedData.name === "") return alert("The following fields are invalid: Name");
-      
-      console.log(updatedData);
       const _id = newContactData.id;
       const _version = newContactData.version;
       const updatingData = {
@@ -66,10 +67,11 @@ export default function DenseAppBar() {
       setUpdatedData([]);
       alert("Updated Successfully");
     } else {
-      if (!newContactData.name)return alert("The following fields are invalid: Name");
+      newContactData.fullName = fullName;
+      newContactData.simpleFullName = fullName;
+      newContactData.isContact = true;
       await createOrUpdateNewContact(newContactData);
       setNewContactData([]);
-      
       alert("Added Successfully");
     }
     redirectToHome();
@@ -151,6 +153,7 @@ export default function DenseAppBar() {
           )}
         </Box>
         <div className={classes.spacer} />
+        <Pagination/>
         <Box
           edge="start"
           color="black"

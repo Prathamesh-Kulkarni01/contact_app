@@ -22,11 +22,8 @@ const login = async () => {
 };
 
 const makeApiCall = async (path, params) => {
-  if (!Token) {
-    await login();
-    return;
-  }
-
+  if (!Token)await login()
+  if (!window.location.href.includes("axelor-erp")) window.location.href = "/axelor-erp/";
   const url = `${BASE_URL}/${path}`;
   const response = await fetch(url, {
     method: "POST",
@@ -40,19 +37,57 @@ const makeApiCall = async (path, params) => {
     body: JSON.stringify(params),
   });
   const data = await response.json();
-  return data.data || [];
+  return data || [];
 };
 
-export const fetchContacts = async () => {
-  const params = { sortBy: ["fullName", "-createdOn"] };
-  return await makeApiCall("com.axelor.apps.base.db.Partner/search", params);
+export const fetchContacts = async (limit = 17, offset = 0) => {
+  const params = {
+    fields: [
+      "jobTitleFunction",
+      "mobilePhone",
+      "simpleFullName",
+      "emailAddress.address",
+      'partnerSeq',
+      "mainPartner.simpleFullName",
+      "fixedPhone",
+      "picture",
+      "mainAddress"
+    ],
+    sortBy: null,
+    data: {
+      _domain:
+        "self.isContact = true AND (self.mainPartner.isCustomer = true OR\n    self.mainPartner.isProspect = true)",
+      _domainContext: {
+        _domain:
+          "self.isContact = true AND (self.mainPartner.isCustomer = true OR self.mainPartner.isProspect = true)",
+        _id: null,
+        _model: "com.axelor.apps.base.db.Partner",
+      },
+      operator: "and",
+      criteria: [],
+    },
+    limit:limit ,
+    offset: offset,
+    translate: true,
+  };
+
+  const response = await makeApiCall(
+    "com.axelor.apps.base.db.Partner/search",
+    params
+  );
+  console.log(response);
+  return response;
 };
 
 export const fetchFunctions = async () => {
   const params = {
     fields: ["id", "id", "name", "name"],
   };
-  return await makeApiCall("com.axelor.apps.base.db.Function/search", params);
+  const response = await makeApiCall(
+    "com.axelor.apps.base.db.Function/search",
+    params
+  );
+  return response.data;
 };
 
 export const fetchMainCompany = async () => {
@@ -84,24 +119,33 @@ export const fetchMainCompany = async () => {
     sortBy: null,
     translate: true,
   };
-  return await makeApiCall("com.axelor.apps.base.db.Partner/search", params);
+  const response = await makeApiCall(
+    "com.axelor.apps.base.db.Partner/search",
+    params
+  );
+  return response.data;
 };
 
 export const fetchDepartments = async () => {
   const params = {
     fields: ["id", "id", "code", "code", "name", "name"],
   };
-  return await makeApiCall(
+  const response = await makeApiCall(
     "com.axelor.apps.base.db.CompanyDepartment/search",
     params
   );
+  return response.data;
 };
 
 export const fetchLanguage = async () => {
   const params = {
     fields: ["id", "id", "code", "code", "name", "name"],
   };
-  return await makeApiCall("com.axelor.apps.base.db.Language/search", params);
+  const response = await makeApiCall(
+    "com.axelor.apps.base.db.Language/search",
+    params
+  );
+  return response.data;
 };
 
 export const fetchAccountOwner = async () => {
@@ -111,14 +155,16 @@ export const fetchAccountOwner = async () => {
     fields: ["fullName", "fullName"],
     sortBy: ["name", "-createdOn"],
   };
-  return await makeApiCall("com.axelor.auth.db.User/search", params);
+  const response = await makeApiCall("com.axelor.auth.db.User/search", params);
+  return response.data;
 };
 
 export const fetchTeams = async () => {
   const params = {
     fields: ["id", "id", "name", "name"],
   };
-  return await makeApiCall("com.axelor.team.db.Team/search", params);
+  const response = await makeApiCall("com.axelor.team.db.Team/search", params);
+  return response.data;
 };
 
 export const fetchAddress = async () => {
@@ -128,14 +174,22 @@ export const fetchAddress = async () => {
     fields: ["id", "id", "name", "name", "fullName", "fullName"],
   };
 
-  return await makeApiCall("com.axelor.apps.base.db.Address/search", params);
+  const response = await makeApiCall(
+    "com.axelor.apps.base.db.Address/search",
+    params
+  );
+  return response.data;
 };
 
 export const fetchManager = async () => {
   const params = {
     fields: ["id", "id", "name", "fullName"],
   };
-  return await makeApiCall("com.axelor.apps.base.db.Partner/search", params);
+  const response = await makeApiCall(
+    "com.axelor.apps.base.db.Partner/search",
+    params
+  );
+  return response.data;
 };
 
 export const createOrUpdateNewContact = async (payload) => {
@@ -143,17 +197,19 @@ export const createOrUpdateNewContact = async (payload) => {
     data: payload,
   };
 
-  return await makeApiCall("com.axelor.apps.base.db.Partner", params);
+  const response = await makeApiCall("com.axelor.apps.base.db.Partner", params);
+  return response.data;
 };
 
 //////////////////////////Profile Page API Calls/////////////////////////////////
 
 export const fetchContactById = async (id) => {
   const params = { sortBy: ["fullName", "-createdOn"] };
-  return await makeApiCall(
+  const response = await makeApiCall(
     `com.axelor.apps.base.db.Partner/${id}/fetch`,
     params
   );
+  return response.data;
 };
 
 // ????????????????? Upload Image Function Tries ???????????????????????????//
@@ -197,5 +253,9 @@ export const deleteRecord = async (records) => {
   const params = {
     records: records,
   };
-  return await makeApiCall(`com.axelor.apps.base.db.Partner/removeAll`, params);
+  const response = await makeApiCall(
+    `com.axelor.apps.base.db.Partner/removeAll`,
+    params
+  );
+  return response.data;
 };

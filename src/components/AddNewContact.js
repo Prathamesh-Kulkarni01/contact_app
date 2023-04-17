@@ -369,7 +369,7 @@ export const ContactBoxWithTabs = ({ setNewContactData }) => {
                 type="mail"
               />
             </Box>
-          </Grid>
+          </Grid>z
           {/* -----------bottom-------------- */}
           <Grid item lg={12} sm={12} xs={12} sx={{ mx: 2 }}>
             <SearchInput
