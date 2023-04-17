@@ -42,6 +42,7 @@ const AddNewContact = () => {
   useEffect(() => {
     if (id) (async () => setNewContactData(await getProfileData()))();
   }, [getProfileData, id, setNewContactData]);
+
   return (
     <Box>
       <Grid
@@ -170,7 +171,7 @@ export const ProfileTopForm = ({
                 <NormalInput
                   setDataFunction={setNewContactData}
                   fieldName="name"
-                  placeholder="name"
+                  placeholder="Name"
                   required={true}
                 />
               </Box>
@@ -369,8 +370,8 @@ export const ContactBoxWithTabs = ({ setNewContactData }) => {
                 type="mail"
               />
             </Box>
-          </Grid>z
-          {/* -----------bottom-------------- */}
+          </Grid>
+          z{/* -----------bottom-------------- */}
           <Grid item lg={12} sm={12} xs={12} sx={{ mx: 2 }}>
             <SearchInput
               label="Address"
@@ -411,8 +412,6 @@ export const RightContent = ({ setNewContactData }) => {
       <Box
         sx={{
           width: { xs: "91vw", sm: "400px" },
-          height: "100vh",
-
           m: { md: "0 0 10% 60px", sm: "0px" },
         }}
       >

@@ -55,6 +55,8 @@ export default function DenseAppBar() {
     return alert("The following fields are invalid: Name");
     const fullName = newContactData.firstName +' '+ newContactData.name;
     if (currentPage[2] === "edit") {
+      if (!updatedData.name&&updatedData.name === "")
+      return alert("The following fields are invalid: Name");
       const _id = newContactData.id;
       const _version = newContactData.version;
       const updatingData = {
@@ -67,6 +69,8 @@ export default function DenseAppBar() {
       setUpdatedData([]);
       alert("Updated Successfully");
     } else {
+      if (!newContactData.name&&newContactData.name === "")
+      return alert("The following fields are invalid: Name");
       newContactData.fullName = fullName;
       newContactData.simpleFullName = fullName;
       newContactData.isContact = true;

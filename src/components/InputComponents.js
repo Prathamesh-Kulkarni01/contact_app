@@ -113,13 +113,13 @@ export const NormalInput = ({
           return {
             ...data,
             emailAddress: {
-              [fieldName]: event.target.value,
+              [fieldName]: event.target.value.trim(),
             },
           };
         } else {
           return {
             ...data,
-            [fieldName]:event.target.value,
+            [fieldName]:event.target.value.trim(),
           };
         }
       });
@@ -130,13 +130,13 @@ export const NormalInput = ({
           return {
             ...data,
             emailAddress: {
-              [fieldName]: event.target.value,
+              [fieldName]: event.target.value.trim(),
             },
           };
         } else {
           return {
             ...data,
-            [fieldName]: event.target.value,
+            [fieldName]: event.target.value.trim(),
           };
         }
       });
