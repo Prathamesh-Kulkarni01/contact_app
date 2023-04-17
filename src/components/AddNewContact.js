@@ -51,7 +51,6 @@ const AddNewContact = () => {
         sx={{
           mt: "10px",
           mx: { xs: "10px", sm: "20px", md: "30px" },
-          margin: "0 20px",
         }}
       >
         <Grid item xs={12} sm={8} md={8} lg={8} xl={8}>

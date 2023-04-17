@@ -40,7 +40,7 @@ const makeApiCall = async (path, params) => {
   return data || [];
 };
 
-export const fetchContacts = async (limit = 17, offset = 0) => {
+export const fetchContacts = async (limit = 15, offset = 0) => {
   const params = {
     fields: [
       "jobTitleFunction",

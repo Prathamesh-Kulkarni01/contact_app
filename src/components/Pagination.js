@@ -9,7 +9,7 @@ export default function Pagination() {
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
     console.log(newPage);
-    getDataFromServer(17,newPage*17)
+    getDataFromServer(15,newPage*15)
   };
   return (
     <TablePagination

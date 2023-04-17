@@ -8,19 +8,13 @@ export const AppContext = ({ children }) => {
   const [updatedData, setUpdatedData] = useState({});
   const [deleteRecords, setDeleteRecords] = useState([]);
   const [contacts, setContacts] = useState(undefined);
-  const [loading, setLoading] = useState(true);
-  const [totalRecords, setTotalRecords] = useState(0)
-
-  // const getContactsData = useCallback(async () => {
-  //   setLoading(true);
-  //   const res = (await fetchContacts()) || [];
-  //   return res.reverse();
-  // }, []);
-  const getDataFromServer = useCallback(async (limit,offset) => {
+  const [loading, setLoading] = useState({a:""});
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [toast, setToast] = useState(true);
+  const getDataFromServer = useCallback(async (limit, offset) => {
     setLoading(true);
-    const res = (await fetchContacts(limit,offset)) || [];
-    setTotalRecords(res.total)
-    // res.data.reverse();
+    const res = (await fetchContacts(limit, offset)) || [];
+    setTotalRecords(res.total);
     setLoading(false);
     setContacts(res.data || []);
   }, []);
@@ -33,9 +27,17 @@ export const AppContext = ({ children }) => {
     setDeleteRecords([]);
     setLoading(false);
     res.message
-      ? alert("You can't delete referenced record")
-      : alert(noOfRecords + " Contacts Deleted...");
-  };
+      ?
+    setToast({
+        variant: "error",
+        text: "You can't delete referenced record",
+      })
+      : 
+      setToast({
+        variant: "success",
+        text: noOfRecords + " Contacts Deleted...",
+      })
+    }
   const clearDeleteRecords = () => {
     setDeleteRecords([]);
   };
@@ -55,6 +57,8 @@ export const AppContext = ({ children }) => {
         clearDeleteRecords,
         getDataFromServer,
         totalRecords,
+        toast,
+        setToast,
       }}
     >
       {children}

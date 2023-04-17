@@ -38,7 +38,7 @@ const StyledTableHeaderCell = styled(TableCell)(() => ({
 const StyledTableInputCell = styled(TableCell)(() => ({
   border: "0.2px solid #efeeef",
   padding: "2px",
-  minWidth:"30px",
+  minWidth: "30px",
   textAlign: "center",
 }));
 const StyledTableBodyCell = styled(TableCell)(() => ({
@@ -49,7 +49,7 @@ const StyledTableHeaderInput = styled("input")(() => ({
   border: "none",
   fontSize: "12px",
   width: "100%",
-  padding:"10px",
+  padding: "10px",
   background: "transparent",
   "&::placeholder": {
     color: "transparent",
@@ -64,7 +64,7 @@ const StyledTableHeaderInput = styled("input")(() => ({
 
 export default function ListView({ contactsData = [] }) {
   return (
-    <TableContainer sx={{height:'95vh'}} component={Paper}>
+    <TableContainer sx={{ height: "98vh" }} component={Paper}>
       <HeaderRow />
       <Table>
         <TableBody>
@@ -86,15 +86,10 @@ export const ListRow = ({ row }) => {
     simpleFullName,
     fixedPhone,
     mobilePhone,
-    emailAddress,
     partnerSeq,
     jobTitleFunction,
-    mainPartner,
     version,
   } = row;
-  const pattern = /\[(.*?)\]/;
-  const match = emailAddress?.name?.match(pattern);
-  const emailLabel = match ? match[1] : "";
   const handleDelete = (e) => {
     setChecked(true);
     if (e.target.checked) {
@@ -135,7 +130,7 @@ export const ListRow = ({ row }) => {
       <StyledTableBodyCell>{mobilePhone}</StyledTableBodyCell>
       <StyledTableBodyCell> {row["emailAddress.address"]}</StyledTableBodyCell>
       <StyledTableBodyCell>
-      {row['mainPartner.simpleFullName']}
+        {row["mainPartner.simpleFullName"]}
       </StyledTableBodyCell>
       <StyledTableBodyCell>{jobTitleFunction?.name}</StyledTableBodyCell>
       <StyledTableBodyCell sx={{ width: "8px", color: "#0275d8" }}>
@@ -163,7 +158,7 @@ const HeaderRow = () => {
             {header.map((val, key) => (
               <StyledTableInputCell key={key}>
                 {key === 0 && deleteRecords.length > 0 && (
-                  <Delete  onClick={handleDeleteRecords} />
+                  <Delete onClick={handleDeleteRecords} />
                 )}
                 {key !== 0 && (
                   <StyledTableHeaderInput placeholder="Search..." />

@@ -42,6 +42,7 @@ export default function DenseAppBar() {
     setUpdatedData,
     getDataFromServer,
     clearDeleteRecords,
+    setToast,
   } = useContext(Context);
   const currentPage = location.pathname.split("/");
   const redirectToHome = () => {
@@ -51,12 +52,13 @@ export default function DenseAppBar() {
     navigate("/axelor-erp");
   };
   const handleSave = async () => {
-    if (!updatedData.name&&updatedData.name === "")
-    return alert("The following fields are invalid: Name");
-    const fullName = newContactData.firstName +' '+ newContactData.name;
+    const fullName = newContactData.firstName + " " + newContactData.name;
     if (currentPage[2] === "edit") {
-      if (!updatedData.name&&updatedData.name === "")
-      return alert("The following fields are invalid: Name");
+      if (!updatedData.name || updatedData.name === "")
+        return setToast({
+          variant: "error",
+          text: "The following fields are invalid: Name",
+        });
       const _id = newContactData.id;
       const _version = newContactData.version;
       const updatingData = {
@@ -69,14 +71,22 @@ export default function DenseAppBar() {
       setUpdatedData([]);
       alert("Updated Successfully");
     } else {
-      if (!newContactData.name&&newContactData.name === "")
-      return alert("The following fields are invalid: Name");
+      if (!newContactData.name)
+        return setToast({
+          variant: "error",
+          text: "The following fields are invalid: Name",
+        });
+
       newContactData.fullName = fullName;
       newContactData.simpleFullName = fullName;
       newContactData.isContact = true;
       await createOrUpdateNewContact(newContactData);
       setNewContactData([]);
-      alert("Added Successfully");
+      alert("Added Successfully" + newContactData.name);
+       setToast({
+        variant: "success",
+        text: "Added Successfully" + newContactData.name,
+      });
     }
     redirectToHome();
   };
@@ -157,7 +167,7 @@ export default function DenseAppBar() {
           )}
         </Box>
         <div className={classes.spacer} />
-        <Pagination/>
+        <Pagination />
         <Box
           edge="start"
           color="black"
