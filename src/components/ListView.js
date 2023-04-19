@@ -106,13 +106,21 @@ export const ListRow = ({ row }) => {
       setChecked(false);
     }
   };
+  const navigateToEdit = (id) => {
+    setDeleteRecords([])
+    navigate(`/axelor-erp/edit/profile/${id}`);
+  };
+  const navigateToProfile = (id) => {
+    setDeleteRecords([])
+    navigate(`/axelor-erp/view/profile/${id}`);
+  };
   useEffect(() => {
     if (!deleteRecords.length) setChecked(false);
   }, [deleteRecords.length]);
 
   return (
     <TableRow
-      onClick={() => navigate(`/axelor-erp/view/profile/${id}`)}
+      onClick={() => navigateToProfile(id)}
       sx={{ width: "100vw", "&:last-child td, &:last-child th": { border: 0 } }}
     >
       <StyledTableBodyCell
@@ -120,9 +128,7 @@ export const ListRow = ({ row }) => {
         onClick={(e) => e.stopPropagation()}
         sx={{ minWidth: "25px", fontWeight: "800" }}
       >
-        <Link to={`/axelor-erp/edit/profile/${id}`}>
-          <EditIcon sx={{ fontSize: "16px" }} />
-        </Link>
+        <EditIcon onClick={()=>navigateToEdit(id)} sx={{ fontSize: "16px" }} />
         <input type="checkbox" checked={checked} onChange={handleDelete} />
       </StyledTableBodyCell>
       <StyledTableBodyCell>{partnerSeq}</StyledTableBodyCell>

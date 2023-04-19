@@ -14,9 +14,7 @@ import "./App.css";
 
 function App() {
   const { getDataFromServer, contacts } = useContext(Context);
-  useEffect(() => {
-    getDataFromServer();
-  }, [getDataFromServer]);
+  useEffect(() => {getDataFromServer();}, [getDataFromServer]);
   return (
     <Box
       sx={{

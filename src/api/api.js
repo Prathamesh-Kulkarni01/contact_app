@@ -54,7 +54,7 @@ export const fetchContacts = async (limit = 15, offset = 0) => {
       "picture",
       "mainAddress",
       "firstName",
-      "name"
+      "name",
     ],
     sortBy: null,
     data: {
@@ -72,7 +72,6 @@ export const fetchContacts = async (limit = 15, offset = 0) => {
     offset: offset,
     translate: true,
   };
-
   const response = await makeApiCall(
     "com.axelor.apps.base.db.Partner/search",
     params
@@ -200,7 +199,7 @@ export const fetchAccountOwner = async (value = "") => {
 
 export const fetchTeams = async () => {
   const params = {
-    fields: ["id", "id", "name", "name"],
+    fields: ["id", "name"],
   };
   const response = await makeApiCall("com.axelor.team.db.Team/search", params);
   return response.data || [];
@@ -221,7 +220,6 @@ export const fetchAddress = async (value = "") => {
     fields: ["id", "name", "fullName"],
     limit: 10,
   };
-
   const response = await makeApiCall(
     "com.axelor.apps.base.db.Address/search",
     params
@@ -269,13 +267,14 @@ export const fetchContactById = async (id) => {
   return response.data;
 };
 //////////////////////////////Search /////////////////////////////////////////////////////////////
-
 export const searchContact = async (text) => {
   const params = {
     fields: [
       "partnerCategory",
       "mobilePhone",
       "simpleFullName",
+      "firstName",
+      "name",
       "emailAddress.address",
       "mainPartner.simpleFullName",
       "partnerSeq",
@@ -389,7 +388,6 @@ export const uploadImage = async (binary, type, name, size) => {
       },
     })
     .catch((err) => {
-      console.log(err);
       return 1;
     });
 

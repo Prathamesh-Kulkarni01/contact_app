@@ -46,6 +46,7 @@ export default function DenseAppBar() {
     clearDeleteRecords,
     setContacts,
     setToast,
+    fetchOffset,
   } = useContext(Context);
   const currentPage = location.pathname.split("/");
   const redirectToHome = () => {
@@ -147,7 +148,7 @@ export default function DenseAppBar() {
           }}
         >
           {currentPage[2] !== "create" && currentPage[2] !== "edit" && (
-            <Link to="/axelor-erp/create">
+            <Link onClick={() => clearDeleteRecords()} to="/axelor-erp/create">
               {" "}
               <AddIcon sx={{ mx: 2 }} color="gray" />{" "}
             </Link>
@@ -182,7 +183,7 @@ export default function DenseAppBar() {
         {(!currentPage[2] || currentPage[2] === "list") && <Refresh />}
         {(!currentPage[2] || currentPage[2] === "list") && <SearchBar />}
         <div className={classes.spacer} />
-        <Pagination />
+        {(!currentPage[2] || currentPage[2] === "list") && <Pagination />}
         {/* ---------------------------------------------------------------------------------------------------------------- */}
         <Box
           edge="start"
@@ -263,14 +264,12 @@ const SearchBar = () => {
 };
 
 const Refresh = () => {
-  const { getDataFromServer } = useContext(Context);
+  const { getDataFromServer, fetchOffset } = useContext(Context);
   return (
     <Box
       edge="start"
       color="rgba(0,0,0,0.7)"
-      onClick={() => {
-        getDataFromServer();
-      }}
+      onClick={() => getDataFromServer(15, fetchOffset)}
       aria-label="menu"
       sx={{
         ml: 2,

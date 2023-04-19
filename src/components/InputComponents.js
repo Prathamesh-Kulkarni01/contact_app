@@ -377,9 +377,7 @@ export function PhoneNumberWithCountrySelect({
       [fieldName]: value,
     }));
   };
-  useEffect(() => {
-    setPhone(newContactData[fieldName]);
-  }, [fieldName, newContactData]);
+  useEffect(() => {setPhone(newContactData[fieldName]);}, [fieldName, newContactData]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", mb: 1 }}>

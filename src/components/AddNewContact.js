@@ -181,7 +181,6 @@ export const ProfileTopForm = ({
               </Box>
             </Grid>
           </Grid>
-
           <Typography
             variant="h6"
             sx={{ fontWeight: "550", fontSize: "15px", mb: "8px" }}

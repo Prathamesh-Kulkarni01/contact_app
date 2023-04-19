@@ -11,13 +11,14 @@ export const AppContext = ({ children }) => {
   const [loading, setLoading] = useState({ a: "" });
   const [totalRecords, setTotalRecords] = useState(0);
   const [toast, setToast] = useState(false);
+  const [fetchOffset, setFetchOffset] = useState(0);
 
   const getDataFromServer = useCallback(async (limit, offset) => {
     setLoading(true);
     const res = await fetchContacts(limit, offset);
     setTotalRecords(res.total);
     setLoading(false);
-    setContacts(res.data|| []);
+    setContacts(res.data || []);
   }, []);
 
   const handleDeleteRecords = async () => {
@@ -42,7 +43,7 @@ export const AppContext = ({ children }) => {
     setDeleteRecords([]);
   };
 
-  const handleSearch = async (text="") => {
+  const handleSearch = async (text = "") => {
     setLoading(true);
     const res = await searchContact(text);
     setTotalRecords(res.total);
@@ -69,6 +70,8 @@ export const AppContext = ({ children }) => {
         toast,
         setToast,
         handleSearch,
+        fetchOffset,
+        setFetchOffset
       }}
     >
       {children}
