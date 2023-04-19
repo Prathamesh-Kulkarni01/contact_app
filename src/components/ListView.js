@@ -83,7 +83,8 @@ export const ListRow = ({ row }) => {
   const navigate = useNavigate();
   const {
     id,
-    simpleFullName,
+    firstName,
+    name,
     fixedPhone,
     mobilePhone,
     partnerSeq,
@@ -125,7 +126,7 @@ export const ListRow = ({ row }) => {
         <input type="checkbox" checked={checked} onChange={handleDelete} />
       </StyledTableBodyCell>
       <StyledTableBodyCell>{partnerSeq}</StyledTableBodyCell>
-      <StyledTableBodyCell>{simpleFullName}</StyledTableBodyCell>
+      <StyledTableBodyCell>{firstName + " " + name}</StyledTableBodyCell>
       <StyledTableBodyCell>{fixedPhone}</StyledTableBodyCell>
       <StyledTableBodyCell>{mobilePhone}</StyledTableBodyCell>
       <StyledTableBodyCell> {row["emailAddress.address"]}</StyledTableBodyCell>

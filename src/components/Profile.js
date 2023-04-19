@@ -8,13 +8,7 @@ import Typography from "@mui/material/Typography";
 import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchContactById } from "../api/api";
-
-import {
-  AssociatedCompanies,
-  CustomBlueText,
-  CustomLabel,
-  MyStatefulEditor,
-} from "./InputComponents";
+import { CustomBlueText, CustomLabel } from "./InputComponents";
 
 const Profile = () => {
   const [profileData, setProfileData] = useState({});
@@ -49,7 +43,6 @@ const Profile = () => {
             <ContactBoxWithTabs profileData={profileData} />
           </Box>
         </Grid>
-
         <RightContent profileData={profileData} />
       </Grid>
     </Box>
@@ -96,7 +89,9 @@ export const ProfileTopForm = ({ profileData }) => {
             />
           </Box>
         </Box>
-        <Box sx={{ width: { xs: "100%", sm: "80%" } }}>
+        <Box
+          sx={{ ml: { md: "60px", xl: 0 }, width: { xs: "100%", sm: "80%" } }}
+        >
           <Grid container spacing={{ xs: 2, md: 4 }} sx={{ p: "10px 0px" }}>
             <Grid
               item
@@ -162,7 +157,6 @@ export const ProfileTopForm = ({ profileData }) => {
 export const CustomTabs = ({ options, setTabIndex }) => {
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
   const tabs = [...options];
-
   const handleTabSwitch = (index) => {
     setSelectedTabIndex(index);
     setTabIndex(index);
@@ -217,7 +211,6 @@ export const ContactBoxWithTabs = ({ profileData }) => {
         display: "flex",
         flexDirection: "column",
         marginTop: "60px",
-
         backgroundColor: "transparent",
       }}
     >
@@ -225,7 +218,6 @@ export const ContactBoxWithTabs = ({ profileData }) => {
         options={["Contact details", "Partners"]}
         setTabIndex={setTabIndex}
       />
-
       {/* --------------------------Contact Tab Contains-------------------- */}
       {tabIndex === 0 ? (
         <Grid
@@ -257,7 +249,6 @@ export const ContactBoxWithTabs = ({ profileData }) => {
                 {" "}
                 {profileData?.reportsTo?.fullName}
               </CustomBlueText>
-
               <CustomLabel>Mobile phone</CustomLabel>
               <CustomBlueText> {profileData?.mobilePhone}</CustomBlueText>
               <CustomLabel>Address</CustomLabel>
@@ -373,19 +364,38 @@ export const RightContent = ({ profileData }) => {
               <CustomBlueText> {profileData?.team?.name} </CustomBlueText>
             </Grid>
           </Grid>
-          <AssociatedCompanies />
+          <Box>
+            <CustomLabel>Companies associated to</CustomLabel>
+            <CustomBlueText>Axelor</CustomBlueText>
+          </Box>
         </Box>
         {/* -------------------Editor Layout---------------- */}
         <Grid
           container
-          height={200}
           sx={{
             backgroundColor: "white",
             border: "1px solid rgba(0,0,0,0.08)",
             padding: "6px",
+            display: "flex",
+            flexDirection: "column",
+            minHeight: "150px",
           }}
         >
-          <MyStatefulEditor />
+          <Typography
+            sx={{
+              fontSize: "16px",
+              fontWeight: "550",
+              p: "14px 0",
+              maxHeight: "20px",
+            }}
+          >
+            Notes
+          </Typography>
+          <Divider sx={{ mb: 1 }} />
+          <Box
+            sx={{ padding: "10px" }}
+            dangerouslySetInnerHTML={{ __html: profileData?.description || "" }}
+          ></Box>
         </Grid>
       </Box>
     </Grid>

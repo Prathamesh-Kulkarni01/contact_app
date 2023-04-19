@@ -15,10 +15,9 @@ import Clear from "@mui/icons-material/Clear";
 import AddAPhoto from "@mui/icons-material/AddAPhoto";
 
 import React, { useContext, useEffect, useState } from "react";
-import { Component } from "react";
+import { useLocation } from "react-router-dom";
 import { uploadImage } from "../api/api";
 import Context from "../context";
-import { useLocation } from "react-router-dom";
 
 export const ImageInput = ({ setDataFunction }) => {
   const { setUpdatedData } = useContext(Context);
@@ -119,7 +118,7 @@ export const NormalInput = ({
         } else {
           return {
             ...data,
-            [fieldName]:event.target.value.trim(),
+            [fieldName]: event.target.value.trim(),
           };
         }
       });
@@ -167,7 +166,7 @@ export const NormalInput = ({
           fontSize: "12px",
           "& .MuiInputBase-input": {
             fontSize: "14px",
-            borderBottom: !value&&required ? "1.5px solid red" : "",
+            borderBottom: !value && required ? "1.5px solid red" : "",
           },
           "& .MuiFormLabel-root": {
             fontSize: "14px",
@@ -193,7 +192,6 @@ export function StaticSelect({ label, setDataFunction, fieldName }) {
   const handleClear = () => setSelectedValue("");
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
-    console.log(event.target.value);
     if (location.pathname.split("/")[2] === "edit") {
       setUpdatedData((data) => {
         return {
@@ -270,8 +268,10 @@ export function SearchInput({
     }
   }, [newContactData, fieldName, searchByFullName]);
 
-  const handleChange = (event, value) => {
-    console.log(value);
+  const handleInputChange = async (e) =>
+    setOptions(await fetchOptionFunction(e?.target?.value));
+
+  const handleChange = async (event, value) => {
     setValue(value);
     if (window.location.pathname.split("/")[2] === "edit") {
       setUpdatedData((data) => ({
@@ -285,6 +285,7 @@ export function SearchInput({
       }));
     }
   };
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <CustomLabel>{label}</CustomLabel>
@@ -294,6 +295,7 @@ export function SearchInput({
         name="0000"
         value={value}
         onOpen={() => handleOpen()}
+        onInputChange={handleInputChange}
         onChange={(e, v) => handleChange(e, v)}
         getOptionLabel={(option) => {
           let value = searchByFullName ? option.fullName : option.name;
@@ -473,46 +475,56 @@ export const AssociatedCompanies = () => {
   );
 };
 
-export class MyStatefulEditor extends Component {
-  state = {
-    value: RichTextEditor.createEmptyValue(),
-  };
-  onChange = (value) => {
-    this.setState({ value });
-    if (this.props.onChange) {
-      this.props.onChange(value.toString("html"));
+export function MyStatefulEditor({ fieldName, setDataFunction }) {
+  const [value, setValue] = useState(RichTextEditor.createEmptyValue());
+
+  const { newContactData, setUpdatedData } = useContext(Context);
+  const onChange = (value) => {
+    setValue(value);
+    if (window.location.pathname.split("/")[2] === "edit") {
+      setUpdatedData((data) => ({
+        ...data,
+        [fieldName]: value.toString("html"),
+      }));
+      return;
     }
+    setDataFunction((data) => ({
+      ...data,
+      [fieldName]: value.toString("html"),
+    }));
   };
 
-  render() {
-    const toolbarConfig = {
-      display: [
-        "INLINE_STYLE_BUTTONS",
-        "BLOCK_TYPE_BUTTONS",
-        "LINK_BUTTONS",
-        "BLOCK_TYPE_DROPDOWN",
-        "HISTORY_BUTTONS",
-      ],
-      INLINE_STYLE_BUTTONS: [
-        { label: "Bold", style: "BOLD", className: "custom-css-class" },
-        { label: "Italic", style: "ITALIC" },
-        { label: "Underline", style: "UNDERLINE" },
-      ],
+  useEffect(() => {
+    if (newContactData[fieldName]&&window.location.pathname.split("/")[2] === "edit") setValue(RichTextEditor.createValueFromString(newContactData[fieldName], "html"));
+  }, [fieldName, newContactData]);
 
-      BLOCK_TYPE_BUTTONS: [
-        { label: "UL", style: "unordered-list-item" },
-        { label: "UL", style: "unordered-list-item" },
-        { label: "OL", style: "ordered-list-item" },
-      ],
-    };
-    return (
-      <RichTextEditor
-        toolbarConfig={toolbarConfig}
-        value={this.state.value}
-        onChange={this.onChange}
-      />
-    );
-  }
+  const toolbarConfig = {
+    display: [
+      "INLINE_STYLE_BUTTONS",
+      "BLOCK_TYPE_BUTTONS",
+      "LINK_BUTTONS",
+      "BLOCK_TYPE_DROPDOWN",
+      "HISTORY_BUTTONS",
+    ],
+    INLINE_STYLE_BUTTONS: [
+      { label: "Bold", style: "BOLD", className: "custom-css-class" },
+      { label: "Italic", style: "ITALIC" },
+      { label: "Underline", style: "UNDERLINE" },
+    ],
+    BLOCK_TYPE_BUTTONS: [
+      { label: "UL", style: "unordered-list-item" },
+      { label: "UL", style: "unordered-list-item" },
+      { label: "OL", style: "ordered-list-item" },
+    ],
+  };
+
+  return (
+    <RichTextEditor
+      toolbarConfig={toolbarConfig}
+      value={value}
+      onChange={onChange}
+    />
+  );
 }
 
 export const CustomLabel = ({ children }) => {

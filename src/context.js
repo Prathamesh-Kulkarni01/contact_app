@@ -1,5 +1,5 @@
 import { createContext, useCallback, useState } from "react";
-import { deleteRecord, fetchContacts } from "./api/api";
+import { deleteRecord, fetchContacts, searchContact } from "./api/api";
 
 export const Context = createContext();
 
@@ -8,15 +8,16 @@ export const AppContext = ({ children }) => {
   const [updatedData, setUpdatedData] = useState({});
   const [deleteRecords, setDeleteRecords] = useState([]);
   const [contacts, setContacts] = useState(undefined);
-  const [loading, setLoading] = useState({a:""});
+  const [loading, setLoading] = useState({ a: "" });
   const [totalRecords, setTotalRecords] = useState(0);
-  const [toast, setToast] = useState(true);
+  const [toast, setToast] = useState(false);
+
   const getDataFromServer = useCallback(async (limit, offset) => {
     setLoading(true);
-    const res = (await fetchContacts(limit, offset)) || [];
+    const res = await fetchContacts(limit, offset);
     setTotalRecords(res.total);
     setLoading(false);
-    setContacts(res.data || []);
+    setContacts(res.data|| []);
   }, []);
 
   const handleDeleteRecords = async () => {
@@ -27,24 +28,32 @@ export const AppContext = ({ children }) => {
     setDeleteRecords([]);
     setLoading(false);
     res.message
-      ?
-    setToast({
-        variant: "error",
-        text: "You can't delete referenced record",
-      })
-      : 
-      setToast({
-        variant: "success",
-        text: noOfRecords + " Contacts Deleted...",
-      })
-    }
+      ? setToast({
+          variant: "error",
+          text: "You can't delete referenced record",
+        })
+      : setToast({
+          variant: "success",
+          text: noOfRecords + " Contacts Deleted...",
+        });
+  };
+
   const clearDeleteRecords = () => {
     setDeleteRecords([]);
+  };
+
+  const handleSearch = async (text="") => {
+    setLoading(true);
+    const res = await searchContact(text);
+    setTotalRecords(res.total);
+    setLoading(false);
+    setContacts(res.data || []);
   };
   return (
     <Context.Provider
       value={{
         contacts,
+        setContacts,
         loading,
         setNewContactData,
         newContactData,
@@ -59,6 +68,7 @@ export const AppContext = ({ children }) => {
         totalRecords,
         toast,
         setToast,
+        handleSearch,
       }}
     >
       {children}

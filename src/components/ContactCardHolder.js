@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 export default function ContactCardHolder({ contactsData = [] }) {
   return (
     <Box>
-      <Box sx={{ flexGrow: 1, p: 2, ml: 2,height:'95vh' ,overflowY:'auto'}}>
+      <Box sx={{ flexGrow: 1, p: 2, ml: 2, height: "95vh", overflowY: "auto" }}>
         <Grid
           container
           spacing={{ xs: 2, md: 2 }}
@@ -31,10 +31,10 @@ export default function ContactCardHolder({ contactsData = [] }) {
 
 const ContactCard = ({ row }) => {
   const navigate = useNavigate();
-  console.log(row);
   const {
     id,
-    simpleFullName,
+    name,
+    firstName,
     fixedPhone,
     mobilePhone,
     mainAddress,
@@ -56,7 +56,7 @@ const ContactCard = ({ row }) => {
         sx={{
           width: "40%",
           height: "100%",
-          position:'relative',
+          position: "relative",
           flexDirection: "column",
           display: "flex",
         }}
@@ -75,19 +75,19 @@ const ContactCard = ({ row }) => {
               : "http://localhost:8080/axelor-erp/img/partner-m-default.png"
           }
         />
-         <Typography
+        <Typography
           variant="body2"
           color="#333333"
-          sx={{ fontWeight: "550", pb: 0, width:'70%',textAlign:'center'}}
+          sx={{ fontWeight: "550", pb: 0, width: "70%", textAlign: "center" }}
         >
           {partnerSeq}
         </Typography>
         <Typography
           variant="body2"
           color="#333333"
-          sx={{ fontWeight: "550", pb: 0,width:'70%',textAlign:'center' }}
+          sx={{ fontWeight: "550", pb: 0, width: "70%", textAlign: "center" }}
         >
-          {simpleFullName}
+          {firstName + " " + name}
         </Typography>
       </Box>
       <Box

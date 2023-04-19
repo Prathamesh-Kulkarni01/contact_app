@@ -9,17 +9,22 @@ const Toast = () => {
       setToast(false);
     }, 5000);
     return () => clearInterval(interval);
-  }, [setToast])
-  
+  }, [setToast]);
   return (
-      <Alert
-        severity={toast?.variant}
-        sx={{ position: "fixed", top: 60, right: 20, zIndex: 100 ,display:toast?'flex':'none'}}
-      >
-        <AlertTitle>{toast.variant?.toUpperCase()}</AlertTitle>
-        {toast.text}
-      </Alert>
-    )
+    <Alert
+      severity={toast?.variant}
+      sx={{
+        position: "fixed",
+        top: 60,
+        right: 20,
+        zIndex: 100,
+        display: toast ? "flex" : "none",
+      }}
+    >
+      <AlertTitle>{toast.variant?.toUpperCase()}</AlertTitle>
+      {toast.text}
+    </Alert>
+  );
 };
 
 export default Toast;

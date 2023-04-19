@@ -1,15 +1,16 @@
 import Box from "@mui/material/Box";
-import ListView from "./components/ListView";
 import { useContext, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
 import AddNewContact from "./components/AddNewContact";
 import Context from "./context";
 import ContactCardHolder from "./components/ContactCardHolder";
 import Profile from "./components/Profile";
 import Loader from "./components/Loader";
+import Toast from "./components/Toast";
+import ListView from "./components/ListView";
 import { Layout } from "./components/Layout";
 import "./App.css";
-import Toast from "./components/Toast";
 
 function App() {
   const { getDataFromServer, contacts } = useContext(Context);
@@ -23,7 +24,7 @@ function App() {
         p: 0,
         height: "100vh",
         minWidth: "100vw",
-        overflow:'hidden'
+        overflow: "hidden",
       }}
     >
       <Toast />
@@ -67,19 +68,3 @@ function App() {
 }
 
 export default App;
-
-//TODO:
-
-// Selection search & whole list is not working (main company, other)
-
-// notes not working
-
-// Edit mode is not properly working for notes/multiselect of side panel
-
-// manage view on back (from to card/grid)
-
-// optimise back api calls
-
-// add common search for grid
-
-// Update alert dialog (don't use browser alert)

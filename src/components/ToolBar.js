@@ -6,14 +6,17 @@ import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import Save from "@mui/icons-material/Save";
 import Edit from "@mui/icons-material/Edit";
-import { ArrowBack } from "@mui/icons-material";
+import ArrowBack from "@mui/icons-material/ArrowBack";
+import RefreshRounded from "@mui/icons-material/RefreshRounded";
+import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import { makeStyles } from "@mui/styles";
+import InputBase from "@mui/material/InputBase";
+import Pagination from "./Pagination";
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createOrUpdateNewContact } from "../api/api";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Context } from "../context";
-import Pagination from "./Pagination";
 
 const useStyles = makeStyles(() => ({
   appBar: {
@@ -40,27 +43,28 @@ export default function DenseAppBar() {
     updatedData,
     setNewContactData,
     setUpdatedData,
-    getDataFromServer,
     clearDeleteRecords,
+    setContacts,
     setToast,
   } = useContext(Context);
   const currentPage = location.pathname.split("/");
   const redirectToHome = () => {
     clearDeleteRecords();
     setNewContactData([]);
-    getDataFromServer();
     navigate("/axelor-erp");
   };
   const handleSave = async () => {
     const fullName = newContactData.firstName + " " + newContactData.name;
     if (currentPage[2] === "edit") {
-      if (!updatedData.name || updatedData.name === "")
+      if (updatedData.name === "")
         return setToast({
           variant: "error",
           text: "The following fields are invalid: Name",
         });
       const _id = newContactData.id;
       const _version = newContactData.version;
+      if (updatedData.name || updatedData.firstName)
+        updatedData.simpleFullName = updatedData.name;
       const updatingData = {
         id: _id,
         version: _version,
@@ -69,23 +73,31 @@ export default function DenseAppBar() {
       };
       await createOrUpdateNewContact(updatingData);
       setUpdatedData([]);
-      alert("Updated Successfully");
+      setContacts((data) => {
+        const newData = [...data];
+        const index = data.findIndex((item) => item.id === _id);
+        newData[index] = { ...newData[index], ...updatedData };
+        return newData;
+      });
+      setToast({
+        variant: "success",
+        text: "Updated successfully (" + newContactData.name + ")",
+      });
     } else {
       if (!newContactData.name)
         return setToast({
           variant: "error",
           text: "The following fields are invalid: Name",
         });
-
       newContactData.fullName = fullName;
       newContactData.simpleFullName = fullName;
       newContactData.isContact = true;
+      newContactData._original = {};
       await createOrUpdateNewContact(newContactData);
       setNewContactData([]);
-      alert("Added Successfully" + newContactData.name);
-       setToast({
+      setToast({
         variant: "success",
-        text: "Added Successfully" + newContactData.name,
+        text: "New Contact added successfully (" + newContactData.name + ")",
       });
     }
     redirectToHome();
@@ -116,7 +128,7 @@ export default function DenseAppBar() {
           {(currentPage[2] === "create" ||
             currentPage[2] === "edit" ||
             currentPage[2] === "view") && (
-            <ArrowBack onClick={() => redirectToHome()} />
+            <ArrowBack onClick={() => navigate(-1)} />
           )}
         </Box>
         <Box
@@ -166,8 +178,12 @@ export default function DenseAppBar() {
             </Link>
           )}
         </Box>
+        {/* -------------------------------------------------------------------------------------------------------- */}
+        {(!currentPage[2] || currentPage[2] === "list") && <Refresh />}
+        {(!currentPage[2] || currentPage[2] === "list") && <SearchBar />}
         <div className={classes.spacer} />
         <Pagination />
+        {/* ---------------------------------------------------------------------------------------------------------------- */}
         <Box
           edge="start"
           color="black"
@@ -211,3 +227,63 @@ export default function DenseAppBar() {
     </AppBar>
   );
 }
+
+const SearchBar = () => {
+  const [searchText, setSearchText] = useState("");
+  const { handleSearch } = useContext(Context);
+
+  return (
+    <Box
+      sx={{
+        border: "1px solid grey",
+        height: "30px",
+        display: "flex",
+        ml: "30px",
+      }}
+    >
+      <InputBase
+        placeholder="Search…"
+        sx={{ padding: "1px 3px" }}
+        onChange={(e) => setSearchText(e.target.value)}
+        inputProps={{ "aria-label": "search" }}
+      />
+      <Box
+        onClick={() => handleSearch(searchText)}
+        sx={{
+          backgroundColor: "rgba(0,0,0, 0.1)",
+          "&:hover": {
+            backgroundColor: "rgba(0,0,0, 0.35)",
+          },
+        }}
+      >
+        <SearchOutlined sx={{ color: "grey", m: "3px" }} />
+      </Box>
+    </Box>
+  );
+};
+
+const Refresh = () => {
+  const { getDataFromServer } = useContext(Context);
+  return (
+    <Box
+      edge="start"
+      color="rgba(0,0,0,0.7)"
+      onClick={() => {
+        getDataFromServer();
+      }}
+      aria-label="menu"
+      sx={{
+        ml: 2,
+        width: "30px",
+        justifyContent: "center",
+        display: "flex",
+        "&:hover": {
+          borderRadius: "1px",
+          backgroundColor: "rgba(0,0,0,0.2)",
+        },
+      }}
+    >
+      <RefreshRounded sx={{ mx: 2 }} color="gray" />{" "}
+    </Box>
+  );
+};

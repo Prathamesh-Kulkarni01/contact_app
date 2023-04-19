@@ -79,7 +79,6 @@ export default AddNewContact;
 export const ProfileTopForm = ({
   setNewContactData,
   newContactData,
-  required,
 }) => {
   return (
     <Paper
@@ -140,7 +139,13 @@ export const ProfileTopForm = ({
             </Box>
           </Box>
         </Box>
-        <Box sx={{ width: { xs: "100%", sm: "80%" }, minHeight: "170px" }}>
+        <Box
+          sx={{
+            ml: { md: "60px", xl: 0 },
+            width: { xs: "100%", sm: "80%" },
+            minHeight: "170px",
+          }}
+        >
           <Grid container spacing={{ xs: 2, md: 4 }} sx={{ pt: 4 }}>
             <Grid item xs={12} md={3} lg={2}>
               <StaticSelect
@@ -189,9 +194,9 @@ export const ProfileTopForm = ({
               <SearchInput
                 label="Main company"
                 searchByFullName="Main Company"
-                fetchOptionFunction={async () => {
-                  return await fetchMainCompany();
-                }}
+                fetchOptionFunction={async (value = "") =>
+                  await fetchMainCompany(value)
+                }
                 setDataFunction={setNewContactData}
                 fieldName="mainPartner"
               />
@@ -199,8 +204,8 @@ export const ProfileTopForm = ({
             <Grid item xs={12} md={6}>
               <SearchInput
                 label="Department"
-                fetchOptionFunction={async () => {
-                  return await fetchDepartments();
+                fetchOptionFunction={async (value = "") => {
+                  return await fetchDepartments(value);
                 }}
                 setDataFunction={setNewContactData}
                 fieldName="companyDepartment"
@@ -320,16 +325,16 @@ export const ContactBoxWithTabs = ({ setNewContactData }) => {
             <Box sx={{ p: 2 }}>
               <SearchInput
                 label="Function"
-                fetchOptionFunction={async () => {
-                  return await fetchFunctions();
+                fetchOptionFunction={async (value = "") => {
+                  return await fetchFunctions(value);
                 }}
                 setDataFunction={setNewContactData}
                 fieldName="jobTitleFunction"
               />
               <SearchInput
                 label="Manager"
-                fetchOptionFunction={async () => {
-                  return await fetchManager();
+                fetchOptionFunction={async (value = "") => {
+                  return await fetchManager(value);
                 }}
                 setDataFunction={setNewContactData}
                 fieldName="reportsTo"
@@ -370,13 +375,13 @@ export const ContactBoxWithTabs = ({ setNewContactData }) => {
               />
             </Box>
           </Grid>
-          z{/* -----------bottom-------------- */}
+          {/* -----------bottom-------------- */}
           <Grid item lg={12} sm={12} xs={12} sx={{ mx: 2 }}>
             <SearchInput
               label="Address"
               searchByFullName="mainAddress"
-              fetchOptionFunction={async () => {
-                return await fetchAddress();
+              fetchOptionFunction={async (value = "") => {
+                return await fetchAddress(value);
               }}
               setDataFunction={setNewContactData}
               fieldName="mainAddress"
@@ -493,14 +498,19 @@ export const RightContent = ({ setNewContactData }) => {
         {/* -------------------Editor Layout---------------- */}
         <Grid
           container
-          height={200}
           sx={{
             backgroundColor: "white",
             border: "1px solid rgba(0,0,0,0.08)",
             padding: "6px",
+            minHeight: "200px",
+            maxHeight: "400px",
+            overflow: "auto",
           }}
         >
-          <MyStatefulEditor />
+          <MyStatefulEditor
+            fieldName="description"
+            setDataFunction={setNewContactData}
+          />
         </Grid>
       </Box>
     </Grid>
