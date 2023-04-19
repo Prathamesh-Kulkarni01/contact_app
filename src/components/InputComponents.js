@@ -152,9 +152,7 @@ export const NormalInput = ({
       );
       return;
     }
-    if (newContactData[fieldName]) {
-      setValue(newContactData[fieldName]);
-    }
+    if (newContactData[fieldName]) setValue(newContactData[fieldName]);
   }, [newContactData, fieldName, type]);
 
   return (
@@ -263,13 +261,10 @@ export function SearchInput({
   const handleOpen = async () => setOptions(await fetchOptionFunction());
 
   useEffect(() => {
-    if (newContactData[fieldName]) {
-      setValue(newContactData[fieldName]);
-    }
+    if (newContactData[fieldName]) setValue(newContactData[fieldName]);
   }, [newContactData, fieldName, searchByFullName]);
 
-  const handleInputChange = async (e) =>
-    setOptions(await fetchOptionFunction(e?.target?.value));
+  const handleInputChange = async (e) =>setOptions(await fetchOptionFunction(e?.target?.value));
 
   const handleChange = async (event, value) => {
     setValue(value);
@@ -495,7 +490,13 @@ export function MyStatefulEditor({ fieldName, setDataFunction }) {
   };
 
   useEffect(() => {
-    if (newContactData[fieldName]&&window.location.pathname.split("/")[2] === "edit") setValue(RichTextEditor.createValueFromString(newContactData[fieldName], "html"));
+    if (
+      newContactData[fieldName] &&
+      window.location.pathname.split("/")[2] === "edit"
+    )
+      setValue(
+        RichTextEditor.createValueFromString(newContactData[fieldName], "html")
+      );
   }, [fieldName, newContactData]);
 
   const toolbarConfig = {
