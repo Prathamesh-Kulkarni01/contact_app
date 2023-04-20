@@ -13,7 +13,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import Delete from "@mui/icons-material/Delete";
 
 import { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Context from "../context";
 
 const header = [
@@ -64,7 +64,7 @@ const StyledTableHeaderInput = styled("input")(() => ({
 
 export default function ListView({ contactsData = [] }) {
   return (
-    <TableContainer sx={{ height: "98vh" }} component={Paper}>
+    <TableContainer sx={{ height: "98vh",overflowX:'scroll' }} component={Paper}>
       <HeaderRow />
       <Table>
         <TableBody>

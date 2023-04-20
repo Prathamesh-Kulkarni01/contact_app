@@ -257,14 +257,15 @@ export function SearchInput({
 }) {
   const [options, setOptions] = useState([]);
   const [value, setValue] = useState({});
+  const [isOpen, setIsOpen] = useState(false)
   const { newContactData, setUpdatedData } = useContext(Context);
-  const handleOpen = async () => setOptions(await fetchOptionFunction());
+  const handleOpen = async () => {setOptions(await fetchOptionFunction());setIsOpen(true)};
 
   useEffect(() => {
     if (newContactData[fieldName]) setValue(newContactData[fieldName]);
   }, [newContactData, fieldName, searchByFullName]);
 
-  const handleInputChange = async (e) =>setOptions(await fetchOptionFunction(e?.target?.value));
+  const handleInputChange = async (e) =>{if(isOpen)setOptions(await fetchOptionFunction(e?.target?.value))};
 
   const handleChange = async (event, value) => {
     setValue(value);

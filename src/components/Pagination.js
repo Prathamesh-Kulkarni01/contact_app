@@ -8,7 +8,6 @@ export default function Pagination() {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    console.log(newPage*15);
     getDataFromServer(15,newPage*15)
     setFetchOffset(newPage*15)
   };

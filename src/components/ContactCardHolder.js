@@ -7,7 +7,11 @@ import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
 import HomeIcon from "@mui/icons-material/Home";
 import MailIcon from "@mui/icons-material/Mail";
 import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
+import Delete  from "@mui/icons-material/Delete";
+import Edit  from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import Context from "../context";
 
 export default function ContactCardHolder({ contactsData = [] }) {
   return (
@@ -42,6 +46,16 @@ const ContactCard = ({ row }) => {
     picture,
   } = row;
   const imgId = picture?.id || 1;
+  const { setDeleteRecords, handleSingleDelete } = useContext(Context);
+  const handleDelete = (e) => {
+    e.stopPropagation();
+    handleSingleDelete({id: id})
+  }
+  const navigateToEdit = (e,id) => {
+    e.stopPropagation();
+    setDeleteRecords([]);
+    navigate(`/axelor-erp/edit/profile/${id}`);
+  };
   return (
     <Box
       onClick={() => navigate(`/axelor-erp/view/profile/${id}`)}
@@ -195,6 +209,31 @@ const ContactCard = ({ row }) => {
           >
             {mainAddress?.fullName}
           </Typography>
+        </Box>
+        <Box sx={{ position: "absolute", top: "10px", right: 0 }}>
+          <Edit
+            onClick={(e) => navigateToEdit(e,id)}
+            sx={{
+              fontSize: "16px",
+              color: "grey",
+              mx: 1,
+              "&:hover": {
+                transition: "0.5s",
+                color: "black",
+              },
+            }}
+          />
+          <Delete
+            sx={{
+              fontSize: "16px",
+              color: "grey",
+              "&:hover": {
+                color: "black",
+                transition: "0.5s",
+              },
+            }}
+            onClick={(e) => handleDelete(e)}
+          />
         </Box>
       </Box>
     </Box>

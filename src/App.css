@@ -13,9 +13,13 @@ input[type="checkbox"] {
   color: red;
   font-size: 28px;
 }
+.table{
+  min-width: 1200px !important;
+}
 .header_tb {
   position: fixed !important;
   top: 50px;
+  min-width: 800px !important;
   z-index: 1;
   background-color: #f3f3f4 !important;
 }
@@ -62,6 +66,7 @@ thead th:nth-child(10) {
 }
 .table {
   position: absolute;
+  overflow: scroll !important;
 }
 tbody tr:last-child {
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);

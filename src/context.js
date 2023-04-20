@@ -25,7 +25,7 @@ export const AppContext = ({ children }) => {
     const noOfRecords = deleteRecords.length;
     setLoading(true);
     const res = await deleteRecord(deleteRecords);
-    getDataFromServer();
+    getDataFromServer(15,fetchOffset);
     setDeleteRecords([]);
     setLoading(false);
     res.message
@@ -38,7 +38,22 @@ export const AppContext = ({ children }) => {
           text: noOfRecords + " Contacts Deleted...",
         });
   };
-
+  const handleSingleDelete = async (record) => {
+    setLoading(true);
+    const res = await deleteRecord([{...record}]);
+    getDataFromServer(15,fetchOffset);
+    setDeleteRecords([]);
+    setLoading(false);
+    res.message
+      ? setToast({
+          variant: "error",
+          text: "You can't delete referenced record",
+        })
+      : setToast({
+          variant: "success",
+          text: 1 + " Contacts Deleted...",
+        });
+  };
   const clearDeleteRecords = () => {
     setDeleteRecords([]);
   };
@@ -71,7 +86,8 @@ export const AppContext = ({ children }) => {
         setToast,
         handleSearch,
         fetchOffset,
-        setFetchOffset
+        setFetchOffset,
+        handleSingleDelete
       }}
     >
       {children}

@@ -171,6 +171,7 @@ export const fetchDepartments = async (query = "") => {
 export const fetchLanguage = async () => {
   const params = {
     fields: ["id", "id", "code", "code", "name", "name"],
+    limit:10
   };
   const response = await makeApiCall(
     "com.axelor.apps.base.db.Language/search",
