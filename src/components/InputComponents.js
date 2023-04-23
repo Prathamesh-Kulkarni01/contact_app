@@ -16,17 +16,17 @@ import AddAPhoto from "@mui/icons-material/AddAPhoto";
 
 import React, { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { uploadImage } from "../api/api";
+import { fetchAssociatedCompanies, uploadImage } from "../api/api";
 import Context from "../context";
 
 export const ImageInput = ({ setDataFunction }) => {
-  const { setUpdatedData } = useContext(Context);
+  const { handleUpdatedData } = useContext(Context);
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     const res = await uploadImage(file, file.type, file.name, file.size);
     if (res !== 1) {
       if (window.location.pathname.split("/")[2] === "edit") {
-        setUpdatedData((data) => ({
+        handleUpdatedData((data) => ({
           ...data,
           picture: { ...res },
         }));
@@ -61,15 +61,15 @@ export const ImageInput = ({ setDataFunction }) => {
   );
 };
 export const ImageDelete = ({ setDataFunction }) => {
-  const { setUpdatedData, newContactData } = useContext(Context);
-  const checkVisibility = () => newContactData.picture;
+  const { handleUpdatedData, contact } = useContext(Context);
+  const checkVisibility = () => contact.picture;
   const handleDelete = async (e) => {
     if (window.location.pathname.split("/")[2] === "edit") {
       setDataFunction((data) => ({
         ...data,
         picture: null,
       }));
-      setUpdatedData((data) => ({
+      handleUpdatedData((data) => ({
         ...data,
         picture: null,
       }));
@@ -102,12 +102,12 @@ export const NormalInput = ({
   required,
 }) => {
   const [value, setValue] = useState("");
-  const { newContactData, setUpdatedData } = useContext(Context);
+  const { contact, handleUpdatedData } = useContext(Context);
 
   const handleChange = (event) => {
     setValue(event.target.value);
     if (window.location.pathname.split("/")[2] === "edit") {
-      setUpdatedData((data) => {
+      handleUpdatedData((data) => {
         if (type && type === "mail") {
           return {
             ...data,
@@ -143,17 +143,17 @@ export const NormalInput = ({
   };
 
   useEffect(() => {
-    if (type === "mail" && newContactData.hasOwnProperty("emailAddress")) {
+    if (type === "mail" && contact.hasOwnProperty("emailAddress")) {
       setValue(
-        newContactData?.emailAddress?.name?.substring(
-          newContactData?.emailAddress?.name?.indexOf("[") + 1,
-          newContactData?.emailAddress?.name?.indexOf("]")
+        contact?.emailAddress?.name?.substring(
+          contact?.emailAddress?.name?.indexOf("[") + 1,
+          contact?.emailAddress?.name?.indexOf("]")
         )
       );
       return;
     }
-    if (newContactData[fieldName]) setValue(newContactData[fieldName]);
-  }, [newContactData, fieldName, type]);
+    if (contact[fieldName]) setValue(contact[fieldName]);
+  }, [contact, fieldName, type]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -185,13 +185,13 @@ export const NormalInput = ({
 
 export function StaticSelect({ label, setDataFunction, fieldName }) {
   const [selectedValue, setSelectedValue] = useState("");
-  const { setUpdatedData, newContactData } = useContext(Context);
+  const { handleUpdatedData, contact } = useContext(Context);
   const location = useLocation();
   const handleClear = () => setSelectedValue("");
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
     if (location.pathname.split("/")[2] === "edit") {
-      setUpdatedData((data) => {
+      handleUpdatedData((data) => {
         return {
           ...data,
           [event.target.name]: event.target.value,
@@ -205,8 +205,8 @@ export function StaticSelect({ label, setDataFunction, fieldName }) {
   };
   useEffect(() => {
     if (location.pathname.split("/")[2] === "edit")
-      setSelectedValue(newContactData[fieldName]);
-  }, [fieldName, location.pathname, newContactData]);
+      setSelectedValue(contact[fieldName]);
+  }, [fieldName, location.pathname, contact]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -257,20 +257,25 @@ export function SearchInput({
 }) {
   const [options, setOptions] = useState([]);
   const [value, setValue] = useState({});
-  const [isOpen, setIsOpen] = useState(false)
-  const { newContactData, setUpdatedData } = useContext(Context);
-  const handleOpen = async () => {setOptions(await fetchOptionFunction());setIsOpen(true)};
+  const [isOpen, setIsOpen] = useState(false);
+  const { contact, handleUpdatedData } = useContext(Context);
+  const handleOpen = async () => {
+    setOptions(await fetchOptionFunction());
+    setIsOpen(true);
+  };
 
   useEffect(() => {
-    if (newContactData[fieldName]) setValue(newContactData[fieldName]);
-  }, [newContactData, fieldName, searchByFullName]);
+    if (contact[fieldName]) setValue(contact[fieldName]);
+  }, [contact, fieldName, searchByFullName]);
 
-  const handleInputChange = async (e) =>{if(isOpen)setOptions(await fetchOptionFunction(e?.target?.value))};
+  const handleInputChange = async (e) => {
+    if (isOpen) setOptions(await fetchOptionFunction(e?.target?.value));
+  };
 
   const handleChange = async (event, value) => {
     setValue(value);
     if (window.location.pathname.split("/")[2] === "edit") {
-      setUpdatedData((data) => ({
+      handleUpdatedData((data) => ({
         [fieldName]: value,
         ...data,
       }));
@@ -365,10 +370,10 @@ export function PhoneNumberWithCountrySelect({
   fieldName,
 }) {
   const [phone, setPhone] = useState("");
-  const { newContactData, setUpdatedData } = useContext(Context);
+  const { contact, handleUpdatedData } = useContext(Context);
   const handlePhoneNumberChange = (value) => {
     if (window.location.pathname.split("/")[2] === "edit") {
-      setUpdatedData((data) => ({
+      handleUpdatedData((data) => ({
         ...data,
         [fieldName]: value,
       }));
@@ -378,7 +383,9 @@ export function PhoneNumberWithCountrySelect({
       [fieldName]: value,
     }));
   };
-  useEffect(() => {setPhone(newContactData[fieldName]);}, [fieldName, newContactData]);
+  useEffect(() => {
+    setPhone(contact[fieldName]);
+  }, [fieldName, contact]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", mb: 1 }}>
@@ -395,11 +402,11 @@ export function PhoneNumberWithCountrySelect({
 
 export const CustomCheckBox = ({ label, fieldName, setDataFunction }) => {
   const [value, setValue] = useState(false);
-  const { newContactData, setUpdatedData } = useContext(Context);
+  const { contact, handleUpdatedData } = useContext(Context);
   const handleCheckChange = (event) => {
     setValue(event.target.checked);
     if (window.location.pathname.split("/")[2] === "edit") {
-      setUpdatedData((data) => ({
+      handleUpdatedData((data) => ({
         ...data,
         [fieldName]: event.target.checked,
       }));
@@ -411,8 +418,8 @@ export const CustomCheckBox = ({ label, fieldName, setDataFunction }) => {
     }));
   };
   useEffect(() => {
-    if (newContactData[fieldName]) setValue(newContactData[fieldName]);
-  }, [fieldName, newContactData]);
+    if (contact[fieldName]) setValue(contact[fieldName]);
+  }, [fieldName, contact]);
 
   return (
     <Box
@@ -452,6 +459,14 @@ export const CustomCheckBox = ({ label, fieldName, setDataFunction }) => {
 };
 
 export const AssociatedCompanies = () => {
+  const [options, setOptions] = useState([{ name: "Axelor" }]);
+  const [isOpen, setIsOpen] = useState(false);
+  const handleOpen = async () => {
+    if (isOpen) {
+      setOptions(await fetchAssociatedCompanies());
+    }
+    setIsOpen(true);
+  };
   return (
     <Box sx={{ display: "flex", flexDirection: "column", mb: 1 }}>
       <CustomLabel>Companies associated to</CustomLabel>
@@ -460,9 +475,12 @@ export const AssociatedCompanies = () => {
         id="size-small-standard-multi"
         size="small"
         sx={{ mt: 1 }}
-        options={[{ title: "Axelor" }]}
-        getOptionLabel={(option) => option.title}
-        defaultValue={[{ title: "Axelor" }]}
+        limitTags={1}
+        onOpen={() => handleOpen()}
+        options={options}
+        value={[options[0]]}
+        getOptionLabel={(option) => option?.name}
+        defaultValue={[options[0]]}
         renderInput={(params) => <TextField {...params} variant="standard" />}
       />
     </Box>
@@ -472,11 +490,11 @@ export const AssociatedCompanies = () => {
 export function MyStatefulEditor({ fieldName, setDataFunction }) {
   const [value, setValue] = useState(RichTextEditor.createEmptyValue());
 
-  const { newContactData, setUpdatedData } = useContext(Context);
+  const { contact, handleUpdatedData } = useContext(Context);
   const onChange = (value) => {
     setValue(value);
     if (window.location.pathname.split("/")[2] === "edit") {
-      setUpdatedData((data) => ({
+      handleUpdatedData((data) => ({
         ...data,
         [fieldName]: value.toString("html"),
       }));
@@ -489,14 +507,11 @@ export function MyStatefulEditor({ fieldName, setDataFunction }) {
   };
 
   useEffect(() => {
-    if (
-      newContactData[fieldName] &&
-      window.location.pathname.split("/")[2] === "edit"
-    )
+    if (contact[fieldName] && window.location.pathname.split("/")[2] === "edit")
       setValue(
-        RichTextEditor.createValueFromString(newContactData[fieldName], "html")
+        RichTextEditor.createValueFromString(contact[fieldName], "html")
       );
-  }, [fieldName, newContactData]);
+  }, [fieldName, contact]);
 
   const toolbarConfig = {
     display: [

@@ -12,6 +12,7 @@ import Edit  from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import Context from "../context";
+import { DEFAULT_IMG, PUBLIC_URL } from "../constants";
 
 export default function ContactCardHolder({ contactsData = [] }) {
   return (
@@ -46,19 +47,19 @@ const ContactCard = ({ row }) => {
     picture,
   } = row;
   const imgId = picture?.id || 1;
-  const { setDeleteRecords, handleSingleDelete } = useContext(Context);
-  const handleDelete = (e) => {
+  const { handleDelete, handleSingleDelete } = useContext(Context);
+  const handleDeleteRecord = (e) => {
     e.stopPropagation();
     handleSingleDelete({id: id})
   }
   const navigateToEdit = (e,id) => {
     e.stopPropagation();
-    setDeleteRecords([]);
-    navigate(`/axelor-erp/edit/profile/${id}`);
+    handleDelete([]);
+    navigate(`${PUBLIC_URL}/edit/profile/${id}`);
   };
   return (
     <Box
-      onClick={() => navigate(`/axelor-erp/view/profile/${id}`)}
+      onClick={() => navigate(`${PUBLIC_URL}/view/profile/${id}`)}
       sx={{
         width: "100%",
         height: "182px",
@@ -85,8 +86,8 @@ const ContactCard = ({ row }) => {
           }}
           image={
             imgId
-              ? `/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${imgId}/content/download`
-              : "http://localhost:8080/axelor-erp/img/partner-m-default.png"
+              ? `${PUBLIC_URL}/ws/rest/com.axelor.meta.db.MetaFile/${imgId}/content/download`
+              : DEFAULT_IMG
           }
         />
         <Typography
@@ -232,7 +233,7 @@ const ContactCard = ({ row }) => {
                 transition: "0.5s",
               },
             }}
-            onClick={(e) => handleDelete(e)}
+            onClick={(e) => handleDeleteRecord(e)}
           />
         </Box>
       </Box>

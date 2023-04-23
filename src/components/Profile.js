@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography";
 import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchContactById } from "../api/api";
+import { DEFAULT_IMG } from "../constants";
 import { CustomBlueText, CustomLabel } from "./InputComponents";
 
 const Profile = () => {
@@ -21,7 +22,7 @@ const Profile = () => {
     (async () => setProfileData(await getProfileData()))();
   }, [getProfileData]);
   return (
-    <Box>
+    <Box sx={{ overflowX: "hidden", overflowY: "auto", maxHeight: "100vh" }}>
       <Grid
         container
         spacing={2}
@@ -84,7 +85,7 @@ export const ProfileTopForm = ({ profileData }) => {
               image={
                 profileData?.picture?.id
                   ? `/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${profileData?.picture?.id}/content/download`
-                  : "http://localhost:8080/axelor-erp/img/partner-m-default.png"
+                  : DEFAULT_IMG
               }
             />
           </Box>

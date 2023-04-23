@@ -15,6 +15,7 @@ import Delete from "@mui/icons-material/Delete";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Context from "../context";
+import { PUBLIC_URL } from "../constants";
 
 const header = [
   "",
@@ -64,7 +65,7 @@ const StyledTableHeaderInput = styled("input")(() => ({
 
 export default function ListView({ contactsData = [] }) {
   return (
-    <TableContainer sx={{ height: "98vh",overflowX:'scroll' }} component={Paper}>
+    <TableContainer sx={{ height: "98vh"}} component={Paper}>
       <HeaderRow />
       <Table>
         <TableBody>
@@ -78,7 +79,7 @@ export default function ListView({ contactsData = [] }) {
 }
 
 export const ListRow = ({ row }) => {
-  const { setDeleteRecords, deleteRecords } = useContext(Context);
+  const { handleDelete, deleteRecords } = useContext(Context);
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
   const {
@@ -91,10 +92,10 @@ export const ListRow = ({ row }) => {
     jobTitleFunction,
     version,
   } = row;
-  const handleDelete = (e) => {
+  const handleDeleteRecord = (e) => {
     setChecked(true);
     if (e.target.checked) {
-      setDeleteRecords((data) => [
+      handleDelete((data) => [
         ...data,
         {
           id: id,
@@ -102,17 +103,17 @@ export const ListRow = ({ row }) => {
         },
       ]);
     } else {
-      setDeleteRecords((data) => data.filter((obj) => obj.id !== id));
+      handleDelete((data) => data.filter((obj) => obj.id !== id));
       setChecked(false);
     }
   };
   const navigateToEdit = (id) => {
-    setDeleteRecords([])
-    navigate(`/axelor-erp/edit/profile/${id}`);
+    handleDelete([])
+    navigate(`${PUBLIC_URL}/edit/profile/${id}`);
   };
   const navigateToProfile = (id) => {
-    setDeleteRecords([])
-    navigate(`/axelor-erp/view/profile/${id}`);
+    handleDelete([])
+    navigate(`${PUBLIC_URL}/view/profile/${id}`);
   };
   useEffect(() => {
     if (!deleteRecords.length) setChecked(false);
@@ -129,7 +130,7 @@ export const ListRow = ({ row }) => {
         sx={{ minWidth: "25px", fontWeight: "800" }}
       >
         <EditIcon onClick={()=>navigateToEdit(id)} sx={{ fontSize: "16px" }} />
-        <input type="checkbox" checked={checked} onChange={handleDelete} />
+        <input type="checkbox" checked={checked} onChange={handleDeleteRecord} />
       </StyledTableBodyCell>
       <StyledTableBodyCell>{partnerSeq}</StyledTableBodyCell>
       <StyledTableBodyCell>{firstName + " " + name}</StyledTableBodyCell>

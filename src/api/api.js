@@ -1,11 +1,12 @@
 import axios from "axios";
 import Cookies from "js-cookie";
+import { PUBLIC_URL } from "../constants";
 
 const Token = Cookies.get("CSRF-TOKEN");
-const BASE_URL = "/axelor-erp/ws/rest/";
+const BASE_URL = `${PUBLIC_URL}/ws/rest/`;
 
 const login = async () => {
-  const url = "/axelor-erp/callback";
+  const url = `${PUBLIC_URL}/callback`;
   const response = await fetch(url, {
     method: "POST",
     mode: "cors",
@@ -23,8 +24,8 @@ const login = async () => {
 
 const makeApiCall = async (path, params) => {
   if (!Token) await login();
-  if (!window.location.href.includes("axelor-erp"))
-    window.location.href = "/axelor-erp/";
+  if (!window.location.href.includes(PUBLIC_URL))
+    window.location.href = PUBLIC_URL;
   const url = `${BASE_URL}/${path}`;
   const response = await fetch(url, {
     method: "POST",
@@ -41,7 +42,7 @@ const makeApiCall = async (path, params) => {
   return data || [];
 };
 
-export const fetchContacts = async (limit = 15, offset = 0) => {
+export const fetchContacts = async (limit = 15, offset = 0,optionalParams) => {
   const params = {
     fields: [
       "jobTitleFunction",
@@ -71,6 +72,7 @@ export const fetchContacts = async (limit = 15, offset = 0) => {
     limit: limit,
     offset: offset,
     translate: true,
+    ...optionalParams
   };
   const response = await makeApiCall(
     "com.axelor.apps.base.db.Partner/search",
@@ -79,7 +81,7 @@ export const fetchContacts = async (limit = 15, offset = 0) => {
   return response;
 };
 
-export const fetchFunctions = async (value = "") => {
+export const fetchFunctions = async (value = "",optionalParams) => {
   const params = {
     data: {
       _domainContext: {},
@@ -87,7 +89,8 @@ export const fetchFunctions = async (value = "") => {
       code: value,
     },
     limit: 10,
-    fields: ["id", "id", "name", "name"],
+    fields: [ "name"],
+    ...optionalParams
   };
   const response = await makeApiCall(
     "com.axelor.apps.base.db.Function/search",
@@ -95,8 +98,37 @@ export const fetchFunctions = async (value = "") => {
   );
   return response.data || [];
 };
+export const fetchUser = async (optionalParams) => {
+  const params = {
+    action:
+      "action-group-partner-contact-onNew,com.axelor.meta.web.MetaController:moreAttrs",
+    context: {
+      _model: "com.axelor.apps.base.db.Partner",
+      _domain:
+        "self.isContact = true AND (self.mainPartner.isCustomer = true OR self.mainPartner.isProspect = true)",
+      _source: "form",
+    },
+    model: "com.axelor.apps.base.db.Partner",
+    ...optionalParams
+  };
 
-export const fetchMainCompany = async (query) => {
+  const url = `http://localhost:3000/axelor-erp/ws/action`;
+  const response = await fetch(url, {
+    method: "POST",
+    mode: "cors",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRF-Token": Token,
+    },
+    body: JSON.stringify(params),
+  });
+  const data = await response.json();
+  return data.data || [];
+};
+
+export const fetchMainCompany = async (query, contact,optionalParams) => {
   const params = {
     data: {
       fullName: query,
@@ -106,33 +138,11 @@ export const fetchMainCompany = async (query) => {
       _domainContext: {
         _domain:
           "self.isContact = true AND (self.mainPartner.isCustomer = true OR self.mainPartner.isProspect = true)",
-        _id: null,
-        titleSelect: 0,
-        isDoNotCall: false,
-        isDoNotEmail: false,
-        isContact: true,
-        partnerTypeSelect: 2,
-        language: {
-          code: "en",
-          name: "English",
-          id: 1,
-        },
-        team: {
-          code: "GRL",
-          name: "General",
-          id: 4,
-        },
-        companySet: [
-          {
-            id: 1,
-            selected: false,
-          },
-        ],
-        user: {
-          code: "admin",
-          fullName: "Admin",
-          id: 1,
-        },
+
+        language: contact.language,
+        team: contact.team,
+        companySet: [{ id: contact.companySet.id || 1 }],
+        user: contact.user,
         contactAttrs: "{}",
         _model: "com.axelor.apps.base.db.Partner",
         partnerRoleSet: [],
@@ -143,6 +153,7 @@ export const fetchMainCompany = async (query) => {
     limit: 10,
     sortBy: null,
     translate: true,
+    ...optionalParams
   };
   const response = await makeApiCall(
     "com.axelor.apps.base.db.Partner/search",
@@ -151,15 +162,16 @@ export const fetchMainCompany = async (query) => {
   return response.data || [];
 };
 
-export const fetchDepartments = async (query = "") => {
+export const fetchDepartments = async (query = "",optionalParams) => {
   const params = {
     data: {
       code: query,
       name: query,
       _domainContext: {},
     },
-    fields: ["id", "code", "name"],
+    fields: ["code", "name"],
     limit: 10,
+    ...optionalParams
   };
   const response = await makeApiCall(
     "com.axelor.apps.base.db.CompanyDepartment/search",
@@ -168,10 +180,11 @@ export const fetchDepartments = async (query = "") => {
   return response.data || [];
 };
 
-export const fetchLanguage = async () => {
+export const fetchLanguage = async (optionalParams) => {
   const params = {
-    fields: ["id", "id", "code", "code", "name", "name"],
-    limit:10
+    fields: [ "code","name"],
+    limit: 10,
+    ...optionalParams
   };
   const response = await makeApiCall(
     "com.axelor.apps.base.db.Language/search",
@@ -180,7 +193,7 @@ export const fetchLanguage = async () => {
   return response.data || [];
 };
 
-export const fetchAccountOwner = async (value = "") => {
+export const fetchAccountOwner = async (value = "",optionalParams) => {
   const params = {
     data: {
       _domainContext: {},
@@ -193,20 +206,22 @@ export const fetchAccountOwner = async (value = "") => {
     offset: 0,
     fields: ["fullName", "fullName"],
     sortBy: ["name", "-createdOn"],
+    ...optionalParams
   };
   const response = await makeApiCall("com.axelor.auth.db.User/search", params);
   return response.data || [];
 };
 
-export const fetchTeams = async () => {
+export const fetchTeams = async (optionalParams) => {
   const params = {
     fields: ["id", "name"],
+    ...optionalParams
   };
   const response = await makeApiCall("com.axelor.team.db.Team/search", params);
   return response.data || [];
 };
 
-export const fetchAddress = async (value = "") => {
+export const fetchAddress = async (value = "",optionalParams) => {
   const params = {
     data: {
       _domainContext: {},
@@ -220,6 +235,7 @@ export const fetchAddress = async (value = "") => {
     offset: 0,
     fields: ["id", "name", "fullName"],
     limit: 10,
+    ...optionalParams
   };
   const response = await makeApiCall(
     "com.axelor.apps.base.db.Address/search",
@@ -228,7 +244,7 @@ export const fetchAddress = async (value = "") => {
   return response.data || [];
 };
 
-export const fetchManager = async (value = "") => {
+export const fetchManager = async (value = "",optionalParams) => {
   const params = {
     data: {
       _domain: "self.isContact = true",
@@ -240,10 +256,23 @@ export const fetchManager = async (value = "") => {
       fullName: value,
     },
     limit: 10,
-    fields: ["id", "id", "name", "fullName"],
+    fields: ["name", "fullName"],
+    ...optionalParams
   };
   const response = await makeApiCall(
     "com.axelor.apps.base.db.Partner/search",
+    params
+  );
+  return response.data || [];
+};
+export const fetchAssociatedCompanies = async (value = "", optionalParams) => {
+  const params = {
+    limit: 10,
+    fields: ["name", "code"],
+    ...optionalParams,
+  };
+  const response = await makeApiCall(
+    "com.axelor.apps.base.db.Company/search",
     params
   );
   return response.data || [];
@@ -259,16 +288,17 @@ export const createOrUpdateNewContact = async (payload) => {
 
 //////////////////////////Profile Page API Calls/////////////////////////////////
 
-export const fetchContactById = async (id) => {
-  const params = { sortBy: ["fullName", "-createdOn"] };
+export const fetchContactById = async (id, optionalParams) => {
+  const params = { sortBy: ["fullName", "-createdOn"], ...optionalParams };
   const response = await makeApiCall(
     `com.axelor.apps.base.db.Partner/${id}/fetch`,
     params
   );
   return response.data;
 };
+
 //////////////////////////////Search /////////////////////////////////////////////////////////////
-export const searchContact = async (text) => {
+export const searchContact = async (text, optionalParams) => {
   const params = {
     fields: [
       "partnerCategory",
@@ -296,31 +326,6 @@ export const searchContact = async (text) => {
       operator: "or",
       criteria: [
         {
-          fieldName: "partnerCategory.name",
-          operator: "like",
-          value: text,
-        },
-        {
-          fieldName: "mobilePhone",
-          operator: "like",
-          value: text,
-        },
-        {
-          fieldName: "simpleFullName",
-          operator: "like",
-          value: text,
-        },
-        {
-          fieldName: "emailAddress.address",
-          operator: "like",
-          value: text,
-        },
-        {
-          fieldName: "mainPartner.simpleFullName",
-          operator: "like",
-          value: text,
-        },
-        {
           fieldName: "partnerSeq",
           operator: "like",
           value: text,
@@ -330,27 +335,14 @@ export const searchContact = async (text) => {
           operator: "like",
           value: text,
         },
-        {
-          fieldName: "fixedPhone",
-          operator: "like",
-          value: text,
-        },
-        {
-          fieldName: "mainAddress.fullName",
-          operator: "like",
-          value: text,
-        },
-        {
-          fieldName: "picture.fileName",
-          operator: "like",
-          value: text,
-        },
       ],
       _searchText: text,
       _domains: [],
     },
     offset: 0,
+    limit: 15,
     translate: true,
+    ...optionalParams,
   };
   const response = await makeApiCall(
     `com.axelor.apps.base.db.Partner/search`,
@@ -378,7 +370,7 @@ export const uploadImage = async (binary, type, name, size) => {
       },
     })
   );
-  const url = "/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/upload";
+  const url = `${PUBLIC_URL}/ws/rest/com.axelor.meta.db.MetaFile/upload`;
   const res = await axios
     .post(url, formData, {
       headers: {

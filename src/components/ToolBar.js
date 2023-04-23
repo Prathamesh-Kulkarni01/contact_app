@@ -17,6 +17,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createOrUpdateNewContact } from "../api/api";
 import { memo, useContext, useEffect, useState } from "react";
 import { Context } from "../context";
+import { PUBLIC_URL } from "../constants";
 
 const useStyles = makeStyles(() => ({
   appBar: {
@@ -38,67 +39,67 @@ export default function DenseAppBar() {
   const classes = useStyles();
   const location = useLocation();
   const navigate = useNavigate();
-  const [isRefreshed, setIsRefreshed] = useState(false)
+  const [isRefreshed, setIsRefreshed] = useState(false);
   const {
-    newContactData,
+    contact,
     updatedData,
-    setNewContactData,
-    setUpdatedData,
+    handleContact,
+    handleUpdatedData,
     clearDeleteRecords,
     setContacts,
-    setToast,
+    handleToast,
   } = useContext(Context);
   const currentPage = location.pathname.split("/");
   const redirectToHome = () => {
     clearDeleteRecords();
-    setNewContactData([]);
-    navigate("/axelor-erp");
+    handleContact([]);
+    navigate(PUBLIC_URL);
   };
   const handleSave = async () => {
-    const fullName = newContactData.firstName + " " + newContactData.name;
+    const fullName = contact.firstName + " " + contact.name;
     if (currentPage[2] === "edit") {
       if (updatedData.name === "")
-        return setToast({
+        return handleToast({
           variant: "error",
           text: "The following fields are invalid: Name",
         });
-      const _id = newContactData.id;
-      const _version = newContactData.version;
+      const _id = contact.id;
+      const _version = contact.version;
       if (updatedData.name || updatedData.firstName)
         updatedData.simpleFullName = updatedData.name;
       const updatingData = {
         id: _id,
         version: _version,
         ...updatedData,
-        _original: { ...newContactData },
+        _original: { ...contact },
       };
       await createOrUpdateNewContact(updatingData);
-      setUpdatedData([]);
+      handleUpdatedData([]);
       setContacts((data) => {
         const newData = [...data];
         const index = data.findIndex((item) => item.id === _id);
         newData[index] = { ...newData[index], ...updatedData };
         return newData;
       });
-      setToast({
+      handleToast({
         variant: "success",
-        text: "Updated successfully (" + newContactData.name + ")",
+        text: "Updated successfully (" + contact.name + ")",
       });
     } else {
-      if (!newContactData.name)
-        return setToast({
+      if (!contact.name)
+        return handleToast({
           variant: "error",
           text: "The following fields are invalid: Name",
         });
-      newContactData.fullName = fullName;
-      newContactData.simpleFullName = fullName;
-      newContactData.isContact = true;
-      newContactData._original = {};
-      await createOrUpdateNewContact(newContactData);
-      setNewContactData([]);
-      setToast({
+        contact.fullName = fullName;
+        contact.simpleFullName = fullName;
+        contact.isContact = true;
+        contact._original = {};
+      await createOrUpdateNewContact(contact);
+      handleContact([]);
+      handleToast({
         variant: "success",
-        text: "New Contact added successfully (" + newContactData.name + ")",
+        text: "New Contact added successfully (" + contact.name + ")",
       });
     }
     redirectToHome();
@@ -148,7 +149,13 @@ export default function DenseAppBar() {
           }}
         >
           {currentPage[2] !== "create" && currentPage[2] !== "edit" && (
-            <Link onClick={() => {clearDeleteRecords();setNewContactData([])}} to="/axelor-erp/create">
+            <Link
+              onClick={() => {
+                clearDeleteRecords();
+                handleContact([]);
+              }}
+              to={`${PUBLIC_URL}/create`}
+            >
               {" "}
               <AddIcon sx={{ mx: 2 }} color="gray" />{" "}
             </Link>
@@ -174,14 +181,32 @@ export default function DenseAppBar() {
           )}
 
           {currentPage[2] === "view" && (
-            <Link to={`/axelor-erp/edit/profile/${currentPage[4]}`}>
+            <Link onClick={()=>handleContact([])} to={`${PUBLIC_URL}/edit/profile/${currentPage[4]}`}>
               <Edit />
             </Link>
           )}
         </Box>
         {/* -------------------------------------------------------------------------------------------------------- */}
-        {(!currentPage[2] || currentPage[2] === "list") &&<Box onClick={()=>setIsRefreshed(!isRefreshed)}><Refresh/></Box> }
-        {<Box sx={{display:(!currentPage[2] || currentPage[2] === "list")?"flex":"none"}}> <SearchBar isRefreshed={isRefreshed}setIsRefreshed={setIsRefreshed}/>}</Box>}
+        {(!currentPage[2] || currentPage[2] === "list") && (
+          <Box onClick={() => setIsRefreshed(!isRefreshed)}>
+            <Refresh />
+          </Box>
+        )}
+        {
+          <Box
+            sx={{
+              display:
+                !currentPage[2] || currentPage[2] === "list" ? "flex" : "none",
+            }}
+          >
+            {" "}
+            <SearchBar
+              isRefreshed={isRefreshed}
+              setIsRefreshed={setIsRefreshed}
+            />
+            
+          </Box>
+        }
         <div className={classes.spacer} />
         {(!currentPage[2] || currentPage[2] === "list") && <Pagination />}
         {/* ---------------------------------------------------------------------------------------------------------------- */}
@@ -200,7 +225,7 @@ export default function DenseAppBar() {
             },
           }}
         >
-          <Link to="/axelor-erp/list">
+          <Link to={`${PUBLIC_URL}/list`}>
             <FormatListBulletedIcon color="gray" />
           </Link>
         </Box>
@@ -219,7 +244,7 @@ export default function DenseAppBar() {
             },
           }}
         >
-          <Link to="/axelor-erp/">
+          <Link to={PUBLIC_URL}>
             {" "}
             <ViewModuleIcon color="gray" />
           </Link>
@@ -229,12 +254,16 @@ export default function DenseAppBar() {
   );
 }
 
-const SearchBar = memo(({isRefreshed,setIsRefreshed}) => {
-  const [searchText, setSearchText] = useState( "");
+const SearchBar = memo(({ isRefreshed, setIsRefreshed }) => {
+
+
+
+  
+  const [searchText, setSearchText] = useState("");
   const { handleSearch } = useContext(Context);
-useEffect(() => {
-  if(isRefreshed)setSearchText("")
-}, [isRefreshed])
+  useEffect(() => {
+    if (isRefreshed) setSearchText("");
+  }, [isRefreshed]);
 
   return (
     <Box
@@ -248,13 +277,15 @@ useEffect(() => {
       <InputBase
         placeholder="Search…"
         value={searchText}
-        onFocus={()=>setIsRefreshed(false)}
+        onFocus={() => setIsRefreshed(false)}
         sx={{ padding: "1px 3px" }}
-        onChange={(e) => setSearchText(e.target.value)}
+        onChange={(e) => {
+          setSearchText(e.target.value);
+          handleSearch(e.target.value);
+        }}
         inputProps={{ "aria-label": "search" }}
       />
       <Box
-        onClick={() => handleSearch(searchText)}
         sx={{
           backgroundColor: "rgba(0,0,0, 0.1)",
           "&:hover": {
@@ -268,13 +299,13 @@ useEffect(() => {
   );
 });
 
-const Refresh = (setIsRefreshed) => {
+const Refresh = () => {
   const { getDataFromServer, fetchOffset } = useContext(Context);
   return (
     <Box
       edge="start"
       color="rgba(0,0,0,0.7)"
-      onClick={() =>getDataFromServer(15, fetchOffset)}
+      onClick={() => getDataFromServer(15, fetchOffset)}
       aria-label="menu"
       sx={{
         ml: 2,

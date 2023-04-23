@@ -10,6 +10,7 @@ import {
   fetchAccountOwner,
   fetchAddress,
   fetchContactById,
+  fetchUser,
   fetchDepartments,
   fetchFunctions,
   fetchLanguage,
@@ -33,18 +34,39 @@ import { Context } from "../context";
 import { useParams } from "react-router-dom";
 
 const AddNewContact = () => {
-  const { setNewContactData, newContactData } = useContext(Context);
+  const { handleContact, contact } = useContext(Context);
   const { id } = useParams();
   const getProfileData = useCallback(async () => {
     const res = await fetchContactById(id);
     return res[0] || [];
   }, [id]);
+
+  const getUser = useCallback(async () => {
+    const res = await fetchUser();
+    handleContact((data) => ({
+      ...data,
+      language: res[0]?.values?.language,
+      team: res[0]?.values?.team,
+      user: res[0]?.values?.user,
+      companySet: res[2].attrs.companySet["value:add"],
+    }));
+  }, [handleContact]);
+
   useEffect(() => {
-    if (id) (async () => setNewContactData(await getProfileData()))();
-  }, [getProfileData, id, setNewContactData]);
+    if (id && !contact.name)
+      (async () => handleContact(await getProfileData()))();
+    if (!id && !contact.language) getUser();
+  }, [
+    contact.language,
+    contact.name,
+    getProfileData,
+    getUser,
+    handleContact,
+    id,
+  ]);
 
   return (
-    <Box>
+    <Box sx={{ overflowX: "hidden", overflowY: "auto", maxHeight: "100vh" }}>
       <Grid
         container
         spacing={2}
@@ -62,13 +84,13 @@ const AddNewContact = () => {
             }}
           >
             <ProfileTopForm
-              setNewContactData={setNewContactData}
-              newContactData={newContactData}
+              setNewContactData={handleContact}
+              contact={contact}
             />
-            <ContactBoxWithTabs setNewContactData={setNewContactData} />
+            <ContactBoxWithTabs setNewContactData={handleContact} />
           </Box>
         </Grid>
-        <RightContent setNewContactData={setNewContactData} />
+        <RightContent setNewContactData={handleContact} />
       </Grid>
     </Box>
   );
@@ -76,10 +98,7 @@ const AddNewContact = () => {
 
 export default AddNewContact;
 
-export const ProfileTopForm = ({
-  setNewContactData,
-  newContactData,
-}) => {
+export const ProfileTopForm = ({ setNewContactData, contact }) => {
   return (
     <Paper
       elevation={0}
@@ -121,7 +140,7 @@ export const ProfileTopForm = ({
                 }}
                 alt="Upload  Image"
                 id="profileImg"
-                image={`http://localhost:8080/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${newContactData?.picture?.id}/content/download?v=3`}
+                image={`/axelor-erp/ws/rest/com.axelor.meta.db.MetaFile/${contact?.picture?.id}/content/download?v=3`}
               ></CardMedia>
               <Box
                 sx={{
@@ -194,7 +213,7 @@ export const ProfileTopForm = ({
                 label="Main company"
                 searchByFullName="Main Company"
                 fetchOptionFunction={async (value = "") =>
-                  await fetchMainCompany(value)
+                  await fetchMainCompany(value, contact)
                 }
                 setDataFunction={setNewContactData}
                 fieldName="mainPartner"

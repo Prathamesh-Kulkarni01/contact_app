@@ -11,6 +11,7 @@ import Toast from "./components/Toast";
 import ListView from "./components/ListView";
 import { Layout } from "./components/Layout";
 import "./App.css";
+import { PUBLIC_URL } from "./constants";
 
 function App() {
   const { getDataFromServer, contacts } = useContext(Context);
@@ -32,29 +33,29 @@ function App() {
           <Routes>
             <Route element={<Layout />}>
               <Route
-                path={"/axelor-erp/"}
+                path={PUBLIC_URL}
                 element={
                   contacts && <ContactCardHolder contactsData={contacts} />
                 }
               />
               <Route
                 exact
-                path="/axelor-erp/list"
+                path={`${PUBLIC_URL}/list`}
                 element={contacts && <ListView contactsData={contacts} />}
               />
               <Route
                 exact
-                path="/axelor-erp/create"
+                path={`${PUBLIC_URL}/create`}
                 element={<AddNewContact />}
               />
               <Route
                 exact
-                path="/axelor-erp/view/profile/:id"
+                path={`${PUBLIC_URL}/view/profile/:id`}
                 element={<Profile />}
               />
               <Route
                 exact
-                path="/axelor-erp/edit/profile/:id"
+                path={`${PUBLIC_URL}/edit/profile/:id`}
                 element={<AddNewContact />}
               />
             </Route>

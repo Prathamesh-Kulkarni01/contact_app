@@ -1,10 +1,18 @@
-import { createContext, useCallback, useState } from "react";
+import { createContext, useCallback, useMemo, useState } from "react";
 import { deleteRecord, fetchContacts, searchContact } from "./api/api";
+
+const debounce = (fn, delay) => {
+  let timer;
+  return (...args) => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+};
 
 export const Context = createContext();
 
 export const AppContext = ({ children }) => {
-  const [newContactData, setNewContactData] = useState({});
+  const [contact, setContact] = useState({});
   const [updatedData, setUpdatedData] = useState({});
   const [deleteRecords, setDeleteRecords] = useState([]);
   const [contacts, setContacts] = useState(undefined);
@@ -12,6 +20,22 @@ export const AppContext = ({ children }) => {
   const [totalRecords, setTotalRecords] = useState(0);
   const [toast, setToast] = useState(false);
   const [fetchOffset, setFetchOffset] = useState(0);
+
+  const handleContact = (data) => {
+    setContact(data);
+  };
+  const handleUpdatedData = (data) => {
+    setUpdatedData(data)
+  };
+  const handleToast = (data) => {
+    setToast(data)
+  };
+  const handleOffset = (data) => {
+    setFetchOffset(data)
+  };
+  const handleDelete = (data) => {
+    setDeleteRecords(data)
+  };
 
   const getDataFromServer = useCallback(async (limit, offset) => {
     setLoading(true);
@@ -25,7 +49,7 @@ export const AppContext = ({ children }) => {
     const noOfRecords = deleteRecords.length;
     setLoading(true);
     const res = await deleteRecord(deleteRecords);
-    getDataFromServer(15,fetchOffset);
+    getDataFromServer(15, fetchOffset);
     setDeleteRecords([]);
     setLoading(false);
     res.message
@@ -40,8 +64,8 @@ export const AppContext = ({ children }) => {
   };
   const handleSingleDelete = async (record) => {
     setLoading(true);
-    const res = await deleteRecord([{...record}]);
-    getDataFromServer(15,fetchOffset);
+    const res = await deleteRecord([{ ...record }]);
+    getDataFromServer(15, fetchOffset);
     setDeleteRecords([]);
     setLoading(false);
     res.message
@@ -58,36 +82,41 @@ export const AppContext = ({ children }) => {
     setDeleteRecords([]);
   };
 
-  const handleSearch = async (text = "") => {
-    setLoading(true);
-    const res = await searchContact(text);
-    setTotalRecords(res.total);
-    setLoading(false);
-    setContacts(res.data || []);
-  };
+
+  const handleSearch = useMemo(
+    () =>
+      debounce(async (text) => {
+        setLoading(true);
+        const res = await searchContact(text);
+        setTotalRecords(res.total);
+        setLoading(false);
+        setContacts(res.data || []);
+      }, 500),
+    []
+  );
+
   return (
     <Context.Provider
       value={{
-        contacts,
+        contact,
         setContacts,
         loading,
-        setNewContactData,
-        newContactData,
+        handleContact,
+        contacts,
         updatedData,
-        setUpdatedData,
+        handleUpdatedData,
         deleteRecords,
-        setDeleteRecords,
+        handleDelete,
         handleDeleteRecords,
-        setLoading,
         clearDeleteRecords,
         getDataFromServer,
         totalRecords,
         toast,
-        setToast,
+        handleToast,
         handleSearch,
         fetchOffset,
-        setFetchOffset,
-        handleSingleDelete
+        handleOffset,
+        handleSingleDelete,
       }}
     >
       {children}
@@ -96,3 +125,4 @@ export const AppContext = ({ children }) => {
 };
 
 export default Context;
+
