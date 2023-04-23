@@ -37,7 +37,7 @@ export const AppContext = ({ children }) => {
     setDeleteRecords(data)
   };
 
-  const getDataFromServer = useCallback(async (limit, offset) => {
+  const getContacts = useCallback(async (limit, offset) => {
     setLoading(true);
     const res = await fetchContacts(limit, offset);
     setTotalRecords(res.total);
@@ -49,7 +49,7 @@ export const AppContext = ({ children }) => {
     const noOfRecords = deleteRecords.length;
     setLoading(true);
     const res = await deleteRecord(deleteRecords);
-    getDataFromServer(15, fetchOffset);
+    getContacts(15, fetchOffset);
     setDeleteRecords([]);
     setLoading(false);
     res.message
@@ -65,7 +65,7 @@ export const AppContext = ({ children }) => {
   const handleSingleDelete = async (record) => {
     setLoading(true);
     const res = await deleteRecord([{ ...record }]);
-    getDataFromServer(15, fetchOffset);
+    getContacts(15, fetchOffset);
     setDeleteRecords([]);
     setLoading(false);
     res.message
@@ -109,7 +109,7 @@ export const AppContext = ({ children }) => {
         handleDelete,
         handleDeleteRecords,
         clearDeleteRecords,
-        getDataFromServer,
+        getDataFromServer: getContacts,
         totalRecords,
         toast,
         handleToast,
