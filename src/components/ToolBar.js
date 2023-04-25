@@ -67,6 +67,7 @@ export default function DenseAppBar() {
       const _version = contact.version;
       if (updatedData.name || updatedData.firstName)
         updatedData.simpleFullName = updatedData.name;
+      contact.companySet = "";
       const updatingData = {
         id: _id,
         version: _version,
@@ -91,10 +92,10 @@ export default function DenseAppBar() {
           variant: "error",
           text: "The following fields are invalid: Name",
         });
-        contact.fullName = fullName;
-        contact.simpleFullName = fullName;
-        contact.isContact = true;
-        contact._original = {};
+      contact.fullName = fullName;
+      contact.simpleFullName = fullName;
+      contact.isContact = true;
+      contact._original = {};
       await createOrUpdateNewContact(contact);
       handleContact([]);
       handleToast({
@@ -181,7 +182,10 @@ export default function DenseAppBar() {
           )}
 
           {currentPage[2] === "view" && (
-            <Link onClick={()=>handleContact([])} to={`${PUBLIC_URL}/edit/profile/${currentPage[4]}`}>
+            <Link
+              onClick={() => handleContact([])}
+              to={`${PUBLIC_URL}/edit/profile/${currentPage[4]}`}
+            >
               <Edit />
             </Link>
           )}
@@ -204,7 +208,6 @@ export default function DenseAppBar() {
               isRefreshed={isRefreshed}
               setIsRefreshed={setIsRefreshed}
             />
-            
           </Box>
         }
         <div className={classes.spacer} />
@@ -255,10 +258,6 @@ export default function DenseAppBar() {
 }
 
 const SearchBar = memo(({ isRefreshed, setIsRefreshed }) => {
-
-
-
-  
   const [searchText, setSearchText] = useState("");
   const { handleSearch } = useContext(Context);
   useEffect(() => {

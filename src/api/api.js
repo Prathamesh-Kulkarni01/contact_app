@@ -112,14 +112,13 @@ export const fetchUser = async (optionalParams) => {
     ...optionalParams
   };
 
-  const url = `http://localhost:3000/axelor-erp/ws/action`;
+  const url = `/axelor-erp/ws/action`;
   const response = await fetch(url, {
     method: "POST",
     mode: "cors",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      "X-Requested-With": "XMLHttpRequest",
       "X-CSRF-Token": Token,
     },
     body: JSON.stringify(params),
@@ -132,7 +131,6 @@ export const fetchMainCompany = async (query, contact,optionalParams) => {
   const params = {
     data: {
       fullName: query,
-
       _domain:
         "self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)",
       _domainContext: {
@@ -141,7 +139,7 @@ export const fetchMainCompany = async (query, contact,optionalParams) => {
 
         language: contact.language,
         team: contact.team,
-        companySet: [{ id: contact.companySet.id || 1 }],
+        companySet: [{id:contact?.companySet[0]?.id}],
         user: contact.user,
         contactAttrs: "{}",
         _model: "com.axelor.apps.base.db.Partner",

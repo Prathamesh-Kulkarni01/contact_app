@@ -279,7 +279,7 @@ export function SearchInput({
         [fieldName]: value,
         ...data,
       }));
-    } else {
+
       setDataFunction((data) => ({
         ...data,
         [fieldName]: value,
@@ -458,15 +458,33 @@ export const CustomCheckBox = ({ label, fieldName, setDataFunction }) => {
   );
 };
 
-export const AssociatedCompanies = () => {
-  const [options, setOptions] = useState([{ name: "Axelor" }]);
-  const [isOpen, setIsOpen] = useState(false);
+export const AssociatedCompanies = ({ setDataFunction }) => {
+  const [options, setOptions] = useState([]);
+  const [value, setValue] = useState([]);
+  const { contact, handleUpdatedData } = useContext(Context);
+  const [isOpen, setIsOpen] = useState(true);
   const handleOpen = async () => {
-    if (isOpen) {
-      setOptions(await fetchAssociatedCompanies());
-    }
-    setIsOpen(true);
+    if (isOpen) setOptions(await fetchAssociatedCompanies());
+    setIsOpen(false);
   };
+  const handleChange = (e, v) => {
+    let option = [];
+    if (v.length !== 0) option = [v[0]];
+    setValue(v);
+    if (window.location.pathname.split("/")[2] === "edit") 
+      handleUpdatedData((data) => ({
+        ...data,
+        companySet: option,
+      }));
+    setDataFunction((data) => ({
+      ...data,
+      companySet: option,
+    }));
+  };
+  useEffect(() => {
+    if (contact?.companySet?.length > 0) setValue([contact?.companySet[0]]);
+  }, [contact]);
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", mb: 1 }}>
       <CustomLabel>Companies associated to</CustomLabel>
@@ -478,9 +496,9 @@ export const AssociatedCompanies = () => {
         limitTags={1}
         onOpen={() => handleOpen()}
         options={options}
-        value={[options[0]]}
+        onChange={handleChange}
         getOptionLabel={(option) => option?.name}
-        defaultValue={[options[0]]}
+        value={value}
         renderInput={(params) => <TextField {...params} variant="standard" />}
       />
     </Box>

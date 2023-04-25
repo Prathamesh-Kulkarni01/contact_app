@@ -48,7 +48,7 @@ const AddNewContact = () => {
       language: res[0]?.values?.language,
       team: res[0]?.values?.team,
       user: res[0]?.values?.user,
-      companySet: res[2].attrs.companySet["value:add"],
+      companySet: [res[2].attrs.companySet["value:add"]],
     }));
   }, [handleContact]);
 
@@ -57,6 +57,7 @@ const AddNewContact = () => {
       (async () => handleContact(await getProfileData()))();
     if (!id && !contact.language) getUser();
   }, [
+    contact,
     contact.language,
     contact.name,
     getProfileData,
@@ -510,7 +511,7 @@ export const RightContent = ({ setNewContactData }) => {
               />
             </Grid>
           </Grid>
-          <AssociatedCompanies />
+          <AssociatedCompanies setDataFunction={setNewContactData} />
         </Box>
 
         {/* -------------------Editor Layout---------------- */}

@@ -367,7 +367,13 @@ export const RightContent = ({ profileData }) => {
           </Grid>
           <Box>
             <CustomLabel>Companies associated to</CustomLabel>
-            <CustomBlueText>Axelor</CustomBlueText>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              {profileData?.companySet?.map((item) => (
+                <CustomBlueText>
+                  {item.name}
+                </CustomBlueText>
+              ))}
+            </Box>
           </Box>
         </Box>
         {/* -------------------Editor Layout---------------- */}
