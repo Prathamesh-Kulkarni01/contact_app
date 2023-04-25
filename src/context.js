@@ -18,6 +18,7 @@ export const AppContext = ({ children }) => {
   const [contacts, setContacts] = useState(undefined);
   const [loading, setLoading] = useState({ a: "" });
   const [totalRecords, setTotalRecords] = useState(0);
+  const [pageNo, setPageNo] = useState(0)
   const [toast, setToast] = useState(false);
   const [fetchOffset, setFetchOffset] = useState(0);
 
@@ -36,6 +37,10 @@ export const AppContext = ({ children }) => {
   const handleDelete = (data) => {
     setDeleteRecords(data)
   };
+  const handlePageChange = (data) => {
+    setPageNo(data)
+  };
+  
 
   const getContacts = useCallback(async (limit, offset) => {
     setLoading(true);
@@ -117,6 +122,8 @@ export const AppContext = ({ children }) => {
         fetchOffset,
         handleOffset,
         handleSingleDelete,
+        handlePageChange,
+        pageNo
       }}
     >
       {children}
