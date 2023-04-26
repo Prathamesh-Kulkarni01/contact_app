@@ -369,7 +369,7 @@ export const RightContent = ({ profileData }) => {
             <CustomLabel>Companies associated to</CustomLabel>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               {profileData?.companySet?.map((item) => (
-                <CustomBlueText>
+                <CustomBlueText key={item.id}>
                   {item.name}
                 </CustomBlueText>
               ))}
