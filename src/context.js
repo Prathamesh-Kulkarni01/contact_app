@@ -13,34 +13,33 @@ export const Context = createContext();
 
 export const AppContext = ({ children }) => {
   const [contact, setContact] = useState({});
-  const [updatedData, setUpdatedData] = useState({});
-  const [deleteRecords, setDeleteRecords] = useState([]);
+  const [modifiedFields, setModifiedFields] = useState({});
+  const [selectedContacts, setSelectedContacts] = useState([]);
   const [contacts, setContacts] = useState(undefined);
   const [loading, setLoading] = useState({ a: "" });
   const [totalRecords, setTotalRecords] = useState(0);
-  const [pageNo, setPageNo] = useState(0)
+  const [pageNo, setPageNo] = useState(0);
   const [toast, setToast] = useState(false);
   const [fetchOffset, setFetchOffset] = useState(0);
 
   const handleContact = (data) => {
     setContact(data);
   };
-  const handleUpdatedData = (data) => {
-    setUpdatedData(data)
+  const modifyContact = (data) => {
+    setModifiedFields(data);
   };
-  const handleToast = (data) => {
-    setToast(data)
+  const showToast = (data) => {
+    setToast(data);
   };
-  const handleOffset = (data) => {
-    setFetchOffset(data)
+  const changeOffset = (data) => {
+    setFetchOffset(data);
   };
-  const handleDelete = (data) => {
-    setDeleteRecords(data)
+  const addToSelectedContact = (data) => {
+    setSelectedContacts(data);
   };
   const handlePageChange = (data) => {
-    setPageNo(data)
+    setPageNo(data);
   };
-  
 
   const getContacts = useCallback(async (limit, offset) => {
     setLoading(true);
@@ -51,11 +50,11 @@ export const AppContext = ({ children }) => {
   }, []);
 
   const handleDeleteRecords = async () => {
-    const noOfRecords = deleteRecords.length;
+    const noOfRecords = selectedContacts.length;
     setLoading(true);
-    const res = await deleteRecord(deleteRecords);
+    const res = await deleteRecord(selectedContacts);
     getContacts(15, fetchOffset);
-    setDeleteRecords([]);
+    setSelectedContacts([]);
     setLoading(false);
     res.message
       ? setToast({
@@ -71,7 +70,7 @@ export const AppContext = ({ children }) => {
     setLoading(true);
     const res = await deleteRecord([{ ...record }]);
     getContacts(15, fetchOffset);
-    setDeleteRecords([]);
+    setSelectedContacts([]);
     setLoading(false);
     res.message
       ? setToast({
@@ -83,10 +82,9 @@ export const AppContext = ({ children }) => {
           text: 1 + " Contacts Deleted...",
         });
   };
-  const clearDeleteRecords = () => {
-    setDeleteRecords([]);
+  const clearSelectedContacts = () => {
+    setSelectedContacts([]);
   };
-
 
   const handleSearch = useMemo(
     () =>
@@ -108,22 +106,22 @@ export const AppContext = ({ children }) => {
         loading,
         handleContact,
         contacts,
-        updatedData,
-        handleUpdatedData,
-        deleteRecords,
-        handleDelete,
+        modifiedFields,
+        modifyContact,
+        selectedContacts,
+        addToSelectedContact,
         handleDeleteRecords,
-        clearDeleteRecords,
-        getDataFromServer: getContacts,
+        clearSelectedContacts,
+        getContacts,
         totalRecords,
         toast,
-        handleToast,
+        showToast,
         handleSearch,
         fetchOffset,
-        handleOffset,
+        changeOffset,
         handleSingleDelete,
         handlePageChange,
-        pageNo
+        pageNo,
       }}
     >
       {children}
@@ -132,4 +130,3 @@ export const AppContext = ({ children }) => {
 };
 
 export default Context;
-

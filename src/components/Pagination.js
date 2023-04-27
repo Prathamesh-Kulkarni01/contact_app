@@ -5,17 +5,17 @@ import Context from "../context";
 export default function Pagination() {
   const [total, setTotal] = useState(0);
   const {
-    getDataFromServer,
+    getContacts,
     totalRecords,
-    handleOffset,
+    changeOffset,
     pageNo,
     handlePageChange,
   } = useContext(Context);
 
   const handleChangePage = (event, newPage) => {
     handlePageChange(newPage);
-    getDataFromServer(15, newPage * 15);
-    handleOffset(newPage * 15);
+    getContacts(15, newPage * 15);
+    changeOffset(newPage * 15);
   };
   useEffect(() => {
     setTotal(totalRecords);

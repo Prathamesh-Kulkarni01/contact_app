@@ -79,7 +79,7 @@ export default function ListView({ contactsData = [] }) {
 }
 
 export const ListRow = ({ row }) => {
-  const { handleDelete, deleteRecords } = useContext(Context);
+  const { addToSelectedContact, selectedContacts } = useContext(Context);
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
   const {
@@ -95,7 +95,7 @@ export const ListRow = ({ row }) => {
   const handleDeleteRecord = (e) => {
     setChecked(true);
     if (e.target.checked) {
-      handleDelete((data) => [
+      addToSelectedContact((data) => [
         ...data,
         {
           id: id,
@@ -103,21 +103,21 @@ export const ListRow = ({ row }) => {
         },
       ]);
     } else {
-      handleDelete((data) => data.filter((obj) => obj.id !== id));
+      addToSelectedContact((data) => data.filter((obj) => obj.id !== id));
       setChecked(false);
     }
   };
   const navigateToEdit = (id) => {
-    handleDelete([])
+    addToSelectedContact([])
     navigate(`${PUBLIC_URL}/edit/profile/${id}`);
   };
   const navigateToProfile = (id) => {
-    handleDelete([])
+    addToSelectedContact([])
     navigate(`${PUBLIC_URL}/view/profile/${id}`);
   };
   useEffect(() => {
-    if (!deleteRecords.length) setChecked(false);
-  }, [deleteRecords.length]);
+    if (!selectedContacts.length) setChecked(false);
+  }, [selectedContacts.length]);
 
   return (
     <TableRow
@@ -152,7 +152,7 @@ export const ListRow = ({ row }) => {
 };
 
 const HeaderRow = () => {
-  const { deleteRecords, handleDeleteRecords } = useContext(Context);
+  const { selectedContacts, handleDeleteRecords } = useContext(Context);
   return (
     <Box className="header_tb">
       <Table size="small" aria-label="a dense table">
@@ -165,7 +165,7 @@ const HeaderRow = () => {
           <TableRow sx={{ fontWeight: "600", height: "20px" }}>
             {header.map((val, key) => (
               <StyledTableInputCell key={key}>
-                {key === 0 && deleteRecords.length > 0 && (
+                {key === 0 && selectedContacts.length > 0 && (
                   <Delete onClick={handleDeleteRecords} />
                 )}
                 {key !== 0 && (

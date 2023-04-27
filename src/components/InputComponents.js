@@ -20,13 +20,13 @@ import { fetchAssociatedCompanies, uploadImage } from "../api/api";
 import Context from "../context";
 
 export const ImageInput = ({ setDataFunction }) => {
-  const { handleUpdatedData } = useContext(Context);
+  const { modifyContact } = useContext(Context);
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     const res = await uploadImage(file, file.type, file.name, file.size);
     if (res !== 1) {
       if (window.location.pathname.split("/")[2] === "edit") {
-        handleUpdatedData((data) => ({
+        modifyContact((data) => ({
           ...data,
           picture: { ...res },
         }));
@@ -61,7 +61,7 @@ export const ImageInput = ({ setDataFunction }) => {
   );
 };
 export const ImageDelete = ({ setDataFunction }) => {
-  const { handleUpdatedData, contact } = useContext(Context);
+  const { modifyContact, contact } = useContext(Context);
   const checkVisibility = () => contact.picture;
   const handleDelete = async (e) => {
     if (window.location.pathname.split("/")[2] === "edit") {
@@ -69,7 +69,7 @@ export const ImageDelete = ({ setDataFunction }) => {
         ...data,
         picture: null,
       }));
-      handleUpdatedData((data) => ({
+      modifyContact((data) => ({
         ...data,
         picture: null,
       }));
@@ -102,12 +102,12 @@ export const NormalInput = ({
   required,
 }) => {
   const [value, setValue] = useState("");
-  const { contact, handleUpdatedData } = useContext(Context);
+  const { contact, modifyContact } = useContext(Context);
 
   const handleChange = (event) => {
     setValue(event.target.value);
     if (window.location.pathname.split("/")[2] === "edit") {
-      handleUpdatedData((data) => {
+      modifyContact((data) => {
         if (type && type === "mail") {
           return {
             ...data,
@@ -185,13 +185,13 @@ export const NormalInput = ({
 
 export function StaticSelect({ label, setDataFunction, fieldName }) {
   const [selectedValue, setSelectedValue] = useState("");
-  const { handleUpdatedData, contact } = useContext(Context);
+  const { modifyContact, contact } = useContext(Context);
   const location = useLocation();
   const handleClear = () => setSelectedValue("");
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
     if (location.pathname.split("/")[2] === "edit") {
-      handleUpdatedData((data) => {
+      modifyContact((data) => {
         return {
           ...data,
           [event.target.name]: event.target.value,
@@ -258,7 +258,7 @@ export function SearchInput({
   const [options, setOptions] = useState([]);
   const [value, setValue] = useState({});
   const [isOpen, setIsOpen] = useState(false);
-  const { contact, handleUpdatedData } = useContext(Context);
+  const { contact, modifyContact } = useContext(Context);
   const handleOpen = async () => {
     setOptions(await fetchOptionFunction());
     setIsOpen(true);
@@ -275,7 +275,7 @@ export function SearchInput({
   const handleChange = async (event, value) => {
     setValue(value);
     if (window.location.pathname.split("/")[2] === "edit") {
-      handleUpdatedData((data) => ({
+      modifyContact((data) => ({
         [fieldName]: value,
         ...data,
       }));
@@ -369,10 +369,10 @@ export function PhoneNumberWithCountrySelect({
   fieldName,
 }) {
   const [phone, setPhone] = useState("");
-  const { contact, handleUpdatedData } = useContext(Context);
+  const { contact, modifyContact } = useContext(Context);
   const handlePhoneNumberChange = (value) => {
     if (window.location.pathname.split("/")[2] === "edit") {
-      handleUpdatedData((data) => ({
+      modifyContact((data) => ({
         ...data,
         [fieldName]: value,
       }));
@@ -401,11 +401,11 @@ export function PhoneNumberWithCountrySelect({
 
 export const CustomCheckBox = ({ label, fieldName, setDataFunction }) => {
   const [value, setValue] = useState(false);
-  const { contact, handleUpdatedData } = useContext(Context);
+  const { contact, modifyContact } = useContext(Context);
   const handleCheckChange = (event) => {
     setValue(event.target.checked);
     if (window.location.pathname.split("/")[2] === "edit") {
-      handleUpdatedData((data) => ({
+      modifyContact((data) => ({
         ...data,
         [fieldName]: event.target.checked,
       }));
@@ -460,7 +460,7 @@ export const CustomCheckBox = ({ label, fieldName, setDataFunction }) => {
 export const AssociatedCompanies = ({ setDataFunction }) => {
   const [options, setOptions] = useState([]);
   const [value, setValue] = useState([]);
-  const { contact, handleUpdatedData } = useContext(Context);
+  const { contact, modifyContact } = useContext(Context);
   const [isOpen, setIsOpen] = useState(true);
   const handleOpen = async () => {
     if (isOpen) setOptions(await fetchAssociatedCompanies());
@@ -481,7 +481,7 @@ export const AssociatedCompanies = ({ setDataFunction }) => {
     });
     setValue(option)
     if (window.location.pathname.split("/")[2] === "edit")
-      handleUpdatedData((data) => ({
+    modifyContact((data) => ({
         ...data,
         companySet: option,
       }));
@@ -516,11 +516,11 @@ export const AssociatedCompanies = ({ setDataFunction }) => {
 export function MyStatefulEditor({ fieldName, setDataFunction }) {
   const [value, setValue] = useState(RichTextEditor.createEmptyValue());
 
-  const { contact, handleUpdatedData } = useContext(Context);
+  const { contact, modifyContact } = useContext(Context);
   const onChange = (value) => {
     setValue(value);
     if (window.location.pathname.split("/")[2] === "edit") {
-      handleUpdatedData((data) => ({
+      modifyContact((data) => ({
         ...data,
         [fieldName]: value.toString("html"),
       }));

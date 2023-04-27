@@ -14,7 +14,7 @@ import { useContext } from "react";
 import Context from "../context";
 import { DEFAULT_IMG, PUBLIC_URL } from "../constants";
 
-export default function ContactCardHolder({ contactsData = [] }) {
+export default function GridView({ contactsData = [] }) {
   return (
     <Box>
       <Box sx={{ flexGrow: 1, p: 2, ml: 2, height: "95vh", overflowY: "auto" }}>
@@ -47,14 +47,14 @@ const ContactCard = ({ row }) => {
     picture,
   } = row;
   const imgId = picture?.id || 1;
-  const { handleDelete, handleSingleDelete } = useContext(Context);
+  const { addToSelectedContact, handleSingleDelete } = useContext(Context);
   const handleDeleteRecord = (e) => {
     e.stopPropagation();
     handleSingleDelete({id: id})
   }
   const navigateToEdit = (e,id) => {
     e.stopPropagation();
-    handleDelete([]);
+    addToSelectedContact([]);
     navigate(`${PUBLIC_URL}/edit/profile/${id}`);
   };
   return (

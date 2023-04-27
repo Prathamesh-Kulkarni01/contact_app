@@ -33,7 +33,7 @@ import {
 import { Context } from "../context";
 import { useParams } from "react-router-dom";
 
-const AddNewContact = () => {
+const Form = () => {
   const { handleContact, contact } = useContext(Context);
   const { id } = useParams();
   const getProfileData = useCallback(async () => {
@@ -64,7 +64,7 @@ const AddNewContact = () => {
     getUser,
     handleContact,
     id,
-  ]);
+  ]); 
 
   return (
     <Box sx={{ overflowX: "hidden", overflowY: "auto", maxHeight: "100vh" }}>
@@ -97,7 +97,7 @@ const AddNewContact = () => {
   );
 };
 
-export default AddNewContact;
+export default Form;
 
 export const ProfileTopForm = ({ setNewContactData, contact }) => {
   return (

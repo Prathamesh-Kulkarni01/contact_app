@@ -3,13 +3,13 @@ import React, { useContext, useEffect } from "react";
 import Context from "../context";
 
 const Toast = () => {
-  const { toast, handleToast } = useContext(Context);
+  const { toast, showToast } = useContext(Context);
   useEffect(() => {
     const interval = setInterval(() => {
-      handleToast(false);
+      showToast(false);
     }, 5000);
     return () => clearInterval(interval);
-  }, [handleToast]);
+  }, [showToast]);
   return (
     <Alert
       severity={toast?.variant}

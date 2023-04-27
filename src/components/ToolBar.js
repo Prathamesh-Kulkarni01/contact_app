@@ -42,72 +42,68 @@ export default function DenseAppBar() {
   const [isRefreshed, setIsRefreshed] = useState(false);
   const {
     contact,
-    updatedData,
+    modifiedFields,
     handleContact,
-    handleUpdatedData,
-    clearDeleteRecords,
+    modifyContact,
+    clearSelectedContacts,
     setContacts,
-    handleToast,
+    showToast,
   } = useContext(Context);
   const currentPage = location.pathname.split("/");
   const redirectToHome = () => {
-    clearDeleteRecords();
+    clearSelectedContacts();
     handleContact([]);
     navigate(PUBLIC_URL);
   };
   const handleSave = async () => {
-    const fullName = contact.firstName + " " + contact.name;
+    const fullName = contact.firstName? contact.firstName+ " " + contact.name:contact.name
     if (currentPage[2] === "edit") {
-      if (updatedData.name === "")
-        return handleToast({
+      if (modifiedFields.name === "")
+        return showToast({
           variant: "error",
           text: "The following fields are invalid: Name",
         });
       const _id = contact.id;
       const _version = contact.version;
-      if (updatedData.name || updatedData.firstName)
-        updatedData.simpleFullName = updatedData.name;
+      if (modifiedFields.name || modifiedFields.firstName)
+        modifiedFields.simpleFullName = modifiedFields.name;
       contact.companySet = "";
       const updatingData = {
         id: _id,
         version: _version,
-        ...updatedData,
+        ...modifiedFields,
         _original: { ...contact },
       };
       await createOrUpdateNewContact(updatingData);
-      handleUpdatedData([]);
+      modifyContact([]);
       setContacts((data) => {
         const newData = [...data];
         const index = data.findIndex((item) => item.id === _id);
-        newData[index] = { ...newData[index], ...updatedData };
+        newData[index] = { ...newData[index], ...modifiedFields };
         return newData;
       });
-      handleToast({
+      showToast({
         variant: "success",
         text: "Updated successfully (" + contact.name + ")",
       });
     } else {
-      if (!contact.name)
-        return handleToast({
+      if (!contact.name || !contact.mainPartner)
+        return showToast({
           variant: "error",
-          text: "The following fields are invalid: Name",
+          text: "The following fields are invalid: Name/Main Company",
         });
       contact.fullName = fullName;
       contact.simpleFullName = fullName;
       contact.isContact = true;
       contact._original = {};
-      contact.partnerTypeSelect=2;
-      contact.criteria={
-        "archived": false,
-        "operator": "and",
-        "criteria": []
-    };
+      contact.partnerTypeSelect = 2;
       await createOrUpdateNewContact(contact);
       handleContact([]);
-      handleToast({
+      showToast({
         variant: "success",
-        text: "New Contact added successfully (" + contact.name + ")",
+        text: "New contact added successfully (" + contact.name + ")",
       });
+      setContacts((data) => [...data, contact]);
     }
     redirectToHome();
   };
@@ -158,7 +154,7 @@ export default function DenseAppBar() {
           {currentPage[2] !== "create" && currentPage[2] !== "edit" && (
             <Link
               onClick={() => {
-                clearDeleteRecords();
+                clearSelectedContacts();
                 handleContact([]);
               }}
               to={`${PUBLIC_URL}/create`}
@@ -265,7 +261,7 @@ export default function DenseAppBar() {
 
 const SearchBar = memo(({ isRefreshed, setIsRefreshed }) => {
   const [searchText, setSearchText] = useState("");
-  const { handleSearch,handlePageChange } = useContext(Context);
+  const { handleSearch, handlePageChange } = useContext(Context);
   useEffect(() => {
     if (isRefreshed) setSearchText("");
   }, [isRefreshed]);
@@ -306,12 +302,15 @@ const SearchBar = memo(({ isRefreshed, setIsRefreshed }) => {
 });
 
 const Refresh = () => {
-  const { getDataFromServer,handlePageChange } = useContext(Context);
+  const { getContacts, handlePageChange } = useContext(Context);
   return (
     <Box
       edge="start"
       color="rgba(0,0,0,0.7)"
-      onClick={() =>{ getDataFromServer(15, 0); handlePageChange(0)}}
+      onClick={() => {
+        getContacts(15, 0);
+        handlePageChange(0);
+      }}
       aria-label="menu"
       sx={{
         ml: 2,
