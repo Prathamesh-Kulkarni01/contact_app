@@ -1,3 +1,5 @@
+import { useContext, useEffect, useState } from "react"; 
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -5,14 +7,12 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
 import { styled } from "@mui/material";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
 import EmailIcon from "@mui/icons-material/Email";
 import EditIcon from "@mui/icons-material/Edit";
 import Delete from "@mui/icons-material/Delete";
 
-import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Context from "../context";
 import { PUBLIC_URL } from "../constants";
@@ -30,47 +30,26 @@ const header = [
   " ",
 ];
 const StyledTableHeaderCell = styled(TableCell)(() => ({
-  border: "0.2px solid #efeeef",
-  fontSize: "12px",
   textAlign: "center",
-  padding: "0",
-  fontWeight: "inherit",
+  height: "30px",
+  borderCollapse: "collapse",
+  border: "0.8px solid rgba(0,0,0,0.08)",
+  padding: "6px",
 }));
-const StyledTableInputCell = styled(TableCell)(() => ({
-  border: "0.2px solid #efeeef",
-  padding: "2px",
-  minWidth: "30px",
-  textAlign: "center",
-}));
+
 const StyledTableBodyCell = styled(TableCell)(() => ({
   fontSize: "12px",
   fontWeight: "inherit",
 }));
-const StyledTableHeaderInput = styled("input")(() => ({
-  border: "none",
-  fontSize: "12px",
-  width: "100%",
-  padding: "10px",
-  background: "transparent",
-  "&::placeholder": {
-    color: "transparent",
-  },
-  "&:focus": {
-    outline: "none",
-    "&::placeholder": {
-      color: "gray",
-    },
-  },
-}));
 
 export default function ListView({ contactsData = [] }) {
   return (
-    <TableContainer sx={{ height: "98vh"}} component={Paper}>
-      <HeaderRow />
-      <Table>
+    <TableContainer sx={{ height: "98vh", mt: "60px" }} component={Paper}>
+      <Table stickyHeader>
+        <HeaderRow />
         <TableBody>
-          {contactsData.map((row) => (
-            <ListRow key={row.updatedOn} row={row} />
+          {contactsData.map((row,key) => (
+            <ListRow key={row.id} row={row} />
           ))}
         </TableBody>
       </Table>
@@ -108,11 +87,11 @@ export const ListRow = ({ row }) => {
     }
   };
   const navigateToEdit = (id) => {
-    addToSelectedContact([])
+    addToSelectedContact([]);
     navigate(`${PUBLIC_URL}/edit/profile/${id}`);
   };
   const navigateToProfile = (id) => {
-    addToSelectedContact([])
+    addToSelectedContact([]);
     navigate(`${PUBLIC_URL}/view/profile/${id}`);
   };
   useEffect(() => {
@@ -122,15 +101,24 @@ export const ListRow = ({ row }) => {
   return (
     <TableRow
       onClick={() => navigateToProfile(id)}
-      sx={{ width: "100vw", "&:last-child td, &:last-child th": { border: 0 } }}
+      sx={{ width: "100vw",  }}
     >
       <StyledTableBodyCell
         align="left"
         onClick={(e) => e.stopPropagation()}
-        sx={{ minWidth: "25px", fontWeight: "800" }}
+        sx={{ minWidth: "25px",maxWidth:'30px', fontWeight: "800" }}
       >
-        <EditIcon onClick={()=>navigateToEdit(id)} sx={{ fontSize: "16px" }} />
-        <input type="checkbox" checked={checked} onChange={handleDeleteRecord} />
+        <EditIcon
+          onClick={() => navigateToEdit(id)}
+          sx={{ fontSize: "16px", mx:"5px" ,p:"2px", backgroundColor:"#0275d8",color:'white',borderRadius:'5px' }}
+        />
+        <input
+          type="checkbox"
+          style={{ width: "20px",
+            height: "20px"}}
+          checked={checked}
+          onChange={handleDeleteRecord}
+        />
       </StyledTableBodyCell>
       <StyledTableBodyCell>{partnerSeq}</StyledTableBodyCell>
       <StyledTableBodyCell>{firstName + " " + name}</StyledTableBodyCell>
@@ -154,28 +142,22 @@ export const ListRow = ({ row }) => {
 const HeaderRow = () => {
   const { selectedContacts, handleDeleteRecords } = useContext(Context);
   return (
-    <Box className="header_tb">
-      <Table size="small" aria-label="a dense table">
-        <TableHead sx={{ maxWidth: 650 }}>
-          <TableRow sx={{ fontWeight: "600", height: "20px" }}>
-            {header.map((val, key) => (
-              <StyledTableHeaderCell key={key}>{val}</StyledTableHeaderCell>
-            ))}
-          </TableRow>
-          <TableRow sx={{ fontWeight: "600", height: "20px" }}>
-            {header.map((val, key) => (
-              <StyledTableInputCell key={key}>
-                {key === 0 && selectedContacts.length > 0 && (
-                  <Delete onClick={handleDeleteRecords} />
-                )}
-                {key !== 0 && (
-                  <StyledTableHeaderInput placeholder="Search..." />
-                )}
-              </StyledTableInputCell>
-            ))}
-          </TableRow>
-        </TableHead>
-      </Table>
-    </Box>
+    <>
+      <TableHead sx={{ maxWidth: 650 }}>
+        <TableRow sx={{ fontWeight: "600", height: "20px" }}>
+          {header.map((val, key) => (
+            <StyledTableHeaderCell  sx={{maxWidth:'30px'}} key={key}>
+              {key === 0 && selectedContacts.length > 0 && (
+                <Delete onClick={handleDeleteRecords} />
+              )}
+               {key === 0 && selectedContacts.length===0 && (
+                <Delete sx={{color:"rgba(0,0,0,0.3)"}}/>
+              )}
+              {key !== 0 && val}
+            </StyledTableHeaderCell>
+          ))}
+        </TableRow>
+      </TableHead>
+    </>
   );
 };

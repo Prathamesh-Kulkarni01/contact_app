@@ -13,64 +13,6 @@ input[type="checkbox"] {
   color: red;
   font-size: 28px;
 }
-.table{
-  min-width: 1200px !important;
-}
-.header_tb {
-  position: fixed !important;
-  top: 50px;
-  min-width: 800px !important;
-  z-index: 1;
-  background-color: #f3f3f4 !important;
-}
-thead {
-  background-color: white !important;
-  position: relative !important;
-  top: 10px;
-}
-
-tbody {
-  position: relative;
-  top: 80px !important;
-  overflow: auto !important;
-}
-thead th:first-child {
-  width: 80px;
-}
-thead th:nth-child(2) {
-  width: 170px !important;
-}
-thead th:nth-child(3) {
-  width: 270px !important;
-}
-thead th:nth-child(4) {
-  width: 270px !important;
-}
-thead th:nth-child(5) {
-  width: 270px !important;
-}
-thead th:nth-child(6) {
-  width: 450px !important;
-}
-thead th:nth-child(7) {
-  width: 260px;
-}
-thead th:nth-child(8) {
-  width: 340px;
-}
-thead th:nth-child(9) {
-  width: 50px;
-}
-thead th:nth-child(10) {
-  width: 50px;
-}
-.table {
-  position: absolute;
-  overflow: scroll !important;
-}
-tbody tr:last-child {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-}
 .css-16c50h-MuiInputBase-root-MuiTablePagination-select {
   display: none !important;
 }
