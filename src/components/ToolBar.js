@@ -96,6 +96,12 @@ export default function DenseAppBar() {
       contact.simpleFullName = fullName;
       contact.isContact = true;
       contact._original = {};
+      contact.partnerTypeSelect=2;
+      contact.criteria={
+        "archived": false,
+        "operator": "and",
+        "criteria": []
+    };
       await createOrUpdateNewContact(contact);
       handleContact([]);
       handleToast({
@@ -259,7 +265,7 @@ export default function DenseAppBar() {
 
 const SearchBar = memo(({ isRefreshed, setIsRefreshed }) => {
   const [searchText, setSearchText] = useState("");
-  const { handleSearch } = useContext(Context);
+  const { handleSearch,handlePageChange } = useContext(Context);
   useEffect(() => {
     if (isRefreshed) setSearchText("");
   }, [isRefreshed]);
@@ -280,6 +286,7 @@ const SearchBar = memo(({ isRefreshed, setIsRefreshed }) => {
         sx={{ padding: "1px 3px" }}
         onChange={(e) => {
           setSearchText(e.target.value);
+          handlePageChange(0);
           handleSearch(e.target.value);
         }}
         inputProps={{ "aria-label": "search" }}
@@ -299,12 +306,12 @@ const SearchBar = memo(({ isRefreshed, setIsRefreshed }) => {
 });
 
 const Refresh = () => {
-  const { getDataFromServer, fetchOffset } = useContext(Context);
+  const { getDataFromServer,handlePageChange } = useContext(Context);
   return (
     <Box
       edge="start"
       color="rgba(0,0,0,0.7)"
-      onClick={() => getDataFromServer(15, fetchOffset)}
+      onClick={() =>{ getDataFromServer(15, 0); handlePageChange(0)}}
       aria-label="menu"
       sx={{
         ml: 2,

@@ -1,3 +1,5 @@
+import React, { useCallback, useEffect, useState } from "react"; 
+
 import Box from "@mui/material/Box";
 import CardMedia from "@mui/material/CardMedia";
 import Divider from "@mui/material/Divider";
@@ -5,7 +7,6 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 
-import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchContactById } from "../api/api";
 import { DEFAULT_IMG } from "../constants";

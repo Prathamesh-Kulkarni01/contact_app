@@ -279,12 +279,11 @@ export function SearchInput({
         [fieldName]: value,
         ...data,
       }));
-
-      setDataFunction((data) => ({
-        ...data,
-        [fieldName]: value,
-      }));
     }
+    setDataFunction((data) => ({
+      ...data,
+      [fieldName]: value,
+    }));
   };
 
   return (
@@ -468,10 +467,20 @@ export const AssociatedCompanies = ({ setDataFunction }) => {
     setIsOpen(false);
   };
   const handleChange = (e, v) => {
-    let option = [];
-    if (v.length !== 0) option = [v[0]];
-    setValue(v);
-    if (window.location.pathname.split("/")[2] === "edit") 
+    const option = [];
+    const nameSet = new Set();
+    v.forEach((pre) => {
+      if (!nameSet.has(pre.name)) {
+        nameSet.add(pre.name);
+        option.push(pre);
+      }else{
+        const ind=option.findIndex(val=>val.name===pre.name)
+        option.splice(ind,1)
+        nameSet.delete(pre.name)
+      }
+    });
+    setValue(option)
+    if (window.location.pathname.split("/")[2] === "edit")
       handleUpdatedData((data) => ({
         ...data,
         companySet: option,
@@ -482,7 +491,7 @@ export const AssociatedCompanies = ({ setDataFunction }) => {
     }));
   };
   useEffect(() => {
-    if (contact?.companySet?.length > 0) setValue([contact?.companySet[0]]);
+    if (contact?.companySet?.length > 0) setValue(contact?.companySet);
   }, [contact]);
 
   return (
@@ -493,7 +502,6 @@ export const AssociatedCompanies = ({ setDataFunction }) => {
         id="size-small-standard-multi"
         size="small"
         sx={{ mt: 1 }}
-        limitTags={1}
         onOpen={() => handleOpen()}
         options={options}
         onChange={handleChange}
@@ -573,6 +581,7 @@ export const CustomBlueText = ({ children }) => {
     <Typography
       variant="h2"
       mt={1}
+      mr={1}
       mb={3}
       sx={{ fontSize: "13px", color: "#0275d8" }}
     >

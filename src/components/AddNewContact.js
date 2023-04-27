@@ -48,7 +48,7 @@ const AddNewContact = () => {
       language: res[0]?.values?.language,
       team: res[0]?.values?.team,
       user: res[0]?.values?.user,
-      companySet: [res[2].attrs.companySet["value:add"]],
+      companySet: [res[2].attrs.companySet["value:add"]]?.map(({id, name,code,version}) => ({id, name,code,version,$wkfStatus: null})),
     }));
   }, [handleContact]);
 
@@ -295,7 +295,6 @@ export const ContactBoxWithTabs = ({ setNewContactData }) => {
         display: "flex",
         flexDirection: "column",
         marginTop: "60px",
-
         backgroundColor: "transparent",
       }}
     >
